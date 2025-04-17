@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melvin's DevOps Empire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <!-- Moving background element - only for home section -->
+    <div class="home-bg"></div>
+    
+    <!-- Message container for success/error messages -->
+    <div class="message-container" id="messageContainer"></div>
+    
+    <!-- Header with welcome message and profile -->
+    <header id="home">
+        <div class="container">
+            <div class="profile-container">
+                <!-- Wrapped Profile Image -->
+                <div class="profile-image-wrapper">
+                    <img src="pf/profile.jpeg" alt="Melvin Samuel" class="profile-image" id="profile-pic">
+                </div>
+                
+                <h1 class="welcome-message">Welcome to Melvin's DevOps Empire</h1>
+                <p class="tagline">Cloud Infrastructure Architect | Automation Specialist | Scalable Solutions Engineer</p>
+                <div class="devops-title">Senior DevOps and Cloud Engineer</div>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="#" class="btn btn-primary nav-link pulse" data-section="workshop">
+                        <i class="fas fa-chess-king"></i> Explore My Empire
+                    </a>
+                    <a href="#" class="btn btn-resume nav-link" data-section="resume">
+                        <i class="fas fa-file-alt"></i> View Resume
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+
+
+
+    <!-- Navigation with animated advertising line -->
+    <nav>
+        <div class="nav-ad-line"></div>
+        <a href="#" class="nav-link active" data-section="home"><i class="fas fa-home"></i> Home</a>
+        <a href="#" class="nav-link" data-section="about"><i class="fas fa-user"></i> About</a>
+        <a href="#" class="nav-link" data-section="projects"><i class="fas fa-project-diagram"></i> Projects</a>
+        <a href="#" class="nav-link" data-section="workshop"><i class="fas fa-chess-board"></i> DevOps Empire</a>
+        <a href="#" class="nav-link" data-section="happy-ending"><i class="fas fa-trophy"></i> Happy Ending</a>
+        <a href="#" class="nav-link" data-section="my-errors"><i class="fas fa-bug"></i> My Errors</a>
+        <a href="#" class="nav-link" data-section="resume"><i class="fas fa-file-alt"></i> Resume</a>
+        <a href="#" class="nav-link" data-section="contact"><i class="fas fa-envelope"></i> Contact</a>
+    </nav>
+    
+
+
+
+    <!-- Main content -->
+    <div class="container">
+
+
+
+
+        
+        <!-- 🔹🔹🔹 ABOUT ME SECTION START 🔹🔹🔹 -->
+
+    <!-- Particle Background Layer -->
+    <div id="particles-js"></div>
+  
+    <!-- Main Content -->
+    <section id="about">
+        <div id="particles-js"></div> <!-- Particle background -->
+        <h2 class="section-title">About Me</h2>
+        <!-- Add your image here
+        <div class="about-image">
+            <img src="pf/profile.jpg" alt="Melvin Samuel" /> -->
+        <div class="about-content">
+            <div class="about-text">
+                <p><strong>Hi there, I'm Melvin Samuel – a passionate DevOps Engineer and Cloud Automation Specialist with a deep love for tech and solving real-world infrastructure challenges.</strong></p>
+    
+                <p>I began my journey studying Mass Communication at Lagos State Polytechnic, but soon pivoted to where my heart truly belongs—technology. Over the past 3+ years, I’ve specialized in AWS Cloud Services, CI/CD pipelines, container orchestration (Docker & Kubernetes), and infrastructure automation using tools like Terraform and GitHub Actions.</p>
+    
+                <p>This is more than just a career for me—it's a mission. DevOps is a mindset I live by. I thrive in fast-paced environments, love clean infrastructure design, and embrace every challenge as a learning opportunity. Every broken build, unexpected downtime, or new feature request is a chance to improve.</p>
+    
+                <p>My professional experience includes building secure, scalable systems at <strong>Cyclobold Technology</strong>, optimizing deployments with CI/CD pipelines, and leveraging Prometheus and Grafana for monitoring. I’ve reduced downtime by 80% and accelerated deployments by 60% in past projects.</p>
+    
+                <p>In this portfolio, I’ve included a space I call <strong>“DevOps Empire”</strong>—a tribute to the tools, platforms, and philosophies I embrace: from Docker and Jenkins to Prometheus, AWS EKS, and Terraform.</p>
+    
+                <p>I bring a growth mindset to every team and project, along with a strong drive for mentoring, collaboration, and continuous improvement.</p>
+    
+                <p><strong>Let’s build something great together.</strong></p>
+    
+                <p><strong>SAMUEL UGWU EBUBE</strong><br>
+                    📧 <a href="mailto:melvinsamuel070@gmail.com" style="color:#fff;">melvinsamuel070@gmail.com</a> | ☎️ +234-703-655-4955<br>
+                    <strong>DevOps Engineer | Cloud Enthusiast | Builder of Dreams</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+    
+  <!-- 🔹🔹🔹 ABOUT ME SECTION END 🔹🔹🔹 -->
+  
+
+        
+        <!-- Projects section -->
+        <section id="projects">
+            <h2 class="section-title">My Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <div class="project-image-slide">
+                            <img src="https://via.placeholder.com/600x400?text=ECS+Cluster" alt="AWS ECS Cluster" class="project-image">
+                            <img src="https://via.placeholder.com/600x400?text=CI/CD+Pipeline" alt="CI/CD Pipeline" class="project-image">
+                            <img src="https://via.placeholder.com/600x400?text=Deployment" alt="Deployment" class="project-image">
+                        </div>
+                        <div class="project-slide-nav">
+                            <div class="slide-dot active"></div>
+                            <div class="slide-dot"></div>
+                            <div class="slide-dot"></div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">AWS ECS Cluster Automation</h3>
+                        <p class="project-description">Automated deployment of containerized applications using AWS ECS with CI/CD pipeline integration.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AWS ECS</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">Terraform</span>
+                            <span class="tech-tag">GitHub Actions</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-primary view-project" data-id="1">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <div class="project-image-slide">
+                            <img src="https://via.placeholder.com/600x400?text=Lambda+API" alt="Serverless API" class="project-image">
+                            <img src="https://via.placeholder.com/600x400?text=API+Gateway" alt="API Gateway" class="project-image">
+                            <img src="https://via.placeholder.com/600x400?text=DynamoDB" alt="DynamoDB" class="project-image">
+                        </div>
+                        <div class="project-slide-nav">
+                            <div class="slide-dot active"></div>
+                            <div class="slide-dot"></div>
+                            <div class="slide-dot"></div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Serverless API with Lambda</h3>
+                        <p class="project-description">Built a scalable serverless API using AWS Lambda, API Gateway, and DynamoDB with proper authentication.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AWS Lambda</span>
+                            <span class="tech-tag">API Gateway</span>
+                            <span class="tech-tag">DynamoDB</span>
+                            <span class="tech-tag">Node.js</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-primary view-project" data-id="2">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <div class="project-image-slide">
+                            <img src="https://via.placeholder.com/600x400?text=AWS+Security" alt="AWS Security" class="project-image">
+                            <img src="https://via.placeholder.com/600x400?text=IAM+Roles" alt="IAM Roles" class="project-image">
+                            <img src="https://via.placeholder.com/600x400?text=CloudTrail" alt="CloudTrail" class="project-image">
+                        </div>
+                        <div class="project-slide-nav">
+                            <div class="slide-dot active"></div>
+                            <div class="slide-dot"></div>
+                            <div class="slide-dot"></div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Multi-Account AWS Security</h3>
+                        <p class="project-description">Implemented secure multi-account AWS environment with IAM roles, SCPs, and centralized logging.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AWS Organizations</span>
+                            <span class="tech-tag">IAM</span>
+                            <span class="tech-tag">CloudTrail</span>
+                            <span class="tech-tag">Config</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-primary view-project" data-id="3">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        
+
+        <!-- DevOps Empire Section -->
+        <section id="workshop">
+            <h2 class="section-title">My DevOps Empire</h2>
+            <div class="empire-structure">
+                <!-- Empire Structure Visualization -->
+                <div class="empire-diagram">
+                    <div class="empire-layer throne floating">
+                        <div class="layer-icon"><i class="fas fa-crown"></i></div>
+                        <h3>Command Center</h3>
+                        <p>Strategic oversight and governance of all cloud operations</p>
+                        <div class="tools-grid">
+                            <div class="tool-item tooltip" data-tool="AWS Management">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" class="tool-logo">
+                                <span>AWS Management</span>
+                                <div class="tool-description">Full control over AWS resources with IAM policies and service control</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="Terraform">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Terraform_Logo.svg" alt="Terraform" class="tool-logo">
+                                <span>Terraform</span>
+                                <div class="tool-description">Infrastructure as Code for provisioning and management</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="CI/CD Dashboard">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/GitHub_Copilot_X_logo.svg" alt="CI/CD" class="tool-logo">
+                                <span>CI/CD Dashboard</span>
+                                <div class="tool-description">Centralized view of all deployment pipelines</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="empire-connectors">
+                        <div class="connector"></div>
+                        <div class="connector"></div>
+                        <div class="connector"></div>
+                    </div>
+                    
+                    <div class="empire-layer generals floating">
+                        <div class="layer-icon"><i class="fas fa-chess-queen"></i></div>
+                        <h3>Cloud Infrastructure</h3>
+                        <p>Core services that form the foundation of the empire</p>
+                        <div class="tools-grid">
+                            <div class="tool-item tooltip" data-tool="EC2 & RDS">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="EC2" class="tool-logo">
+                                <span>EC2 & RDS</span>
+                                <div class="tool-description">Compute and database services for application hosting</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="S3 & CloudFront">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Amazon_S3_%282018-2023%29.svg" alt="S3" class="tool-logo">
+                                <span>S3 & CloudFront</span>
+                                <div class="tool-description">Storage and content delivery network services</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="VPC & Route53">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="VPC" class="tool-logo">
+                                <span>VPC & Route53</span>
+                                <div class="tool-description">Networking and DNS management</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="empire-connectors">
+                        <div class="connector"></div>
+                        <div class="connector"></div>
+                        <div class="connector"></div>
+                    </div>
+                    
+                    <div class="empire-layer army floating">
+                        <div class="layer-icon"><i class="fas fa-chess-knight"></i></div>
+                        <h3>Automation Forces</h3>
+                        <p>Tools that execute deployments and maintain order</p>
+                        <div class="tools-grid">
+                            <div class="tool-item tooltip" data-tool="Docker">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" alt="Docker" class="tool-logo">
+                                <span>Docker</span>
+                                <div class="tool-description">Containerization for consistent deployments</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="Jenkins">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Jenkins_logo.svg" alt="Jenkins" class="tool-logo">
+                                <span>Jenkins</span>
+                                <div class="tool-description">Automation server for CI/CD pipelines</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="Ansible">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Ansible_logo.svg" alt="Ansible" class="tool-logo">
+                                <span>Ansible</span>
+                                <div class="tool-description">Configuration management and deployment</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="empire-connectors">
+                        <div class="connector"></div>
+                        <div class="connector"></div>
+                        <div class="connector"></div>
+                    </div>
+                    
+                    <div class="empire-layer foundation floating">
+                        <div class="layer-icon"><i class="fas fa-chess-rook"></i></div>
+                        <h3>Monitoring & Security</h3>
+                        <p>Defenses that protect and alert the empire</p>
+                        <div class="tools-grid">
+                            <div class="tool-item tooltip" data-tool="CloudWatch">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/CloudWatch_logo.svg" alt="CloudWatch" class="tool-logo">
+                                <span>CloudWatch</span>
+                                <div class="tool-description">Monitoring and observability service</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="Prometheus">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Prometheus_software_logo.svg" alt="Prometheus" class="tool-logo">
+                                <span>Prometheus</span>
+                                <div class="tool-description">Metrics collection and alerting</div>
+                            </div>
+                            <div class="tool-item tooltip" data-tool="ELK Stack">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Elasticsearch_Logo.svg" alt="ELK" class="tool-logo">
+                                <span>ELK Stack</span>
+                                <div class="tool-description">Log management and analysis</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- Empire Description -->
+<div class="workshop-description">
+    <h3>The DevOps War Room</h3>
+    <p>This is my digital fortress where cloud architectures are designed, infrastructure is automated, and deployments are executed with military precision. Every tool is strategically placed for maximum efficiency and operational excellence.</p>
+    
+    <div class="recruiter-message glow">
+        <div class="message-icon"><i class="fas fa-user-tie"></i></div>
+        <div class="message-content">
+            <h4>To Hiring Managers & Recruiters:</h4>
+            <p>This visualization represents my systematic approach to building and maintaining cloud infrastructure. Each layer demonstrates my expertise in different aspects of DevOps:</p>
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><strong>Command Center:</strong> Strategic oversight and governance</li>
+                <li><strong>Cloud Infrastructure:</strong> Core AWS services expertise</li>
+                <li><strong>Automation Forces:</strong> CI/CD and deployment automation</li>
+                <li><strong>Monitoring & Security:</strong> Operational excellence and reliability</li>
+            </ul>
+            <p style="margin-top: 0.5rem;">Hover over each tool to see my specific expertise with that technology.</p>
+            <p style="margin-top: 1rem; font-weight: bold;">Cloud & DevOps Tools:</p>
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li>AWS (EC2, S3, RDS, Lambda, VPC), Jenkins, GitHub Actions, AWS CodePipeline, Terraform, CloudFormation</li>
+            </ul>
+            <p style="margin-top: 1rem; font-weight: bold;">Containerization & Security:</p>
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li>Docker, Kubernetes (EKS, ECS), IAM, Security Groups, SSL/TLS, OWASP ZAP, Firewall Configuration</li>
+            </ul>
+            <p style="margin-top: 1rem; font-weight: bold;">Monitoring, Scripting & Platforms:</p>
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li>CloudWatch, Prometheus, Grafana, ELK Stack, Shell, Python, JSON, YAML, Linux (Ubuntu, Red Hat, CentOS), macOS</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="environment-status">
+        <h4>Current Empire Status:</h4>
+        <div class="status-item">
+            <span class="status-label">Cloud Infrastructure:</span>
+            <span class="status-value active"><i class="fas fa-check-circle"></i> Operational</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">CI/CD Pipelines:</span>
+            <span class="status-value active"><i class="fas fa-check-circle"></i> 100% Automated</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Security Posture:</span>
+            <span class="status-value active"><i class="fas fa-shield-alt"></i> Hardened</span>
+        </div>
+        <div class="status-item">
+            <span class="status-label">Uptime (30 days):</span>
+            <span class="status-value active"><i class="fas fa-chart-line"></i> 99.99%</span>
+        </div>
+    </div>
+</div>
+</div>
+</section>
+        
+
+
+
+
+
+
+
+
+
+        <!-- Happy Ending Section -->
+<section id="happy-ending">
+    <h2 class="section-title">Happy Ending</h2>
+    <p>HERE ARE ALL THE SUCCESSFUL RESULTS AND ACHIEVEMENTS FROM MY PROJECTS. EACH IMAGE REPRESENTS A MILESTONE IN MY DEVOPS JOURNEY.</p>
+    
+    <div class="success-gallery" id="successGallery">
+        <!-- Success items will be added here dynamically -->
+        <div class="success-item">
+            <div class="success-actions">
+                <button class="success-action-btn edit-success" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="success-action-btn delete-success" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="success-image-container">
+                <img src="https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Project+Success" class="success-image">
+            </div>
+            <div class="success-info">
+                <h3 class="success-title">AWS ECS Deployment</h3>
+                <p class="success-date">Completed: June 2023</p>
+            </div>
+        </div>
+        <div class="success-item">
+            <div class="success-actions">
+                <button class="success-action-btn edit-success" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="success-action-btn delete-success" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="success-image-container">
+                <img src="https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=CI/CD+Pipeline" class="success-image">
+            </div>
+            <div class="success-info">
+                <h3 class="success-title">Automated Pipeline</h3>
+                <p class="success-date">Completed: August 2023</p>
+            </div>
+        </div>
+        <div class="success-item">
+            <div class="success-actions">
+                <button class="success-action-btn edit-success" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="success-action-btn delete-success" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="success-image-container">
+                <img src="https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Infrastructure+Success" class="success-image">
+            </div>
+            <div class="success-info">
+                <h3 class="success-title">Terraform Deployment</h3>
+                <p class="success-date">Completed: October 2023</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="upload-success-btn">
+        <div class="upload-btn">
+            <button class="btn btn-primary" id="addSuccessBtn">
+                <i class="fas fa-plus"></i> Add Success Item
+            </button>
+            <button class="btn btn-primary" id="uploadSuccessBtn">
+                <i class="fas fa-upload"></i> Upload Success Image
+            </button>
+            <input type="file" id="successUpload" accept="image/*" multiple style="display: none;">
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+        <!-- My Errors Section -->
+        <section id="my-errors">
+            <h2 class="section-title">My Errors</h2>
+            <p>Professional documentation of challenges I've faced and how I solved them. Each error is a learning opportunity.</p>
+            
+            <div class="errors-container" id="errorsContainer">
+                <!-- Error items will be added here dynamically -->
+                <div class="error-item">
+                    <div class="error-header">
+                        <h3 class="error-title">ECS Task Failing to Start</h3>
+                        <span class="error-date">July 2023</span>
+                    </div>
+                    <div class="error-description">
+                        <p>Tasks in my ECS cluster were failing to start with the error: "CannotPullContainerError: Error response from daemon: pull access denied". The containers couldn't be pulled from ECR.</p>
+                    </div>
+                    <div class="error-solution">
+                        <div class="error-solution-title">Solution:</div>
+                        <p>Created an IAM role with proper permissions for the ECS task execution role. Added AmazonEC2ContainerRegistryReadOnly policy and verified the ECR repository permissions. Also checked the task definition to ensure the correct image URI was specified.</p>
+                    </div>
+                </div>
+                
+                <div class="error-item">
+                    <div class="error-header">
+                        <h3 class="error-title">Terraform State Lock Issue</h3>
+                        <span class="error-date">September 2023</span>
+                    </div>
+                    <div class="error-description">
+                        <p>Terraform operations were failing with the error: "Error acquiring the state lock: ConditionalCheckFailedException". The state was locked by another process that had terminated unexpectedly.</p>
+                    </div>
+                    <div class="error-solution">
+                        <div class="error-solution-title">Solution:</div>
+                        <p>Used the AWS console to manually remove the lock item from the DynamoDB table. Implemented proper error handling in CI/CD pipelines to ensure locks are always released. Added timeout configurations for state locking operations.</p>
+                    </div>
+                </div>
+                
+                <div class="error-item">
+                    <div class="error-header">
+                        <h3 class="error-title">Lambda Cold Start Timeout</h3>
+                        <span class="error-date">November 2023</span>
+                    </div>
+                    <div class="error-description">
+                        <p>Lambda functions were timing out during cold starts when connecting to RDS, despite working fine after initialization. The 3-second default timeout was too short for the VPC-connected Lambda.</p>
+                    </div>
+                    <div class="error-solution">
+                        <div class="error-solution-title">Solution:</div>
+                        <p>Increased the timeout to 30 seconds for VPC-connected Lambdas. Implemented provisioned concurrency to keep functions warm. Optimized the initialization code to reduce cold start time. Added proper error handling and retries for database connections.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upload-error-btn">
+                <button class="btn btn-primary" id="addErrorBtn">
+                    <i class="fas fa-plus-circle"></i> Add Error Documentation
+                </button>
+            </div>
+        </section>
+        
+
+
+
+
+
+
+<!-- Resume section -->
+<section id="resume" class="resume-section">
+    <h2 class="section-title">My Resume</h2>
+    <div class="resume-container">
+        <!-- Resume Edit Controls -->
+        <div class="resume-controls">
+            <button id="editResumeBtn" class="btn btn-outline">
+                <i class="fas fa-edit"></i> Edit Resume
+            </button>
+            <button id="saveResumeBtn" class="btn btn-primary" style="display:none;">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button id="cancelEditBtn" class="btn btn-danger" style="display:none;">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+        
+        <!-- Resume content -->
+        <div class="resume-content" id="resumeContent">
+            <!-- Header -->
+            <div class="resume-header" contenteditable="false">
+                <h1 class="resume-name" id="resumeName">SAMUEL UGWU EBUBE</h1>
+                <h2 class="resume-title" id="resumeTitle">DEVOPS ENGINEER | CLOUD AUTOMATION</h2>
+                <div class="resume-contact">
+                    <p><i class="fas fa-envelope"></i> <span id="resumeEmail">melvinsamuel070@gmail.com</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="resumePhone">+234-703-655-4955</span></p>
+                    <p><i class="fab fa-linkedin"></i> <span id="resumeLinkedIn">LinkedIn</span></p>
+                    <p><i class="fab fa-github"></i> <span id="resumeGithub">GitHub</span></p>
+                </div>
+            </div>
+            
+            <!-- Professional Summary -->
+            <div class="resume-section">
+                <h2 class="resume-section-title">PROFESSIONAL SUMMARY</h2>
+                <div class="editable-text" id="professionalSummary">
+                    Results-driven DevOps Engineer with 3+ years of experience in designing, automating, and maintaining cloud-based solutions. Proficient in AWS cloud services, CI/CD pipelines, infrastructure as code (IaC), and container orchestration. Passionate about optimizing cloud infrastructure for scalability, security, and cost-efficiency while implementing DevOps best practices.
+                </div>
+            </div>
+     <!-- Technical Skills -->
+<div class="resume-section">
+    <h2 class="resume-section-title">Core Skills & Technologies</h2>
+    <div class="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; line-height: 1.6;">
+        <div>
+            <strong>Cloud & DevOps Tools:</strong><br>
+            AWS (EC2, S3, RDS, Lambda, VPC), Jenkins, GitHub Actions, AWS CodePipeline, Terraform, CloudFormation
+        </div>
+        <div>
+            <strong>Containerization & Security:</strong><br>
+            Docker, Kubernetes (EKS, ECS), IAM, Security Groups, SSL/TLS, OWASP ZAP, Firewall Configuration
+        </div>
+        <div>
+            <strong>Monitoring, Scripting & Platforms:</strong><br>
+            CloudWatch, Prometheus, Grafana, ELK Stack, Shell, Python, JSON, YAML, Linux (Ubuntu, Red Hat, CentOS), macOS
+        </div>
+    </div>
+</div>
+
+ <!-- Projects -->
+            <div class="resume-section">
+                <h2 class="resume-section-title">PROJECTS</h2>
+                
+                <div class="experience-item">
+                    <h3>Secure Docker Compose Deployment for a MERN Application</h3>
+                    <p><strong>Objective:</strong> Designed and deployed a highly available and scalable MERN stack application on AWS, ensuring secure and automated deployment workflows using Docker, CI/CD, and AWS services.</p>
+                    <h4>Key Contributions:</h4>
+                    <ul class="experience-details">
+                        <li>Containerized the MERN stack application using Docker, breaking the monolithic structure into independent, manageable services.</li>
+                        <li>Designed a robust CI/CD pipeline with GitHub Actions to automate Docker image building, security scanning, testing, and deployment to AWS.</li>
+                        <li>Optimized AWS infrastructure by leveraging Elastic Load Balancer (ELB) for traffic distribution and AWS Certificate Manager (ACM) to enforce SSL/TLS encryption for secure communication.</li>
+                        <li>Integrated automated monitoring & scaling using Prometheus for performance tracking and AWS Auto Scaling to dynamically adjust resources based on demand.</li>
+                        <li>Ensured fault tolerance & reliability by configuring multi-AZ deployments, utilizing AWS S3 for storage, and setting up automatic backups for disaster recovery.</li>
+                    </ul>
+                    <p><strong>Impact:</strong> Reduced downtime by 80%, improved deployment speed by 60%, and strengthened security by implementing automated vulnerability scans in the CI/CD pipeline.</p>
+                </div>
+                
+                <div class="experience-item">
+                    <h3>Infrastructure Automation with Terraform on AWS</h3>
+                    <p><strong>Objective:</strong> Automated cloud infrastructure provisioning using Terraform to eliminate manual deployments, enhance scalability, security, and maintainability, and reduce deployment errors.</p>
+                    <h4>Key Contributions:</h4>
+                    <ul class="experience-details">
+                        <li>Designed reusable Terraform modules for provisioning AWS resources, including EC2 instances, VPCs, S3 buckets, IAM roles, and Security Groups, enabling infrastructure-as-code (IaC) best practices.</li>
+                        <li>Automated infrastructure deployments, reducing provisioning time from manual hours to minutes and improving deployment consistency across environments.</li>
+                        <li>Implemented state management with Terraform remote backends (S3 + DynamoDB) to ensure collaboration and prevent conflicts in multi-engineer teams.</li>
+                        <li>Enforced security best practices by configuring IAM roles and least privilege access, network ACLs, and automated compliance checks.</li>
+                        <li>Integrated Terraform with CI/CD pipelines, enabling automated infrastructure testing and deployments.</li>
+                    </ul>
+                    <p><strong>Impact:</strong> Reduced infrastructure provisioning time by 50%, minimized manual errors, and improved cloud resource governance and cost-efficiency.</p>
+                </div>
+                
+                <div class="experience-item">
+                    <h3>Kubernetes Orchestration for Microservices on AWS</h3>
+                    <p><strong>Objective:</strong> Architected and deployed a highly scalable, microservices-based application on AWS EKS, ensuring seamless container orchestration, cost optimization, and self-healing capabilities.</p>
+                    <h4>Key Contributions:</h4>
+                    <ul class="experience-details">
+                        <li>Deployed microservices architecture using AWS Elastic Kubernetes Service (EKS), enabling efficient workload distribution and service decoupling.</li>
+                        <li>Integrated AWS Fargate for serverless compute, reducing operational overhead and optimizing resource utilization.</li>
+                        <li>Implemented service discovery and networking using AWS App Mesh & Kubernetes Ingress Controller, ensuring smooth inter-service communication and traffic routing.</li>
+                        <li>Configured Helm for Kubernetes package management, enabling automated deployments and rollbacks.</li>
+                        <li>Built a robust monitoring and alerting system using Prometheus, Grafana, and AlertManager, ensuring real-time performance insights and proactive scaling during traffic surges.</li>
+                        <li>Optimized security and access controls by configuring RBAC (Role-Based Access Control) for Kubernetes clusters, enforcing least-privilege access policies.</li>
+                    </ul>
+                    <p><strong>Impact:</strong> Improved system reliability and scalability, reduced compute costs by 30%, and ensured zero downtime deployments using Kubernetes rolling updates.</p>
+                </div>
+            </div>
+            
+            <!-- Education -->
+            <div class="resume-section">
+                <h2 class="resume-section-title">EDUCATION</h2>
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <h3>Diploma in DevOps & Cloud Computing</h3>
+                        <span class="experience-date">2022</span>
+                    </div>
+                    <div class="experience-company">Cyclobold School of Software Engineering, Lagos, Nigeria</div>
+                </div>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="resume-section">
+                <h2 class="resume-section-title">ADDITIONAL INFORMATION</h2>
+                <div class="editable-text" id="additionalInfo">
+                    <p><strong>References:</strong> Available upon request.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resume actions -->
+        <div class="resume-actions">
+            <button class="btn btn-primary" id="printResumeBtn">
+                <i class="fas fa-print"></i> Print Resume
+            </button>
+            <button class="btn btn-outline" id="downloadPdfBtn">
+                <i class="fas fa-file-pdf"></i> Download as PDF
+            </button>
+            <button class="btn btn-danger" id="deleteResumeBtn">
+                <i class="fas fa-trash"></i> Delete Resume
+            </button>
+        </div>
+        
+        <!-- Resume Upload Section -->
+        <div class="resume-upload">
+            <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+            <button class="btn btn-primary" id="uploadResumeBtn">
+                <i class="fas fa-upload"></i> Upload Resume
+            </button>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+        
+        <!-- Contact section -->
+        <section id="contact">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>Email</h3>
+                            <a href="mailto:melvinsamuel070@gmail.com">melvinsamuel070@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>LinkedIn</h3>
+                            <a href="https://www.linkedin.com/in/melvin-samuel-6b64532b0" target="_blank">linkedin.com/in/melvin-samuel</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h3>GitHub</h3>
+                            <a href="https://github.com/melvinsamuel070" target="_blank">github.com/melvinsamuel070</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Your Message</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/melvin-samuel-6b64532b0" class="social-link" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/melvinsamuel070" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-dev"></i></a>
+            </div>
+            <p class="copyright">&copy; <span id="current-year"></span> Melvin's DevOps Empire. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Project Modal with Enhanced Gallery -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalProjectTitle">Project Title</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Gallery Container -->
+                <div class="gallery-container" id="projectGallery">
+                    <div class="gallery-nav">
+                        <button class="gallery-nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="gallery-nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <img id="galleryMainImage" src="" alt="Project Image" class="gallery-main-image">
+                    <div class="gallery-thumbnails" id="galleryThumbnails">
+                        <!-- Thumbnails will be added here -->
+                    </div>
+                    <div class="gallery-actions" id="galleryActions" style="display: none;">
+                        <div class="gallery-upload-btn">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Upload Image
+                            </button>
+                            <input type="file" id="galleryUploadInput" class="gallery-upload-input" accept="image/*" multiple>
+                        </div>
+                        <button class="btn btn-danger" id="deleteImageBtn">
+                            <i class="fas fa-trash"></i> Delete Image
+                        </button>
+                        <button class="btn btn-outline" id="copyImageBtn">
+                            <i class="fas fa-copy"></i> Copy Image
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="modal-description" id="modalProjectDescription">
+                    <!-- Project description will be added here -->
+                </div>
+                <div class="project-tech" id="modalProjectTech">
+                    <!-- Tech tags will be added here -->
+                </div>
+                <div class="project-actions">
+                    <a href="#" class="btn btn-primary" id="modalProjectLink" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> View Project
+                    </a>
+                    <button class="btn btn-outline close-modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button class="btn btn-outline" id="editProjectBtn" style="display: none;">
+                        <i class="fas fa-edit"></i> Edit Project
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin controls -->
+    <div class="admin-controls">
+        <button class="admin-btn" id="adminToggle">
+            <i class="fas fa-cog"></i>
+        </button>
+        <div class="admin-panel" id="adminPanel">
+            <h3>Admin Controls</h3>
+            <div class="admin-option" id="editProfile">
+                <i class="fas fa-user-edit"></i> Edit Profile
+            </div>
+            <div class="admin-option" id="addProject">
+                <i class="fas fa-plus-circle"></i> Add Project
+            </div>
+            <div class="admin-option" id="editContent">
+                <i class="fas fa-edit"></i> Edit Content
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+
+
+    <!-- Zoom Controls -->
+    <div class="zoom-controls" id="zoomControls" style="display: none;">
+        <button class="zoom-btn" id="zoomInBtn">+</button>
+        <button class="zoom-btn" id="zoomOutBtn">-</button>
+        <button class="zoom-btn" id="resetZoomBtn">↻</button>
+    </div>
+    
+    <!-- Empire Communication Panel -->
+    <button class="communication-toggle" id="commToggle">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <div class="empire-communication" id="empireComm">
+        <h3><i class="fas fa-comment-dots"></i> Empire Communication</h3>
+        <textarea id="commMessage" placeholder="Send a message to the empire..."></textarea>
+        <button id="sendCommBtn">Send Message</button>
+    </div>
+    
+    <!-- Project Editor Modal -->
+    <div id="projectEditorModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="projectEditorTitle">Edit Project</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-tabs">
+                    <button class="tab-btn active" data-tab="details">Details</button>
+                    <button class="tab-btn" data-tab="gallery">Gallery</button>
+                    <button class="tab-btn" data-tab="technologies">Technologies</button>
+                </div>
+                
+                <div id="detailsTab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="editProjectTitle">Project Title*</label>
+                        <input type="text" id="editProjectTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProjectDescription">Description*</label>
+                        <textarea id="editProjectDescription" class="form-control" rows="6" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProjectLink">Project URL</label>
+                        <input type="url" id="editProjectLink" class="form-control" placeholder="https://">
+                    </div>
+                </div>
+                
+                <div id="galleryTab" class="tab-content">
+                    <div class="form-group">
+                        <label>Project Images</label>
+                        <div id="editorImageGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <!-- Images will be added here -->
+                        </div>
+                        <div class="image-upload-container" id="editorUploadContainer">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary);"></i>
+                            <p style="margin-top: 1rem;">Drag & drop images or click to browse</p>
+                            <input type="file" id="editorImageUpload" accept="image/*" multiple style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="technologiesTab" class="tab-content">
+                    <div class="form-group">
+                        <label>Technologies Used</label>
+                        <div id="editorTechTags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; min-height: 50px;">
+                            <!-- Tech tags will be added here -->
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="newTechInput" class="form-control" placeholder="Add technology">
+                            <button id="addTechBtn" class="btn btn-outline">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-actions" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                    <div>
+                        <button id="deleteProjectBtn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete Project
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="cancelEditBtn" class="btn btn-outline">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button id="saveProjectBtn" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Editor Modal -->
+    <div id="errorEditorModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="errorEditorTitle">Document Error</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="errorTitle">Error Title*</label>
+                    <input type="text" id="errorTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="errorDate">Date Occurred*</label>
+                    <input type="date" id="errorDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="errorDescription">Error Description*</label>
+                    <textarea id="errorDescription" class="form-control" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="errorSolution">Solution*</label>
+                    <textarea id="errorSolution" class="form-control" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Error Screenshots</label>
+                    <div id="errorImageGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <!-- Error images will be added here -->
+                    </div>
+                    <div class="image-upload-container" id="errorUploadContainer">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary);"></i>
+                        <p style="margin-top: 1rem;">Drag & drop images or click to browse</p>
+                        <input type="file" id="errorImageUpload" accept="image/*" multiple style="display: none;">
+                    </div>
+                </div>
+                <div class="project-actions" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                    <div>
+                        <button id="deleteErrorBtn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete Error
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="cancelErrorBtn" class="btn btn-outline">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button id="saveErrorBtn" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Error
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Editor Modal -->
+    <div id="successEditorModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="successEditorTitle">Edit Success Item</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="successTitle">Title*</label>
+                    <input type="text" id="successTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="successDate">Date*</label>
+                    <input type="date" id="successDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Success Image</label>
+                    <div id="successImageContainer" style="margin-bottom: 1rem;">
+                        <img id="successImagePreview" src="" style="max-width: 100%; max-height: 300px; display: none;">
+                    </div>
+                    <div class="image-upload-container" id="successUploadContainer">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary);"></i>
+                        <p style="margin-top: 1rem;">Drag & drop image or click to browse</p>
+                        <input type="file" id="successImageUpload" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+                <div class="project-actions" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                    <div>
+                        <button id="deleteSuccessBtn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete Success
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="cancelSuccessBtn" class="btn btn-outline">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button id="saveSuccessBtn" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Success
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+
+
+
+                                                                                                                                                                            
+
+    
+    <div class="transparent-marquee">
+        <div class="marquee-track">
+            <div class="project-tag">
+                <span class="project-badge">New</span>
+                <span class="project-name">E-Commerce Platform</span>
+                <span class="project-stack">React, Node, MongoDB</span>
+            </div>
+            <div class="project-tag">
+                <span class="project-name">Portfolio Builder</span>
+                <span class="project-stack">Vue.js, Firebase</span>
+            </div>
+            <div class="project-tag highlighted">
+                <span class="project-badge">Featured</span>
+                <span class="project-name">AI Content Generator</span>
+                <span class="project-stack">Python, TensorFlow</span>
+            </div>
+            <div class="project-tag">
+                <span class="project-name">Mobile Fitness App</span>
+                <span class="project-stack">Flutter, Firebase</span>
+            </div>
+            <!-- Duplicated for seamless looping -->
+            <div class="project-tag">
+                <span class="project-badge">New</span>
+                <span class="project-name">E-Commerce Platform</span>
+                <span class="project-stack">React, Node, MongoDB</span>
+            </div>
+            <div class="project-tag">
+                <span class="project-name">Portfolio Builder</span>
+                <span class="project-stack">Vue.js, Firebase</span>
+            </div>
+        </div>
+        <button class="marquee-cta">View All Projects →</button>
+    </div>
+
+
+
+
+
+
+
+
+    
+
+      <!-- Link to external JavaScript file -->
+    <script src="js/script.js"></script>
+</body>
+</html>
