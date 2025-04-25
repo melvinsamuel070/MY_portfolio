@@ -1422,6 +1422,32 @@ function setupProjectInteractions() {
     });
 }
 
+
+
+
+
+
+
+
+
+
+
+
+// empire diagram  (updated to include images)
+function renderErrors() {
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    setupZoomFunctionality();
+    renderProjects();
+    renderSuccessGallery();
+    renderErrors();
+    setupWorkshopInteractions();
+    setupEmpireCommunication();
+    setupProjectInteractions();
+    setupProjectSliders();    
+});
 // Workshop interactions
 function setupWorkshopInteractions() {
     // Animate the empire structure on scroll
@@ -1761,6 +1787,40 @@ document.getElementById('successUpload').addEventListener('change', function(e) 
         });
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2272,6 +2332,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make addManualError available globally if needed
     window.addManualError = addManualError;
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
