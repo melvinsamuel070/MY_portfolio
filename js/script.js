@@ -914,25 +914,50 @@ function showToast(message, type) {
 
 
 
-// ADMIN CONTROL SYSTEM AND PASSWORD
-let isAdmin = false;
 
-// Check if user is admin (in a real app, this would be server-side verification)
+
+
+
+
+
+
+
+
+
+
+
+// ADMIN CONTROL SYSTEM AND PASSWORD
+// Admin state management
+let isAdmin = false;
+const ADMIN_PASSWORD = "melvin"; // In production, use a more secure method
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    checkAdminStatus();
+    setupNavigation();
+    renderProjects();
+    renderErrors();
+    renderSuccessGallery();
+    setupResumeFunctionality();
+    setupTechTutorials();
+    setupEventListeners();
+});
+
+// Check admin status from localStorage
 function checkAdminStatus() {
-    // For demo purposes, we'll use a simple prompt
-    // In production, this should be proper authentication
-    const adminPassword = localStorage.getItem('adminPassword');
-    if (adminPassword === 'melvin') { // Replace with your secure password
+    const adminSession = localStorage.getItem('adminSession');
+    if (adminSession === ADMIN_PASSWORD) {
         isAdmin = true;
         activateAdminFeatures();
     }
 }
 // Toggle Admin Panel
+// Admin toggle functionality
 document.getElementById('adminToggle').addEventListener('click', function() {
     if (!isAdmin) {
         const password = prompt('Enter admin password:');
-        if (password === 'melvin') { // Replace with your secure password
-            localStorage.setItem('adminPassword', password);
+        if (password === ADMIN_PASSWORD) {
+            localStorage.setItem('adminSession', ADMIN_PASSWORD);
             isAdmin = true;
             activateAdminFeatures();
             showMessage('Admin mode activated', 'success');
@@ -941,6 +966,7 @@ document.getElementById('adminToggle').addEventListener('click', function() {
         }
     } else {
         isAdmin = false;
+        localStorage.removeItem('adminSession');
         deactivateAdminFeatures();
         showMessage('Admin mode deactivated', 'success');
     }
@@ -996,6 +1022,8 @@ function deactivateAdminFeatures() {
     disableContentEditing();
 }
 
+
+
 function enableContentEditing() {
     // Make all section titles editable
     document.querySelectorAll('.section-title').forEach(title => {
@@ -1020,6 +1048,8 @@ function disableContentEditing() {
         element.style.paddingLeft = '0';
     });
 }
+
+
 
 // Admin options
 document.getElementById('editProfile').addEventListener('click', function() {
@@ -1053,6 +1083,8 @@ document.getElementById('editContent').addEventListener('click', function() {
 document.addEventListener('DOMContentLoaded', function() {
     checkAdminStatus();
 });
+
+
 
 // Add technology in editor
 document.getElementById('addTechBtn').addEventListener('click', function() {
@@ -1346,7 +1378,53 @@ function setupProjectSliders() {
     });
 }
 
-// Render all projects
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Render projects
 function renderProjects() {
     const projectsGrid = document.querySelector('.projects-grid');
     projectsGrid.innerHTML = projects.map(project => `
@@ -1358,8 +1436,8 @@ function renderProjects() {
                     `).join('')}
                 </div>
                 <div class="project-slide-nav">
-                    ${project.images.map((_, index) => `
-                        <div class="slide-dot ${index === 0 ? 'active' : ''}"></div>
+                    ${project.images.map((_, i) => `
+                        <div class="slide-dot ${i === 0 ? 'active' : ''}"></div>
                     `).join('')}
                 </div>
             </div>
@@ -1372,22 +1450,22 @@ function renderProjects() {
                 </div>
                 <div class="project-actions">
                     <button class="btn btn-primary view-project" data-id="${project.id}">
-                        <i class="fas fa-eye"></i> View
+                        ${isAdmin ? '<i class="fas fa-edit"></i> Edit Project' : '<i class="fas fa-eye"></i> View Details'}
                     </button>
-                    <button class="btn btn-outline edit-project" data-id="${project.id}" style="display: ${isAdminMode ? 'block' : 'none'}">
+                    ${isAdmin ? `
+                    <button class="btn btn-outline edit-project" data-id="${project.id}">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn btn-danger delete-project" data-id="${project.id}" style="display: ${isAdminMode ? 'block' : 'none'}; margin-left: auto;">
+                    <button class="btn btn-danger delete-project" data-id="${project.id}" style="margin-left: auto;">
                         <i class="fas fa-trash"></i>
                     </button>
+                    ` : ''}
                 </div>
             </div>
         </div>
     `).join('');
     
-    // Add event listeners
     setupProjectInteractions();
-    // Setup sliders after projects are rendered
     setupProjectSliders();
 }
 

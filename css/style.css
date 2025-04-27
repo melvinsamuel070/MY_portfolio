@@ -11,17 +11,17 @@
     --error: #f44336;
 
 
-    /* New Design System Variables */
-    --space-unit: 1rem;
+    /* New Design System Variables reducing zoom in and out*/
+    --space-unit: 0rem;
     --space-xs: calc(0.25 * var(--space-unit));
     --space-sm: calc(0.5 * var(--space-unit));
     --space-md: var(--space-unit);
     --space-lg: calc(1.5 * var(--space-unit));
     --space-xl: calc(2 * var(--space-unit));
     
-    --text-base: 1rem;
-    --text-lg: 0rem;
-    --text-xl: 1.25rem;
+    --text-base: 300rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.24rem;
     --text-2xl: 1.5rem;
     --text-3xl: 1.875rem;
     --text-4xl: 0rem;
@@ -45,12 +45,12 @@
 /* profilbody adjustments */
 body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 0.9; /* Fixed from 0.3 to proper value */
+    line-height: 0.9; /*  zoom in and zoom out bacground */
     background: var(--secondary);
     color: var(--text);
     position: relative;
     overflow-x: hidden;
-    min-height: 1vh;
+    min-height: 0vh;
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -103,7 +103,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.rem;
+    gap: 0rem;
 }
 .profile-image-wrapper {
     width: 300px;
@@ -233,18 +233,19 @@ header {
 
 
 /* Your exact navigation styles - OPTIMIZED FOR REDUCED HEIGHT */
+/* Your exact navigation styles - OPTIMIZED FOR REDUCED HEIGHT */
 nav {
     position: sticky;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
+    z-index: 100mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm;
     background: rgba(0, 0, 0, 0);         /* Semi-transparent black background */
     backdrop-filter: blur(89px);
-    padding: 0rem 0;                       /* Remove all padding */
+    padding: 0rem;                       /* Remove all padding */
     transition: none !important;
     line-height: 1.2rem;                  /* Compact line spacing */
-    height: 2.3rem;                       /* Constrain nav height */
+    height: 0rem;                         /* Constrain nav height */
 }
 
 nav a {
@@ -266,7 +267,6 @@ nav a {
     text-shadow: 0 1px 0px rgba(0,0,0,0.3); /* Better text visibility */
 }
 
-
 /* Responsive font sizes */
 @media (max-width: 0px) {
     nav a {
@@ -282,6 +282,7 @@ nav a {
         letter-spacing: 0px;
     }
 }
+
 nav a:hover, nav a.active {
     color: #4cc9f0;
     background: rgba(76, 201, 240, 0.1);
@@ -292,6 +293,73 @@ nav a:hover, nav a.active {
     justify-content: center;
     padding: 1rem 0;
 }
+
+
+
+
+
+
+
+
+
+html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+section {
+    height: 100vh;
+    overflow-y: auto;
+    scroll-snap-align: start;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- Added Scrollbar Styling --- */
+html, body {
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+}
+
+
+/* Webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3); /* Light semi-transparent thumb */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; /* Make track invisible */
+}
+
+
+
+
+
+
+
 
 /* UPDATED: Transparent animated line */
 .nav-ad-line {
@@ -1272,8 +1340,10 @@ footer {
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
     position: relative;
-    overflow: hidden;
+    overflow-y: scroll; /* Allows scrolling for content */
     padding: 4rem 0;
+    height: 100vh; /* Makes sure the resume section takes full viewport height */
+    box-sizing: border-box; /* Ensures padding is included in the height */
 }
 
 #resume::before {
@@ -1299,7 +1369,7 @@ footer {
     max-width: 1100px;
     margin: 0 auto;
     background: rgba(15, 15, 25, 0.85);
-    border-radius: 12px;
+    border-radius: 19px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -1600,102 +1670,21 @@ footer {
     }
     
     .resume-content {
-        padding: 2.5rem;
-        font-size: 1.1rem; /* Adjusted */
+        padding: 2.5rem 1.5rem;
     }
     
     .resume-name {
-        font-size: 2.4rem; /* Adjusted */
+        font-size: 2.5rem;
     }
     
     .resume-title {
-        font-size: 1.5rem; /* Adjusted */
+        font-size: 1.5rem;
     }
-    
-    .skills-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .resume-contact {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.8rem;
-    }
-    
-    .resume-controls {
-        position: static;
-        justify-content: center;
-        margin-bottom: 1rem;
-    }
-    
-    .resume-actions {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+
+    .skills-column {
+        min-width: 200px;
     }
 }
-
-@media print {
-    #resume {
-        background: none !important;
-        animation: none !important;
-        padding: 0 !important;
-    }
-    
-    .resume-container {
-        background: white !important;
-        box-shadow: none !important;
-        border: none !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .resume-content {
-        color: black !important;
-        padding: 1.5rem !important;
-        font-size: 14pt !important; /* Increased */
-    }
-    
-    .resume-name {
-        font-size: 32pt !important; /* Increased */
-    }
-    
-    .resume-title {
-        font-size: 18pt !important; /* Increased */
-    }
-    
-    .resume-section-title {
-        font-size: 16pt !important;
-    }
-    
-    .resume-actions, .resume-controls, .resume-upload {
-        display: none !important;
-    }
-    
-    .experience-item {
-        background: none !important;
-        border-left: none !important;
-        padding: 1rem 0 !important; /* Increased */
-        break-inside: avoid;
-    }
-    
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
-    
-    @page {
-        margin: 1.5cm;
-    }
-}
-
-
-
-
-
-
-
-
 
 
 
@@ -3116,6 +3105,29 @@ body {
     z-index: 1;
 }
 
+
+/* Container for sections to ensure independent behavior */
+.sections-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* Updated About section styles */
+#about {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #ffffff;
+    padding: 60px 20px;
+    border-radius: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow-y: auto; /* Scroll enabled only for about section */
+    max-height: 500px; /* You can adjust this height */
+    z-index: 1;
+}
+
 /* Particle canvas */
 #particles-js {
     position: absolute;
@@ -3179,22 +3191,33 @@ body {
 .about-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-About image styles
+/* About image container */
+.about-image {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .about-image img {
     width: 250px; /* Adjust the width of the image */
     height: 250px; /* Adjust the height of the image */
     border-radius: 50%; /* Make the image circular */
     object-fit: cover; /* Ensures the image covers the box */
-    margin-right: 30px; /* Space between image and text */
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
 /* About text */
 .about-text {
+    flex: 1 1 600px;
     font-size: 1.4em;
     line-height: 1.8;
     max-width: 900px;
@@ -3234,7 +3257,7 @@ About image styles
     font-size: 1.5em;
 }
 
-/* 🔹 Editable About Me blocks */
+/* Editable About Me blocks */
 .editable {
     margin-bottom: 30px;
     padding: 15px;
@@ -3277,33 +3300,77 @@ About image styles
     transform: scale(1.1);
 }
 
+/* Highlight Contact */
+.highlight-contact {
+    color: #4a6ee0; /* Bright blue color */
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.highlight-contact:hover {
+    color: #3a56c0; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+.contact-item .contact-icon {
+    color: #4a6ee0; /* Matching icon color */
+}
+
+.contact-text h3 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.about-images {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: -50px; /* Move the images up */
+}
+
+.about-image-circle img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+}
+
+/* Optional: Full body style ready if needed later */
+.about-image-full img {
+    width: 250px;
+    height: auto;
+    border-radius: 10px;
+}
 
 
 
 
-    /* Add this CSS to your stylesheet */
-    .highlight-contact {
-        color: #4a6ee0; /* Bright blue color */
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        letter-spacing: 0.5px;
-    }
-    
-    .highlight-contact:hover {
-        color: #3a56c0; /* Darker blue on hover */
-        text-decoration: underline;
-    }
-    
-    .contact-item .contact-icon {
-        color: #4a6ee0; /* Matching icon color */
-    }
-    
-    .contact-text h3 {
-        margin-bottom: 5px;
-        color: #333;
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3481,7 +3548,7 @@ About image styles
 
 /* Additional styles for the tech tutorials section */
 .tutorial-card {
-    background: white;
+    background: rgb(0, 0, 0);
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem;
@@ -3505,8 +3572,8 @@ About image styles
 
 .tutorial-title {
     margin: 0;
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 2.2rem;
+    color: #000000;
 }
 
 .tutorial-actions button {
@@ -3637,7 +3704,7 @@ About image styles
     border-radius: 4px;
     padding: 1rem;
     margin-bottom: 1rem;
-    background: #f9f9f9;
+    background: #000000;
 }
 
 .section-item-header {
@@ -3668,7 +3735,7 @@ About image styles
 .section-item-content {
     white-space: pre-wrap;
     font-family: monospace;
-    background: white;
+    background: rgb(0, 0, 0);
     padding: 0.5rem;
     border-radius: 3px;
 }
@@ -3685,7 +3752,7 @@ About image styles
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 1rem;
-    background: #f0f8ff;
+    background: #000000;
     border-radius: 4px;
 }
 
