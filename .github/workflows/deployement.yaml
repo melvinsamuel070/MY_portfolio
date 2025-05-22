@@ -17,7 +17,6 @@ jobs:
         run: |
           docker build -t melvinsamuel070/potfolio:green .
 
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -28,11 +27,7 @@ jobs:
         run: |
           docker push melvinsamuel070/potfolio:green
 
-      - name: run docker compose 
-        run: |
-          docker compose up -d    
-
-      - name: deploy to ec2 instance 
+      - name: Deploy to EC2 instance
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -40,29 +35,22 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             docker pull melvinsamuel070/potfolio:green
-            docker run -d -p 1919:80 melvinsamuel070/potfolio:green
-                
+            docker stop portfolio || true
+            docker rm portfolio || true
+            docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:green
 
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-      - name: Save Docker image
+      - name: Save Docker image locally
         run: |
-          docker save melvinsamuel070/portfolio:green > portfolio_green.tar
+          docker save melvinsamuel070/potfolio:green > portfolio_green.tar
 
       - name: Upload image as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: portfolio-image
           path: portfolio_green.tar
+
+      - name: Download image from artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: portfolio-image
+          path: .
