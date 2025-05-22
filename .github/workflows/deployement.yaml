@@ -1,3 +1,61 @@
+# name: Deploy Portfolio
+
+# on:
+#   push:
+#     branches:
+#       - master
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Build Docker image
+#         run: |
+#           docker build -t melvinsamuel070/potfolio:green .
+
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Push Docker image
+#         run: |
+#           docker push melvinsamuel070/potfolio:green
+
+#       - name: Deploy to EC2 instance
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USERNAME }}
+#           key: ${{ secrets.EC2_KEY }}
+
+
+#       - name: installation of docker and docker-compose
+#         run: |
+#           sudo apt-get update
+#           sudo apt-get install -y docker.io
+#           sudo apt-get install -y docker-compose
+
+#       - name: Pull Docker image
+#         run: |   
+#             docker pull melvinsamuel070/potfolio:blue
+#             docker pull melvinsamuel070/potfolio:green
+#             docker stop portfolio || true
+#             docker rm portfolio || true
+#             docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:green
+
+#       - name: Save Docker image locally
+#         run: |
+#           docker save melvinsamuel070/potfolio:green > portfolio_green.tar
+
+
+
+
 name: Deploy Portfolio
 
 on:
@@ -13,9 +71,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set Docker image tag using timestamp
+        id: vars
+        run: echo "TAG=green" >> $GITHUB_ENV
+
       - name: Build Docker image
         run: |
-          docker build -t melvinsamuel070/potfolio:green .
+          docker build -t melvinsamuel070/potfolio:${TAG} .
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -23,25 +85,47 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Push Docker image
+      - name: Push Docker image to Docker Hub
         run: |
-          docker push melvinsamuel070/potfolio:green
+          docker push melvinsamuel070/potfolio:${TAG}
 
-      - name: Deploy to EC2 instance
+      - name: Save Docker image locally (for local deployment)
+        run: |
+          docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar
+
+      - name: Deploy to EC2 with Blue-Green strategy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            docker pull melvinsamuel070/potfolio:green
+            sudo apt-get update
+            sudo apt-get install -y docker.io docker-compose
+            docker pull melvinsamuel070/potfolio:${TAG}
+
+            CURRENT=$(docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
+            if [ "$CURRENT" == "${TAG}" ]; then
+              echo "Already running ${TAG}, no switch needed."
+              exit 0
+            fi
+
+            echo "Stopping existing container..."
             docker stop portfolio || true
             docker rm portfolio || true
-            docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:green
 
-      - name: Save Docker image locally
-        run: |
-          docker save melvinsamuel070/potfolio:green > portfolio_green.tar
+            echo "Running new container..."
+            docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:${TAG}
+
+
+
+
+
+
+
+
+
+
 
       # - name: Upload image as artifact
       #   uses: actions/upload-artifact@v3.1.3
