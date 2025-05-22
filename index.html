@@ -43,7 +43,8 @@
 
 
 
-    <!-- Navigation with animated advertising line -->
+   <!-- Navigation with animated advertising line -->
+<!-- Navigation with animated advertising line -->
     <nav>
         <div class="nav-ad-line"></div>
         <a href="#" class="nav-link active" data-section="home"><i class="fas fa-home"></i> Home</a>
@@ -55,6 +56,7 @@
         <a href="#" class="nav-link" data-section="my-errors"><i class="fas fa-bug"></i> My Errors</a>
         <a href="#" class="nav-link" data-section="resume"><i class="fas fa-file-alt"></i> Resume</a>
         <a href="#" class="nav-link" data-section="contact"><i class="fas fa-envelope"></i> Contact</a>
+        <a href="#" class="nav-link" data-section="book-store"><i class="fas fa-book"></i> Book Store</a>
     </nav>
     
 
@@ -92,27 +94,42 @@
     </div>
 
     <div class="about-content">
-        <div class="about-text">
-            <p><strong>Hi there, I'm Melvin Samuel – a passionate DevOps Engineer and Cloud Automation Specialist with a deep love for tech and solving real-world infrastructure challenges.</strong></p>
+    <div class="about-text">
+        <p><strong>Hi there, I'm Melvin Samuel – a passionate DevOps Engineer and Cloud Automation Specialist with a deep love for tech and solving real-world infrastructure challenges.</strong></p>
 
-            <p>I began my journey studying Mass Communication at Lagos State Polytechnic, but soon pivoted to where my heart truly belongs—technology. Over the past 3+ years, I’ve specialized in AWS Cloud Services, CI/CD pipelines, container orchestration (Docker & Kubernetes), and infrastructure automation using tools like Terraform and GitHub Actions.</p>
+        <p>I began my journey studying Mass Communication at Lagos State Polytechnic, but soon pivoted to where my heart truly belongs—technology. Over the past 3+ years, I've specialized in AWS Cloud Services, CI/CD pipelines, container orchestration (Docker & Kubernetes), and infrastructure automation using tools like Terraform and GitHub Actions.</p>
 
-            <p>This is more than just a career for me—it's a mission. DevOps is a mindset I live by. I thrive in fast-paced environments, love clean infrastructure design, and embrace every challenge as a learning opportunity. Every broken build, unexpected downtime, or new feature request is a chance to improve.</p>
+        <p><strong>🚀 Fun Fact:</strong> I built this entire portfolio from scratch - just like I build robust cloud infrastructures!</p>
 
-            <p>My professional experience includes building secure, scalable systems at <strong>Cyclobold Technology</strong>, optimizing deployments with CI/CD pipelines, and leveraging Prometheus and Grafana for monitoring. I’ve reduced downtime by 80% and accelerated deployments by 60% in past projects.</p>
+        <p>This is more than just a career for me—it's a mission. DevOps is a mindset I live by. I thrive in fast-paced environments, love clean infrastructure design, and embrace every challenge as a learning opportunity. Every broken build, unexpected downtime, or new feature request is a chance to improve.</p>
 
-            <p>In this portfolio, I’ve included a space I call <strong>“DevOps Empire”</strong>—a tribute to the tools, platforms, and philosophies I embrace: from Docker and Jenkins to Prometheus, AWS EKS, and Terraform.</p>
+        <p><strong>💡 Why Work With Me?</strong><br>
+        • 3+ years hands-on cloud and DevOps experience<br>
+        • 80% reduction in system downtime achieved<br>
+        • 60% faster deployment cycles implemented<br>
+        • Passion for mentoring and knowledge sharing<br>
+        • Obsessed with automation and efficiency</p>
 
-            <p>I bring a growth mindset to every team and project, along with a strong drive for mentoring, collaboration, and continuous improvement.</p>
+        <p>My professional experience includes building secure, scalable systems at <strong>Cyclobold Technology</strong>, optimizing deployments with CI/CD pipelines, and leveraging Prometheus and Grafana for monitoring. I've reduced downtime by 80% and accelerated deployments by 60% in past projects.</p>
 
-            <p><strong>Let’s build something great together.</strong></p>
+        <p><strong>🔥 Recent Achievement:</strong> Designed and implemented a fully automated CI/CD pipeline that reduced deployment times from 45 minutes to under 7 minutes!</p>
 
-            <p><strong>SAMUEL UGWU EBUBE</strong><br>
-                📧 <a href="mailto:melvinsamuel070@gmail.com" style="color:#fff;">melvinsamuel070@gmail.com</a> | ☎️ +234-703-655-4955<br>
-                <strong>DevOps Engineer | Cloud Enthusiast | Builder of Dreams</strong>
-            </p>
-        </div>
+        <p>In this portfolio, I've included a space I call <strong>"DevOps Empire"</strong>—a tribute to the tools, platforms, and philosophies I embrace: from Docker and Jenkins to Prometheus, AWS EKS, and Terraform.</p>
+
+        <p>I bring a growth mindset to every team and project, along with a strong drive for mentoring, collaboration, and continuous improvement.</p>
+
+        <p><strong>🌟 What Clients Say:</strong><br>
+        "Melvin transformed our infrastructure with his automation expertise - the most reliable systems we've ever had!" - Recent Client</p>
+
+        <p><strong>Let's build something great together.</strong></p>
+
+        <p><strong>SAMUEL UGWU EBUBE</strong><br>
+            📧 <a href="mailto:melvinsamuel070@gmail.com" style="color:#fff;">melvinsamuel070@gmail.com</a> | ☎️ +234-703-655-4955<br>
+            <strong>DevOps Engineer | Cloud Enthusiast | Builder of Dreams</strong><br>
+            <span style="font-size: 0.9em;">P.S. Ask me about my latest Terraform module or Kubernetes optimization hack!</span>
+        </p>
     </div>
+</div>
 </section>
 
 <!-- 🔹🔹🔹 ABOUT ME SECTION END 🔹🔹🔹 -->
@@ -233,6 +250,159 @@
                 </div>
             </div>
         </section>
+
+
+<!-- Project Modal with Enhanced Gallery -->
+<div id="projectModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalProjectTitle">Project Title</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Gallery Container -->
+            <div class="gallery-container" id="projectGallery">
+                <div class="gallery-nav">
+                    <button class="gallery-nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="gallery-nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <img id="galleryMainImage" src="" alt="Project Image" class="gallery-main-image">
+                <div class="gallery-thumbnails" id="galleryThumbnails">
+                    <!-- Thumbnails will be added here -->
+                </div>
+                <div class="gallery-actions" id="galleryActions" style="display: none;">
+                    <div class="gallery-upload-btn">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload Image
+                        </button>
+                        <input type="file" id="galleryUploadInput" class="gallery-upload-input" accept="image/*" multiple>
+                    </div>
+                    <button class="btn btn-danger" id="deleteImageBtn">
+                        <i class="fas fa-trash"></i> Delete Image
+                    </button>
+                    <button class="btn btn-outline" id="copyImageBtn">
+                        <i class="fas fa-copy"></i> Copy Image
+                    </button>
+                </div>
+            </div>
+            
+            <div class="modal-description" id="modalProjectDescription">
+                <!-- Project description will be added here -->
+            </div>
+            <div class="project-tech" id="modalProjectTech">
+                <!-- Tech tags will be added here -->
+            </div>
+            <div class="project-actions">
+                <a href="#" class="btn btn-primary" id="modalProjectLink" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View Project
+                </a>
+                <button class="btn btn-outline close-modal">
+                    <i class="fas fa-times"></i> Close
+                </button>
+                <button class="btn btn-success" id="saveProjectBtn" style="display: none;">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="btn btn-outline" id="editProjectBtn">
+                    <i class="fas fa-edit"></i> Edit Project
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Editor Modal -->
+<div id="projectEditorModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+            <h3 class="modal-title" id="projectEditorTitle">Edit Project</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-tabs">
+                <button class="tab-btn active" data-tab="details">Details</button>
+                <button class="tab-btn" data-tab="gallery">Gallery</button>
+                <button class="tab-btn" data-tab="technologies">Technologies</button>
+            </div>
+            
+            <div id="detailsTab" class="tab-content active">
+                <div class="form-group">
+                    <label for="editProjectTitle">Project Title*</label>
+                    <input type="text" id="editProjectTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProjectDescription">Description*</label>
+                    <textarea id="editProjectDescription" class="form-control" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editProjectLink">Project URL</label>
+                    <input type="url" id="editProjectLink" class="form-control" placeholder="https://">
+                </div>
+            </div>
+            
+            <div id="galleryTab" class="tab-content">
+                <div class="form-group">
+                    <label>Project Images</label>
+                    <div id="editorImageGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <!-- Images will be added here -->
+                    </div>
+                    <div class="image-upload-container" id="editorUploadContainer">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary);"></i>
+                        <p style="margin-top: 1rem;">Drag & drop images or click to browse</p>
+                        <input type="file" id="editorImageUpload" accept="image/*" multiple style="display: none;">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="technologiesTab" class="tab-content">
+                <div class="form-group">
+                    <label>Technologies Used</label>
+                    <div id="editorTechTags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; min-height: 50px;">
+                        <!-- Tech tags will be added here -->
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="newTechInput" class="form-control" placeholder="Add technology">
+                        <button id="addTechBtn" class="btn btn-outline">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-actions" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <div>
+                    <button id="deleteProjectBtn" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete Project
+                    </button>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button id="cancelEditBtn" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button id="saveEditProjectBtn" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         
@@ -378,7 +548,7 @@
             </ul>
             <p style="margin-top: 1rem; font-weight: bold;">Containerization & Security:</p>
             <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
-                <li>Docker, Kubernetes (EKS, ECS), IAM, Security Groups, SSL/TLS, OWASP ZAP, Firewall Configuration</li>
+                <li>Docker, Kubernetes (EKS, ECS), IAM, Security Groups, SSL/TLS, OWASP ZAP, cloudflare, ngrock,baston hosting, Firewall Configuration</li>
             </ul>
             <p style="margin-top: 1rem; font-weight: bold;">Monitoring, Scripting & Platforms:</p>
             <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
@@ -745,7 +915,6 @@ kubectl get services         # List services</code></pre>
 
 
 
-
 <!-- My Errors Section -->
 <section id="my-errors">
     <h2 class="section-title">My Error Documentation</h2>
@@ -833,6 +1002,7 @@ kubectl get services         # List services</code></pre>
 
 
 
+
 <!-- Resume section -->
 <section id="resume" class="resume-section">
     <h2 class="section-title">My Resume</h2>
@@ -853,14 +1023,14 @@ kubectl get services         # List services</code></pre>
         <!-- Resume content -->
         <div class="resume-content" id="resumeContent">
             <!-- Header -->
-            <div class="resume-header" contenteditable="false">
-                <h1 class="resume-name" id="resumeName">SAMUEL UGWU EBUBE</h1>
-                <h2 class="resume-title" id="resumeTitle">DEVOPS ENGINEER | CLOUD AUTOMATION</h2>
+            <div class="resume-header">
+                <h1 class="resume-name editable-text" id="resumeName">SAMUEL UGWU EBUBE</h1>
+                <h2 class="resume-title editable-text" id="resumeTitle">DEVOPS ENGINEER | CLOUD AUTOMATION</h2>
                 <div class="resume-contact">
-                    <p><i class="fas fa-envelope"></i> <span id="resumeEmail">melvinsamuel070@gmail.com</span></p>
-                    <p><i class="fas fa-phone"></i> <span id="resumePhone">+234-703-655-4955</span></p>
-                    <p><i class="fab fa-linkedin"></i> <span id="resumeLinkedIn">LinkedIn</span></p>
-                    <p><i class="fab fa-github"></i> <span id="resumeGithub">GitHub</span></p>
+                    <p><i class="fas fa-envelope"></i> <span class="editable-text" id="resumeEmail">melvinsamuel070@gmail.com</span></p>
+                    <p><i class="fas fa-phone"></i> <span class="editable-text" id="resumePhone">+234-703-655-4955</span></p>
+                    <p><i class="fab fa-linkedin"></i> <span class="editable-text" id="resumeLinkedIn">LinkedIn</span></p>
+                    <p><i class="fab fa-github"></i> <span class="editable-text" id="resumeGithub">GitHub</span></p>
                 </div>
             </div>
             
@@ -871,70 +1041,71 @@ kubectl get services         # List services</code></pre>
                     Results-driven DevOps Engineer with 3+ years of experience in designing, automating, and maintaining cloud-based solutions. Proficient in AWS cloud services, CI/CD pipelines, infrastructure as code (IaC), and container orchestration. Passionate about optimizing cloud infrastructure for scalability, security, and cost-efficiency while implementing DevOps best practices.
                 </div>
             </div>
-     <!-- Technical Skills -->
-<div class="resume-section">
-    <h2 class="resume-section-title">Core Skills & Technologies</h2>
-    <div class="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; line-height: 1.6;">
-        <div>
-            <strong>Cloud & DevOps Tools:</strong><br>
-            AWS (EC2, S3, RDS, Lambda, VPC), Jenkins, GitHub Actions, AWS CodePipeline, Terraform, CloudFormation
-        </div>
-        <div>
-            <strong>Containerization & Security:</strong><br>
-            Docker, Kubernetes (EKS, ECS), IAM, Security Groups, SSL/TLS, OWASP ZAP, Firewall Configuration
-        </div>
-        <div>
-            <strong>Monitoring, Scripting & Platforms:</strong><br>
-            CloudWatch, Prometheus, Grafana, ELK Stack, Shell, Python, JSON, YAML, Linux (Ubuntu, Red Hat, CentOS), macOS
-        </div>
-    </div>
-</div>
-
- <!-- Projects -->
+            
+            <!-- Technical Skills -->
+            <div class="resume-section">
+                <h2 class="resume-section-title">Core Skills & Technologies</h2>
+                <div class="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; line-height: 1.6;">
+                    <div class="editable-text">
+                        <strong>Cloud & DevOps Tools:</strong><br>
+                        AWS (EC2, S3, RDS, Lambda, VPC), Jenkins, GitHub Actions, AWS CodePipeline, Terraform, CloudFormation
+                    </div>
+                    <div class="editable-text">
+                        <strong>Containerization & Security:</strong><br>
+                        Docker, Kubernetes (EKS, ECS), IAM, Security Groups, SSL/TLS, OWASP ZAP, Firewall Configuration
+                    </div>
+                    <div class="editable-text">
+                        <strong>Monitoring, Scripting & Platforms:</strong><br>
+                        CloudWatch, Prometheus, Grafana, ELK Stack, Shell, Python, JSON, YAML, Linux (Ubuntu, Red Hat, CentOS), macOS
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects -->
             <div class="resume-section">
                 <h2 class="resume-section-title">PROJECTS</h2>
                 
                 <div class="experience-item">
-                    <h3>Secure Docker Compose Deployment for a MERN Application</h3>
-                    <p><strong>Objective:</strong> Designed and deployed a highly available and scalable MERN stack application on AWS, ensuring secure and automated deployment workflows using Docker, CI/CD, and AWS services.</p>
+                    <h3 class="editable-text">Secure Docker Compose Deployment for a MERN Application</h3>
+                    <p class="editable-text"><strong>Objective:</strong> Designed and deployed a highly available and scalable MERN stack application on AWS, ensuring secure and automated deployment workflows using Docker, CI/CD, and AWS services.</p>
                     <h4>Key Contributions:</h4>
                     <ul class="experience-details">
-                        <li>Containerized the MERN stack application using Docker, breaking the monolithic structure into independent, manageable services.</li>
-                        <li>Designed a robust CI/CD pipeline with GitHub Actions to automate Docker image building, security scanning, testing, and deployment to AWS.</li>
-                        <li>Optimized AWS infrastructure by leveraging Elastic Load Balancer (ELB) for traffic distribution and AWS Certificate Manager (ACM) to enforce SSL/TLS encryption for secure communication.</li>
-                        <li>Integrated automated monitoring & scaling using Prometheus for performance tracking and AWS Auto Scaling to dynamically adjust resources based on demand.</li>
-                        <li>Ensured fault tolerance & reliability by configuring multi-AZ deployments, utilizing AWS S3 for storage, and setting up automatic backups for disaster recovery.</li>
+                        <li class="editable-text">Containerized the MERN stack application using Docker, breaking the monolithic structure into independent, manageable services.</li>
+                        <li class="editable-text">Designed a robust CI/CD pipeline with GitHub Actions to automate Docker image building, security scanning, testing, and deployment to AWS.</li>
+                        <li class="editable-text">Optimized AWS infrastructure by leveraging Elastic Load Balancer (ELB) for traffic distribution and AWS Certificate Manager (ACM) to enforce SSL/TLS encryption for secure communication.</li>
+                        <li class="editable-text">Integrated automated monitoring & scaling using Prometheus for performance tracking and AWS Auto Scaling to dynamically adjust resources based on demand.</li>
+                        <li class="editable-text">Ensured fault tolerance & reliability by configuring multi-AZ deployments, utilizing AWS S3 for storage, and setting up automatic backups for disaster recovery.</li>
                     </ul>
-                    <p><strong>Impact:</strong> Reduced downtime by 80%, improved deployment speed by 60%, and strengthened security by implementing automated vulnerability scans in the CI/CD pipeline.</p>
+                    <p class="editable-text"><strong>Impact:</strong> Reduced downtime by 80%, improved deployment speed by 60%, and strengthened security by implementing automated vulnerability scans in the CI/CD pipeline.</p>
                 </div>
                 
                 <div class="experience-item">
-                    <h3>Infrastructure Automation with Terraform on AWS</h3>
-                    <p><strong>Objective:</strong> Automated cloud infrastructure provisioning using Terraform to eliminate manual deployments, enhance scalability, security, and maintainability, and reduce deployment errors.</p>
+                    <h3 class="editable-text">Infrastructure Automation with Terraform on AWS</h3>
+                    <p class="editable-text"><strong>Objective:</strong> Automated cloud infrastructure provisioning using Terraform to eliminate manual deployments, enhance scalability, security, and maintainability, and reduce deployment errors.</p>
                     <h4>Key Contributions:</h4>
                     <ul class="experience-details">
-                        <li>Designed reusable Terraform modules for provisioning AWS resources, including EC2 instances, VPCs, S3 buckets, IAM roles, and Security Groups, enabling infrastructure-as-code (IaC) best practices.</li>
-                        <li>Automated infrastructure deployments, reducing provisioning time from manual hours to minutes and improving deployment consistency across environments.</li>
-                        <li>Implemented state management with Terraform remote backends (S3 + DynamoDB) to ensure collaboration and prevent conflicts in multi-engineer teams.</li>
-                        <li>Enforced security best practices by configuring IAM roles and least privilege access, network ACLs, and automated compliance checks.</li>
-                        <li>Integrated Terraform with CI/CD pipelines, enabling automated infrastructure testing and deployments.</li>
+                        <li class="editable-text">Designed reusable Terraform modules for provisioning AWS resources, including EC2 instances, VPCs, S3 buckets, IAM roles, and Security Groups, enabling infrastructure-as-code (IaC) best practices.</li>
+                        <li class="editable-text">Automated infrastructure deployments, reducing provisioning time from manual hours to minutes and improving deployment consistency across environments.</li>
+                        <li class="editable-text">Implemented state management with Terraform remote backends (S3 + DynamoDB) to ensure collaboration and prevent conflicts in multi-engineer teams.</li>
+                        <li class="editable-text">Enforced security best practices by configuring IAM roles and least privilege access, network ACLs, and automated compliance checks.</li>
+                        <li class="editable-text">Integrated Terraform with CI/CD pipelines, enabling automated infrastructure testing and deployments.</li>
                     </ul>
-                    <p><strong>Impact:</strong> Reduced infrastructure provisioning time by 50%, minimized manual errors, and improved cloud resource governance and cost-efficiency.</p>
+                    <p class="editable-text"><strong>Impact:</strong> Reduced infrastructure provisioning time by 50%, minimized manual errors, and improved cloud resource governance and cost-efficiency.</p>
                 </div>
                 
                 <div class="experience-item">
-                    <h3>Kubernetes Orchestration for Microservices on AWS</h3>
-                    <p><strong>Objective:</strong> Architected and deployed a highly scalable, microservices-based application on AWS EKS, ensuring seamless container orchestration, cost optimization, and self-healing capabilities.</p>
+                    <h3 class="editable-text">Kubernetes Orchestration for Microservices on AWS</h3>
+                    <p class="editable-text"><strong>Objective:</strong> Architected and deployed a highly scalable, microservices-based application on AWS EKS, ensuring seamless container orchestration, cost optimization, and self-healing capabilities.</p>
                     <h4>Key Contributions:</h4>
                     <ul class="experience-details">
-                        <li>Deployed microservices architecture using AWS Elastic Kubernetes Service (EKS), enabling efficient workload distribution and service decoupling.</li>
-                        <li>Integrated AWS Fargate for serverless compute, reducing operational overhead and optimizing resource utilization.</li>
-                        <li>Implemented service discovery and networking using AWS App Mesh & Kubernetes Ingress Controller, ensuring smooth inter-service communication and traffic routing.</li>
-                        <li>Configured Helm for Kubernetes package management, enabling automated deployments and rollbacks.</li>
-                        <li>Built a robust monitoring and alerting system using Prometheus, Grafana, and AlertManager, ensuring real-time performance insights and proactive scaling during traffic surges.</li>
-                        <li>Optimized security and access controls by configuring RBAC (Role-Based Access Control) for Kubernetes clusters, enforcing least-privilege access policies.</li>
+                        <li class="editable-text">Deployed microservices architecture using AWS Elastic Kubernetes Service (EKS), enabling efficient workload distribution and service decoupling.</li>
+                        <li class="editable-text">Integrated AWS Fargate for serverless compute, reducing operational overhead and optimizing resource utilization.</li>
+                        <li class="editable-text">Implemented service discovery and networking using AWS App Mesh & Kubernetes Ingress Controller, ensuring smooth inter-service communication and traffic routing.</li>
+                        <li class="editable-text">Configured Helm for Kubernetes package management, enabling automated deployments and rollbacks.</li>
+                        <li class="editable-text">Built a robust monitoring and alerting system using Prometheus, Grafana, and AlertManager, ensuring real-time performance insights and proactive scaling during traffic surges.</li>
+                        <li class="editable-text">Optimized security and access controls by configuring RBAC (Role-Based Access Control) for Kubernetes clusters, enforcing least-privilege access policies.</li>
                     </ul>
-                    <p><strong>Impact:</strong> Improved system reliability and scalability, reduced compute costs by 30%, and ensured zero downtime deployments using Kubernetes rolling updates.</p>
+                    <p class="editable-text"><strong>Impact:</strong> Improved system reliability and scalability, reduced compute costs by 30%, and ensured zero downtime deployments using Kubernetes rolling updates.</p>
                 </div>
             </div>
             
@@ -943,10 +1114,10 @@ kubectl get services         # List services</code></pre>
                 <h2 class="resume-section-title">EDUCATION</h2>
                 <div class="experience-item">
                     <div class="experience-header">
-                        <h3>Diploma in DevOps & Cloud Computing</h3>
-                        <span class="experience-date">2022</span>
+                        <h3 class="editable-text">Diploma in DevOps & Cloud Computing</h3>
+                        <span class="experience-date editable-text">2022</span>
                     </div>
-                    <div class="experience-company">Cyclobold School of Software Engineering, Lagos, Nigeria</div>
+                    <div class="experience-company editable-text">Cyclobold School of Software Engineering, Lagos, Nigeria</div>
                 </div>
             </div>
             
@@ -954,7 +1125,7 @@ kubectl get services         # List services</code></pre>
             <div class="resume-section">
                 <h2 class="resume-section-title">ADDITIONAL INFORMATION</h2>
                 <div class="editable-text" id="additionalInfo">
-                    <p><strong>References:</strong> Available upon request.</p>
+                    <p class="editable-text"><strong>References:</strong> Available upon request.</p>
                 </div>
             </div>
         </div>
@@ -974,14 +1145,13 @@ kubectl get services         # List services</code></pre>
         
         <!-- Resume Upload Section -->
         <div class="resume-upload">
-            <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+            <input type="file" id="resumeUpload" accept=".json,.pdf,.doc,.docx,.txt" style="display: none;">
             <button class="btn btn-primary" id="uploadResumeBtn">
                 <i class="fas fa-upload"></i> Upload Resume
             </button>
         </div>
     </div>
 </section>
-
 
 
 
@@ -1060,60 +1230,7 @@ kubectl get services         # List services</code></pre>
         </div>
     </footer>
     
-    <!-- Project Modal with Enhanced Gallery -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalProjectTitle">Project Title</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <!-- Gallery Container -->
-                <div class="gallery-container" id="projectGallery">
-                    <div class="gallery-nav">
-                        <button class="gallery-nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
-                        <button class="gallery-nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <img id="galleryMainImage" src="" alt="Project Image" class="gallery-main-image">
-                    <div class="gallery-thumbnails" id="galleryThumbnails">
-                        <!-- Thumbnails will be added here -->
-                    </div>
-                    <div class="gallery-actions" id="galleryActions" style="display: none;">
-                        <div class="gallery-upload-btn">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-upload"></i> Upload Image
-                            </button>
-                            <input type="file" id="galleryUploadInput" class="gallery-upload-input" accept="image/*" multiple>
-                        </div>
-                        <button class="btn btn-danger" id="deleteImageBtn">
-                            <i class="fas fa-trash"></i> Delete Image
-                        </button>
-                        <button class="btn btn-outline" id="copyImageBtn">
-                            <i class="fas fa-copy"></i> Copy Image
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="modal-description" id="modalProjectDescription">
-                    <!-- Project description will be added here -->
-                </div>
-                <div class="project-tech" id="modalProjectTech">
-                    <!-- Tech tags will be added here -->
-                </div>
-                <div class="project-actions">
-                    <a href="#" class="btn btn-primary" id="modalProjectLink" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> View Project
-                    </a>
-                    <button class="btn btn-outline close-modal">
-                        <i class="fas fa-times"></i> Close
-                    </button>
-                    <button class="btn btn-outline" id="editProjectBtn" style="display: none;">
-                        <i class="fas fa-edit"></i> Edit Project
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Admin controls -->
     <div class="admin-controls">
@@ -1158,86 +1275,7 @@ kubectl get services         # List services</code></pre>
         <button id="sendCommBtn">Send Message</button>
     </div>
     
-    <!-- Project Editor Modal -->
-    <div id="projectEditorModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <h3 class="modal-title" id="projectEditorTitle">Edit Project</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-tabs">
-                    <button class="tab-btn active" data-tab="details">Details</button>
-                    <button class="tab-btn" data-tab="gallery">Gallery</button>
-                    <button class="tab-btn" data-tab="technologies">Technologies</button>
-                </div>
-                
-                <div id="detailsTab" class="tab-content active">
-                    <div class="form-group">
-                        <label for="editProjectTitle">Project Title*</label>
-                        <input type="text" id="editProjectTitle" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="editProjectDescription">Description*</label>
-                        <textarea id="editProjectDescription" class="form-control" rows="6" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="editProjectLink">Project URL</label>
-                        <input type="url" id="editProjectLink" class="form-control" placeholder="https://">
-                    </div>
-                </div>
-                
-                <div id="galleryTab" class="tab-content">
-                    <div class="form-group">
-                        <label>Project Images</label>
-                        <div id="editorImageGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-                            <!-- Images will be added here -->
-                        </div>
-                        <div class="image-upload-container" id="editorUploadContainer">
-                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary);"></i>
-                            <p style="margin-top: 1rem;">Drag & drop images or click to browse</p>
-                            <input type="file" id="editorImageUpload" accept="image/*" multiple style="display: none;">
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="technologiesTab" class="tab-content">
-                    <div class="form-group">
-                        <label>Technologies Used</label>
-                        <div id="editorTechTags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; min-height: 50px;">
-                            <!-- Tech tags will be added here -->
-                        </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <input type="text" id="newTechInput" class="form-control" placeholder="Add technology">
-                            <button id="addTechBtn" class="btn btn-outline">
-                                <i class="fas fa-plus"></i> Add
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-actions" style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                    <div>
-                        <button id="deleteProjectBtn" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> Delete Project
-                        </button>
-                    </div>
-                    <div style="display: flex; gap: 1rem;">
-                        <button id="cancelEditBtn" class="btn btn-outline">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                        <button id="saveProjectBtn" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
+    
 
     
     
@@ -1328,6 +1366,111 @@ kubectl get services         # List services</code></pre>
     </div>
 
 
+    
+
+<!-- Book Store Section -->
+
+<section id="book-store" class="section">
+    <div class="container">
+        <h2 class="section-title"><i class="fas fa-book"></i> My Digital Book Store</h2>
+        <div class="bookstore-settings">
+            <div class="background-selector">
+                <label for="background-image">Shelf Background:</label>
+                <select id="background-image" class="background-select">
+                    <option value="url('https://images.unsplash.com/photo-1600189261867-30e5ffe7b8da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')">Wooden Shelf</option>
+                    <option value="url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')">Library</option>
+                    <option value="url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')">Study Room</option>
+                    <option value="custom">Custom Image</option>
+                </select>
+                <input type="file" id="custom-background" accept="image/*" style="display: none;">
+            </div>
+        </div>
+        <div class="bookstore-container">
+            <!-- Bookshelf background with dynamic image -->
+            <div class="bookshelf" id="bookshelf-bg">
+                <!-- Illumination effect -->
+                <div class="bookshelf-light"></div>
+                
+                <!-- Book upload area -->
+                <div class="book-upload-area">
+                    <h3><i class="fas fa-cloud-upload-alt"></i> Share Your Knowledge</h3>
+                    <form id="book-upload-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="book-title">Book Title:</label>
+                            <input type="text" id="book-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="book-description">Description:</label>
+                            <textarea id="book-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="book-tags">Tags (comma separated):</label>
+                            <input type="text" id="book-tags" placeholder="devops, cloud, automation" required>
+                        </div>
+                        <div class="form-group file-upload-wrapper">
+                            <label for="book-file">Upload PDF or Word Document:</label>
+                            <div class="file-upload-container">
+                                <input type="file" id="book-file" accept=".pdf,.doc,.docx" required>
+                                <span id="file-name">No file chosen</span>
+                                <label for="book-file" class="file-upload-btn">Choose File</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload Book
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Book display area -->
+                <div class="book-display-area">
+                    <h3><i class="fas fa-book-open"></i> Available Books</h3>
+                    <div class="book-filters">
+                        <input type="text" id="book-search" placeholder="Search books...">
+                        <div class="tag-filters" id="tag-filters"></div>
+                    </div>
+                    <div class="books-grid" id="books-grid">
+                        <!-- Books will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Discussion area -->
+                <div class="book-discussion">
+                    <h3><i class="fas fa-comments"></i> Book Discussions</h3>
+                    <div class="discussion-threads" id="discussion-threads">
+                        <!-- Discussions will be dynamically inserted here -->
+                    </div>
+                    <form id="new-discussion-form">
+                        <div class="form-group">
+                            <label for="discussion-book">Select Book:</label>
+                            <select id="discussion-book" required>
+                                <!-- Will be populated with books -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="discussion-message">Your Message:</label>
+                            <textarea id="discussion-message" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Post Discussion
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+        
 
 
 

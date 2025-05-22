@@ -1,0 +1,7 @@
+tunnel: portfolio-app
+credentials-file: /home/melvin/.cloudflared/portfolio-app.json
+
+ingress:
+  - hostname: melvinsamuel070.xyz
+    service: http://localhost:3000
+  - service: http_status:404

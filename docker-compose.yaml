@@ -1,0 +1,18 @@
+# docker-compose.ym
+
+services:
+  portfolio-blue:
+    image: melvinsamuel070/thefolio:latest
+    container_name: portfolio-blue
+    ports:
+      - "1919:80"
+    restart: unless-stopped
+
+  portfolio-green:
+    image: melvinsamuel070/thefolio:latest
+    container_name: portfolio-green
+    ports:
+      - "3446:80"
+    restart: unless-stopped
+
+  
