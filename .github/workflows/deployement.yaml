@@ -90,7 +90,7 @@ jobs:
         run: |
           docker push melvinsamuel070/potfolio:${TAG}
 
-      - name: Save Docker image locally (for local deployment)
+      - name: Save Docker image locally (optional)
         run: |
           docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar
 
@@ -101,21 +101,12 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-           # Install Docker and Docker Compose if not already installed
-            if ! command -v docker &> /dev/null; then
-              sudo apt-get update
-              sudo apt-get install -y docker.io docker-compose
-              sudo systemctl start docker
-              sudo systemctl enable docker
-            fi
+            TAG=green
 
-            # Pull the latest image
+            echo "Pulling latest Docker image..."
             sudo docker pull melvinsamuel070/potfolio:${TAG}
 
-            # Get currently running color tag
             CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
-
-            # If already running desired version, do nothing
             if [ "$CURRENT" == "${TAG}" ]; then
               echo "Already running ${TAG}, no switch needed."
               exit 0
@@ -125,7 +116,7 @@ jobs:
             sudo docker stop portfolio || true
             sudo docker rm portfolio || true
 
-            echo "Running new container with tag ${TAG}..."
+            echo "Starting new container..."
             sudo docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:${TAG}
 
 
