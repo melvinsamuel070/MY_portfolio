@@ -43,14 +43,14 @@ jobs:
         run: |
           docker save melvinsamuel070/potfolio:green > portfolio_green.tar
 
-      - name: Upload image as artifact
-        uses: actions/upload-artifact@v3.1.3
-        with:
-          name: portfolio-image
-          path: portfolio_green.tar
+      # - name: Upload image as artifact
+      #   uses: actions/upload-artifact@v3.1.3
+      #   with:
+      #     name: portfolio-image
+      #     path: portfolio_green.tar
 
-      - name: Download image from artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: portfolio-image
-          path: .
+      # - name: Download image from artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: portfolio-image
+      #     path: .
