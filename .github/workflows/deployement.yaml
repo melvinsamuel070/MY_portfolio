@@ -56,6 +56,75 @@
 
 
 
+# name: Deploy Portfolio
+
+# on:
+#   push:
+#     branches:
+#       - master
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Set Docker image tag
+#         id: vars
+#         shell: bash
+#         run: echo "TAG=green" >> $GITHUB_ENV
+
+#       - name: Build Docker image
+#         run: |
+#           docker build -t melvinsamuel070/potfolio:${TAG} .
+
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Push Docker image to Docker Hub
+#         run: |
+#           docker push melvinsamuel070/potfolio:${TAG}
+
+#       - name: Save Docker image locally (optional)
+#         run: |
+#           docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar
+
+#       - name: Deploy to EC2 with Blue-Green strategy
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USERNAME }}
+#           key: ${{ secrets.EC2_KEY }}
+#           script: |
+#             TAG=green
+
+#             echo "Pulling latest Docker image..."
+#             sudo docker pull melvinsamuel070/potfolio:${TAG}
+
+#             CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
+#             if [ "$CURRENT" == "${TAG}" ]; then
+#               echo "Already running ${TAG}, no switch needed."
+#               exit 0
+#             fi
+
+#             echo "Stopping existing container..."
+#             sudo docker stop portfolio || true
+#             sudo docker rm portfolio || true
+
+#             echo "Starting new container..."
+#             sudo docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:${TAG}
+
+
+
+
+
+
+
 name: Deploy Portfolio
 
 on:
@@ -90,41 +159,37 @@ jobs:
         run: |
           docker push melvinsamuel070/potfolio:${TAG}
 
-      - name: Save Docker image locally (optional)
+      - name: Save Docker image as tar file (optional)
         run: |
           docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar
 
-      - name: Deploy to EC2 with Blue-Green strategy
+      - name: Deploy locally using blue-green via SSH
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
+          host: ${{ secrets.LOCAL_HOST }}
+          username: ${{ secrets.LOCAL_USER }}
+          key: ${{ secrets.LOCAL_KEY }}
           script: |
             TAG=green
+            ALT_TAG=blue
 
-            echo "Pulling latest Docker image..."
+            echo "Pulling new image..."
             sudo docker pull melvinsamuel070/potfolio:${TAG}
 
-            CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
-            if [ "$CURRENT" == "${TAG}" ]; then
-              echo "Already running ${TAG}, no switch needed."
-              exit 0
-            fi
+            echo "Starting new container on port 1919 (e.g. green)..."
+            sudo docker run -d --name portfolio-${TAG} -p 1919:80 melvinsamuel070/potfolio:${TAG}
 
-            echo "Stopping existing container..."
-            sudo docker stop portfolio || true
-            sudo docker rm portfolio || true
+            echo "Waiting for new container to be ready..."
+            sleep 10
 
-            echo "Starting new container..."
-            sudo docker run -d -p 1919:80 --name portfolio melvinsamuel070/potfolio:${TAG}
+            echo "Switching Nginx to route traffic to portfolio-${TAG}..."
+            sudo ln -sf /etc/nginx/sites-available/portfolio-${TAG}.conf /etc/nginx/sites-enabled/portfolio.conf
+            sudo nginx -s reload
 
+            echo "Removing old container if exists..."
+            sudo docker rm -f portfolio-${ALT_TAG} || true
 
-
-
-
-
-
+            echo "Blue-green deployment complete. Now live on ${TAG}."
 
 
 
@@ -136,7 +201,7 @@ jobs:
       #     path: portfolio_green.tar
 
       # - name: Download image from artifact
-      #   uses: actions/download-artifact@v3
+      #   uses: actions/download-artifact@v4
       #   with:
       #     name: portfolio-image
       #     path: .
