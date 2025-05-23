@@ -5170,7 +5170,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
 // Book Store Module with PDF display and animated advert - Fixed Version
 document.addEventListener('DOMContentLoaded', function() {
     const BookStore = (function() {
@@ -5226,6 +5225,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: ${config.advertPosition.top};
                 right: ${config.advertPosition.right};  
                 width: ${config.advertPosition.width};
+                max-width: 90%;
                 z-index: 1000;
                 background: white;
                 padding: 16px;
@@ -5244,7 +5244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: -10px;
                 right: 20px;
                 width: 120px;
-                height: 300px;
+                height: 200px;
                 background: #111;
                 border-radius: 15px;
                 border: 5px solid #333;
@@ -5254,6 +5254,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 overflow: hidden;
                 transition: all 0.5s ease;
             `;
+            
+            // Make phone smaller on mobile devices
+            const mediaQuery = window.matchMedia('(max-width: 768px)');
+            if (mediaQuery.matches) {
+                elements.phoneElement.style.width = '80px';
+                elements.phoneElement.style.height = '150px';
+                elements.phoneElement.style.right = '10px';
+                elements.advertContainer.style.width = '250px';
+            }
             
             // Phone screen showing book cover
             const phoneScreen = document.createElement('div');
@@ -5271,14 +5280,29 @@ document.addEventListener('DOMContentLoaded', function() {
             // Advert content
             elements.advertContainer.innerHTML = `
                 <div class="advert-content">
-                    <span class="close-ad">&times;</span>
-                    <h4 style="margin-top: 0; color: #2c3e50;">Premium Technical Resources</h4>
-                    <p style="color: #7f8c8d;">Check out our latest book now available in our store!</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                        <a href="#book-store" class="btn" style="background: #4CAF50; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 14px;">
+                    <span class="close-ad" style="
+                        position: absolute;
+                        top: 5px;
+                        right: 10px;
+                        font-size: 20px;
+                        cursor: pointer;
+                        color: #7f8c8d;
+                    ">&times;</span>
+                    <h4 style="margin-top: 0; color: #2c3e50; font-size: 16px;">Premium Technical Resources</h4>
+                    <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Check out our latest book now available in our store!</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <a href="#book-store" class="btn explore-now-btn" style="
+                            background: #4CAF50;
+                            color: white;
+                            padding: 8px 15px;
+                            border-radius: 4px;
+                            text-decoration: none;
+                            font-size: 14px;
+                            display: inline-block;
+                        ">
                             Explore Now
                         </a>
-                        <small style="color: #95a5a6;">Limited time offer</small>
+                        <small style="color: #95a5a6; font-size: 12px;">Limited time offer</small>
                     </div>
                 </div>
             `;
@@ -5296,14 +5320,59 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Clicking the "Explore Now" button scrolls to the book store
-            elements.advertContainer.querySelector('a').addEventListener('click', function(e) {
+            elements.advertContainer.querySelector('.explore-now-btn').addEventListener('click', function(e) {
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
             });
+            
+            // Make advert draggable on mobile
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            elements.advertContainer.onmousedown = dragMouseDown;
+            elements.advertContainer.ontouchstart = dragMouseDown;
+            
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // Get the mouse cursor position at startup
+                pos3 = e.clientX || e.touches[0].clientX;
+                pos4 = e.clientY || e.touches[0].clientY;
+                document.onmouseup = closeDragElement;
+                document.ontouchend = closeDragElement;
+                // call a function whenever the cursor moves
+                document.onmousemove = elementDrag;
+                document.ontouchmove = elementDrag;
+            }
+            
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position
+                pos1 = pos3 - (e.clientX || e.touches[0].clientX);
+                pos2 = pos4 - (e.clientY || e.touches[0].clientY);
+                pos3 = e.clientX || e.touches[0].clientX;
+                pos4 = e.clientY || e.touches[0].clientY;
+                // set the element's new position
+                elements.advertContainer.style.top = (elements.advertContainer.offsetTop - pos2) + "px";
+                elements.advertContainer.style.right = "auto";
+                elements.advertContainer.style.left = (elements.advertContainer.offsetLeft - pos1) + "px";
+                
+                // Move phone with the container
+                elements.phoneElement.style.top = (elements.advertContainer.offsetTop - 10) + "px";
+                elements.phoneElement.style.left = (elements.advertContainer.offsetLeft + elements.advertContainer.offsetWidth - 140) + "px";
+            }
+            
+            function closeDragElement() {
+                // stop moving when mouse button is released
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
         }
 
+        // Rest of the code remains exactly the same...
         // Animate the advert with phone waving
         function animateAdvert() {
             // Phone waving animation
