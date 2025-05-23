@@ -22,11 +22,22 @@ html = html.replace(/(<[a-z][^>]*?)(\s+[a-z-]+="[^"]*")+/g, (match, tagStart) =>
   return tagStart + Array.from(attributes.values()).join('');
 });
 
-// FIX 2: Escape the > character in the Jenkins command (more robust version)
-html = html.replace(
-  /(<code>[^<]*?echo 'deb https:\/\/pkg\.jenkins\.io\/debian-stable binary\/) > (\/etc\/apt\/sources\.list\.d\/jenkins\.list'[^<]*?<\/code>)/g,
-  '$1 &gt; $2'
-);
+// FIX 2: Guaranteed fix for Jenkins command escaping
+const jenkinsFix = () => {
+  const jenkinsCommand = `echo 'deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'`;
+  const fixedCommand = `echo 'deb https://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list'`;
+
+  if (html.includes(jenkinsCommand)) {
+    return html.split(jenkinsCommand).join(fixedCommand);
+  }
+  
+  // Fallback to regex if exact match not found
+  return html.replace(
+    /(echo 'deb https:\/\/pkg\.jenkins\.io\/debian-stable binary\/) > (\/etc\/apt\/sources\.list\.d\/jenkins\.list')/g,
+    '$1 &gt; $2'
+  );
+};
+html = jenkinsFix();
 
 // FIX 3: Clean up any remaining malformed tags
 html = html.replace(/<([a-z]+)([^>]*?)\/\s+([a-z-]+)=/g, '<$1$2 $3=');
@@ -79,6 +90,12 @@ const verify = () => {
   if (unescaped) {
     console.warn('⚠️ Unescaped > in code blocks:', unescaped.length);
     errors += unescaped.length;
+  }
+  
+  // Check Jenkins command specifically
+  if (html.includes(`> /etc/apt/sources.list.d/jenkins.list'`)) {
+    console.warn('⚠️ Jenkins command still contains unescaped >');
+    errors++;
   }
   
   // Check tag balance
