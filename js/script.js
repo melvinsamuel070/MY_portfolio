@@ -1662,7 +1662,7 @@ document.getElementById('addProject').addEventListener('click', function() {
     const newProject = {
         id: projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1,
         title: "New Project",
-        description: "Describe your project here...",
+        description: [],
         technologies: [],
         images: [],
         link: "https://github.com/melvinsamuel070"
@@ -2838,7 +2838,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
 // Tech Tutorials Management System with Container Support
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
@@ -2897,6 +2896,26 @@ document.addEventListener('DOMContentLoaded', function() {
         setupEventListeners();
         setupDragAndDrop();
         setupRichTextEditor();
+        updateAdminControls(); // Add this to handle admin state
+    }
+
+    // Update UI based on admin state
+    function updateAdminControls() {
+        if (isAdmin) {
+            // Show admin controls
+            addTutorialBtn.style.display = 'block';
+            uploadPdfBtn.style.display = 'block';
+            document.querySelectorAll('.btn-edit-tutorial, .btn-delete-tutorial, .btn-copy-tutorial').forEach(btn => {
+                btn.style.display = 'inline-block';
+            });
+        } else {
+            // Hide admin controls
+            addTutorialBtn.style.display = 'none';
+            uploadPdfBtn.style.display = 'none';
+            document.querySelectorAll('.btn-edit-tutorial, .btn-delete-tutorial, .btn-copy-tutorial').forEach(btn => {
+                btn.style.display = 'none';
+            });
+        }
     }
 
     // Check if we're in a containerized environment
@@ -3097,7 +3116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tutorialsContainer.innerHTML = `
                 <div class="no-tutorials-placeholder">
                     <i class="fas fa-book"></i>
-                    <p>No tutorials documented yet. Click "Add Tutorial" to get started.</p>
+                    <p>No tutorials documented yet. ${isAdmin ? 'Click "Add Tutorial" to get started.' : ''}</p>
                 </div>
             `;
             return;
@@ -3136,24 +3155,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const actions = document.createElement('div');
         actions.className = 'tutorial-actions';
         
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn-edit-tutorial';
-        editBtn.dataset.id = tutorial.id;
-        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-delete-tutorial';
-        deleteBtn.dataset.id = tutorial.id;
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-        
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'btn-copy-tutorial';
-        copyBtn.dataset.id = tutorial.id;
-        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
-        
-        actions.appendChild(editBtn);
-        actions.appendChild(deleteBtn);
-        actions.appendChild(copyBtn);
+        if (isAdmin) {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn-edit-tutorial';
+            editBtn.dataset.id = tutorial.id;
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn-delete-tutorial';
+            deleteBtn.dataset.id = tutorial.id;
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'btn-copy-tutorial';
+            copyBtn.dataset.id = tutorial.id;
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            actions.appendChild(copyBtn);
+        }
         
         header.appendChild(title);
         header.appendChild(actions);
@@ -3282,11 +3303,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupEventListeners() {
         // Add new tutorial button
         addTutorialBtn.addEventListener('click', () => {
+            if (!isAdmin) {
+                showMessage('Admin access required', 'error');
+                return;
+            }
             openTutorialEditor(null);
         });
         
         // Upload PDF button
         uploadPdfBtn.addEventListener('click', () => {
+            if (!isAdmin) {
+                showMessage('Admin access required', 'error');
+                return;
+            }
             pdfUpload.click();
         });
         
@@ -3297,12 +3326,20 @@ document.addEventListener('DOMContentLoaded', function() {
         tutorialsContainer.addEventListener('click', (e) => {
             // Edit tutorial
             if (e.target.closest('.btn-edit-tutorial')) {
+                if (!isAdmin) {
+                    showMessage('Admin access required', 'error');
+                    return;
+                }
                 const tutorialId = parseInt(e.target.closest('.btn-edit-tutorial').dataset.id);
                 openTutorialEditor(tutorialId);
             }
             
             // Delete tutorial
             if (e.target.closest('.btn-delete-tutorial')) {
+                if (!isAdmin) {
+                    showMessage('Admin access required', 'error');
+                    return;
+                }
                 const tutorialId = parseInt(e.target.closest('.btn-delete-tutorial').dataset.id);
                 if (confirm('Are you sure you want to delete this tutorial?')) {
                     deleteTutorial(tutorialId);
@@ -3311,6 +3348,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Copy tutorial
             if (e.target.closest('.btn-copy-tutorial')) {
+                if (!isAdmin) {
+                    showMessage('Admin access required', 'error');
+                    return;
+                }
                 const tutorialId = parseInt(e.target.closest('.btn-copy-tutorial').dataset.id);
                 copyTutorial(tutorialId);
             }
@@ -3324,11 +3365,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // PDF upload container
         pdfUploadContainer.addEventListener('click', () => {
+            if (!isAdmin) return;
             pdfFileUpload.click();
         });
         
         // PDF file upload in modal
         pdfFileUpload.addEventListener('change', (e) => {
+            if (!isAdmin) return;
             if (e.target.files.length > 0) {
                 pdfFile = e.target.files[0];
                 showPdfPreview(pdfFile.name);
@@ -3337,6 +3380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove PDF button
         removePdfBtn.addEventListener('click', () => {
+            if (!isAdmin) return;
             pdfFile = null;
             pdfFileUpload.value = '';
             hidePdfPreview();
@@ -3344,11 +3388,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Word upload container
         wordUploadContainer.addEventListener('click', () => {
+            if (!isAdmin) return;
             wordFileUpload.click();
         });
         
         // Word file upload in modal
         wordFileUpload.addEventListener('change', (e) => {
+            if (!isAdmin) return;
             if (e.target.files.length > 0) {
                 wordFile = e.target.files[0];
                 showWordPreview(wordFile.name);
@@ -3357,6 +3403,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove Word button
         removeWordBtn.addEventListener('click', () => {
+            if (!isAdmin) return;
             wordFile = null;
             wordFileUpload.value = '';
             hideWordPreview();
@@ -3364,11 +3411,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Video upload container
         videoUploadContainer.addEventListener('click', () => {
+            if (!isAdmin) return;
             videoFileUpload.click();
         });
         
         // Video file upload in modal
         videoFileUpload.addEventListener('change', (e) => {
+            if (!isAdmin) return;
             if (e.target.files.length > 0) {
                 videoFile = e.target.files[0];
                 showVideoPreview(videoFile);
@@ -3377,6 +3426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove Video button
         removeVideoBtn.addEventListener('click', () => {
+            if (!isAdmin) return;
             videoFile = null;
             videoFileUpload.value = '';
             hideVideoPreview();
@@ -3384,6 +3434,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add section button
         addSectionBtn.addEventListener('click', () => {
+            if (!isAdmin) return;
             openSectionEditor(null);
         });
         
@@ -3395,6 +3446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Delete tutorial button
         deleteTutorialBtn.addEventListener('click', () => {
+            if (!isAdmin) return;
             if (currentTutorialId && confirm('Are you sure you want to delete this tutorial?')) {
                 deleteTutorial(currentTutorialId);
                 closeTutorialEditor();
@@ -3440,6 +3492,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         toolbarButtons.forEach(button => {
             button.addEventListener('click', function() {
+                if (!isAdmin) return;
+                
                 const command = this.dataset.command;
                 
                 if (command === 'createLink' || command === 'insertImage') {
@@ -3498,6 +3552,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         function highlight() {
+            if (!isAdmin) return;
             pdfContainer.style.backgroundColor = '#f0f8ff';
         }
         
@@ -3508,6 +3563,8 @@ document.addEventListener('DOMContentLoaded', function() {
         pdfContainer.addEventListener('drop', handlePdfDrop, false);
         
         function handlePdfDrop(e) {
+            if (!isAdmin) return;
+            
             const dt = e.dataTransfer;
             const files = dt.files;
             
@@ -3531,6 +3588,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         ['dragenter', 'dragover'].forEach(eventName => {
             wordContainer.addEventListener(eventName, () => {
+                if (!isAdmin) return;
                 wordContainer.style.backgroundColor = '#f0f8ff';
             }, false);
         });
@@ -3544,6 +3602,8 @@ document.addEventListener('DOMContentLoaded', function() {
         wordContainer.addEventListener('drop', handleWordDrop, false);
         
         function handleWordDrop(e) {
+            if (!isAdmin) return;
+            
             const dt = e.dataTransfer;
             const files = dt.files;
             
@@ -3568,6 +3628,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         ['dragenter', 'dragover'].forEach(eventName => {
             videoContainer.addEventListener(eventName, () => {
+                if (!isAdmin) return;
                 videoContainer.style.backgroundColor = '#f0f8ff';
             }, false);
         });
@@ -3581,6 +3642,8 @@ document.addEventListener('DOMContentLoaded', function() {
         videoContainer.addEventListener('drop', handleVideoDrop, false);
         
         function handleVideoDrop(e) {
+            if (!isAdmin) return;
+            
             const dt = e.dataTransfer;
             const files = dt.files;
             
@@ -3598,6 +3661,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Open tutorial editor
     function openTutorialEditor(tutorialId) {
+        if (!isAdmin) {
+            showMessage('Admin access required', 'error');
+            return;
+        }
+        
         currentTutorialId = tutorialId;
         isEditing = tutorialId !== null;
         
@@ -3671,6 +3739,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Open section editor
     function openSectionEditor(sectionIndex) {
+        if (!isAdmin) return;
+        
         currentSectionIndex = sectionIndex;
         
         if (sectionIndex !== null) {
@@ -3811,6 +3881,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Save tutorial
     function saveTutorial() {
+        if (!isAdmin) {
+            showMessage('Admin access required', 'error');
+            return;
+        }
+        
         const title = tutorialTitleInput.value.trim();
         const date = tutorialDateInput.value;
         
@@ -3909,6 +3984,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Save section
     function saveSection() {
+        if (!isAdmin) {
+            showMessage('Admin access required', 'error');
+            return;
+        }
+        
         const title = sectionTitleInput.value.trim();
         const content = sectionContentInput.value.trim();
         
@@ -3935,6 +4015,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Delete tutorial
     function deleteTutorial(tutorialId) {
+        if (!isAdmin) {
+            showMessage('Admin access required', 'error');
+            return;
+        }
+        
         tutorials = tutorials.filter(t => t.id !== tutorialId);
         saveTutorialsToStorage();
         renderTutorials();
@@ -3943,6 +4028,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Copy tutorial
     function copyTutorial(tutorialId) {
+        if (!isAdmin) {
+            showMessage('Admin access required', 'error');
+            return;
+        }
+        
         const tutorial = tutorials.find(t => t.id === tutorialId);
         if (tutorial) {
             const newId = tutorials.length > 0 ? Math.max(...tutorials.map(t => t.id)) + 1 : 1;
@@ -3961,6 +4051,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle PDF upload
     function handlePdfUpload(e) {
+        if (!isAdmin) return;
+        
         if (e.target.files.length > 0) {
             const file = e.target.files[0];
             if (file.type === 'application/pdf') {
@@ -4022,8 +4114,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
+// project section
 
 document.addEventListener('DOMContentLoaded', function() {
     // Projects data storage
@@ -4185,7 +4276,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'proj-1',
                 title: 'Containerized Web Application',
                 description: 'A modern web application deployed using Docker containers with CI/CD pipeline',
-                link: 'https://github.com/example/containerized-webapp',
+                link: 'https://github.com/melvinsamuel070',
                 images: [
                     {
                         src: 'https://via.placeholder.com/800x600?text=Architecture+Diagram',
@@ -4801,6 +4892,11 @@ document.addEventListener('DOMContentLoaded', function() {
             viewButton.innerHTML = '<i class="fas fa-eye"></i> View Details';
             viewButton.addEventListener('click', () => viewProjectDetails(project.id));
             
+
+
+
+            
+
             const editButton = document.createElement('button');
             editButton.className = 'btn btn-outline edit-project';
             editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
@@ -4813,6 +4909,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 editProject(project.id);
             });
             
+
+
+
+
             const deleteButton = document.createElement('button');
             deleteButton.className = 'btn btn-outline-danger delete-project';
             deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
@@ -5168,8 +5268,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
 // Book Store Module with PDF display and animated advert - Fixed Version
 document.addEventListener('DOMContentLoaded', function() {
     const BookStore = (function() {
@@ -5213,6 +5311,24 @@ document.addEventListener('DOMContentLoaded', function() {
             setupBookshelf();
             loadBooks();
             setupEventListeners();
+            updateAdminFeatures(); // Check admin status on init
+        }
+
+        // Update admin features based on current admin status
+        function updateAdminFeatures() {
+            if (isAdmin) {
+                // Show upload form and admin controls
+                elements.bookUploadForm.style.display = 'block';
+                document.querySelectorAll('.delete-book').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+            } else {
+                // Hide upload form and admin controls
+                elements.bookUploadForm.style.display = 'none';
+                document.querySelectorAll('.delete-book').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            }
         }
 
         // Create animated advert with phone showing book cover
@@ -5255,15 +5371,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 transition: all 0.5s ease;
             `;
             
-            // Make phone smaller on mobile devices
-            const mediaQuery = window.matchMedia('(max-width: 768px)');
-            if (mediaQuery.matches) {
-                elements.phoneElement.style.width = '80px';
-                elements.phoneElement.style.height = '150px';
-                elements.phoneElement.style.right = '10px';
-                elements.advertContainer.style.width = '250px';
-            }
-            
             // Phone screen showing book cover
             const phoneScreen = document.createElement('div');
             phoneScreen.className = 'phone-screen';
@@ -5280,26 +5387,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Advert content
             elements.advertContainer.innerHTML = `
                 <div class="advert-content">
-                    <span class="close-ad" style="
-                        position: absolute;
-                        top: 5px;
-                        right: 10px;
-                        font-size: 20px;
-                        cursor: pointer;
-                        color: #7f8c8d;
-                    ">&times;</span>
+                    <span class="close-ad">&times;</span>
                     <h4 style="margin-top: 0; color: #2c3e50; font-size: 16px;">Premium Technical Resources</h4>
-                    <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 15px;">Check out our latest book now available in our store!</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <a href="#book-store" class="btn explore-now-btn" style="
-                            background: #4CAF50;
-                            color: white;
-                            padding: 8px 15px;
-                            border-radius: 4px;
-                            text-decoration: none;
-                            font-size: 14px;
-                            display: inline-block;
-                        ">
+                    <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 40px;">Check out our latest book now available in our store!</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <a href="#book-store" class="btn" style="background: #4CAF50; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 14px;">
                             Explore Now
                         </a>
                         <small style="color: #95a5a6; font-size: 12px;">Limited time offer</small>
@@ -5308,7 +5400,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             
             document.body.appendChild(elements.phoneElement);
-            document.body.appendChild(elements.advertContainer);
             
             // Start animation
             animateAdvert();
@@ -5320,59 +5411,37 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Clicking the "Explore Now" button scrolls to the book store
-            elements.advertContainer.querySelector('.explore-now-btn').addEventListener('click', function(e) {
+            elements.advertContainer.querySelector('a').addEventListener('click', function(e) {
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
             });
-            
-            // Make advert draggable on mobile
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            elements.advertContainer.onmousedown = dragMouseDown;
-            elements.advertContainer.ontouchstart = dragMouseDown;
-            
-            function dragMouseDown(e) {
-                e = e || window.event;
-                e.preventDefault();
-                // Get the mouse cursor position at startup
-                pos3 = e.clientX || e.touches[0].clientX;
-                pos4 = e.clientY || e.touches[0].clientY;
-                document.onmouseup = closeDragElement;
-                document.ontouchend = closeDragElement;
-                // call a function whenever the cursor moves
-                document.onmousemove = elementDrag;
-                document.ontouchmove = elementDrag;
+
+            // Make responsive for mobile
+            function handleResize() {
+                if (window.innerWidth <= 768) {
+                    elements.advertContainer.style.width = '250px';
+                    elements.advertContainer.style.right = '5px';
+                    elements.phoneElement.style.width = '80px';
+                    elements.phoneElement.style.height = '160px';
+                    elements.phoneElement.style.right = '10px';
+                } else {
+                    elements.advertContainer.style.width = config.advertPosition.width;
+                    elements.advertContainer.style.right = config.advertPosition.right;
+                    elements.phoneElement.style.width = '120px';
+                    elements.phoneElement.style.height = '200px';
+                    elements.phoneElement.style.right = '20px';
+                }
             }
+
+            // Initial resize check
+            handleResize();
             
-            function elementDrag(e) {
-                e = e || window.event;
-                e.preventDefault();
-                // calculate the new cursor position
-                pos1 = pos3 - (e.clientX || e.touches[0].clientX);
-                pos2 = pos4 - (e.clientY || e.touches[0].clientY);
-                pos3 = e.clientX || e.touches[0].clientX;
-                pos4 = e.clientY || e.touches[0].clientY;
-                // set the element's new position
-                elements.advertContainer.style.top = (elements.advertContainer.offsetTop - pos2) + "px";
-                elements.advertContainer.style.right = "auto";
-                elements.advertContainer.style.left = (elements.advertContainer.offsetLeft - pos1) + "px";
-                
-                // Move phone with the container
-                elements.phoneElement.style.top = (elements.advertContainer.offsetTop - 10) + "px";
-                elements.phoneElement.style.left = (elements.advertContainer.offsetLeft + elements.advertContainer.offsetWidth - 140) + "px";
-            }
-            
-            function closeDragElement() {
-                // stop moving when mouse button is released
-                document.onmouseup = null;
-                document.onmousemove = null;
-                document.ontouchend = null;
-                document.ontouchmove = null;
-            }
+            // Add resize listener
+            window.addEventListener('resize', handleResize);
         }
 
-        // Rest of the code remains exactly the same...
         // Animate the advert with phone waving
         function animateAdvert() {
             // Phone waving animation
@@ -5532,6 +5601,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Form submission
             elements.bookUploadForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                if (!isAdmin) {
+                    showMessage('Admin access required', 'error');
+                    return;
+                }
                 await uploadBook();
             });
 
@@ -5543,6 +5616,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Upload a new book
         async function uploadBook() {
+            if (!isAdmin) {
+                showMessage('Admin access required', 'error');
+                return;
+            }
+
             const title = document.getElementById('book-title').value.trim();
             const description = document.getElementById('book-description').value.trim();
             const tags = document.getElementById('book-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
@@ -5676,7 +5754,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button class="btn download-book" data-id="${book.id}">
                                 <i class="fas fa-download"></i> Download
                             </button>
-                            <button class="btn btn-danger delete-book" data-id="${book.id}">
+                            <button class="btn btn-danger delete-book" data-id="${book.id}" style="display: ${isAdmin ? 'inline-block' : 'none'}">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
@@ -5805,6 +5883,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 cursor: pointer;
                                 font-size: 14px;
                                 margin-left: 10px;
+                                display: ${isAdmin ? 'inline-block' : 'none'}
                             ">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
@@ -5912,6 +5991,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Delete book
         function deleteBook(bookId) {
+            if (!isAdmin) {
+                showMessage('Admin access required', 'error');
+                return;
+            }
+
             if (confirm('Are you sure you want to delete this book?')) {
                 // Remove from books array
                 books = books.filter(book => book.id !== bookId);
@@ -5979,10 +6063,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Public API
         return {
-            init: init
+            init: init,
+            updateAdminFeatures: updateAdminFeatures
         };
     })();
 
     // Initialize the book store
     BookStore.init();
+
+    // Update book store admin features when admin status changes
+    function activateAdminFeatures() {
+        // ... existing code ...
+        BookStore.updateAdminFeatures();
+    }
+
+    function deactivateAdminFeatures() {
+        // ... existing code ...
+        BookStore.updateAdminFeatures();
+    }
 });
