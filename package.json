@@ -9,5 +9,9 @@
     "no-console": "off",
     "semi": ["error", "always"],
     "quotes": ["error", "single"]
+  }, "name": "html-fixer",
+  "version": "1.0.0",
+  "dependencies": {
+    "glob": "^10.2.7"
   }
 }
