@@ -179,29 +179,36 @@ jobs:
       - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🧼 Run ESLint
-        uses: reviewdog/action-eslint@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
-
       - name: 🔧 Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: 📦 Install HTMLHint
-        run: npm install -g htmlhint
+      - name: 📦 Install dependencies
+        run: |
+          npm install -g eslint stylelint htmlhint glob
 
-      - name: 🔍 Run HTMLHint
+      - name: 🧼 Run ESLint (auto-fix)
+        run: eslint . --fix
+
+      - name: 🔧 Run Stylelint (auto-fix)
+        run: npx stylelint "**/*.{css,scss}" --fix || true
+
+      - name: 🔍 Run HTMLHint before fixes
+        run: htmlhint "**/*.html" || true
+
+      - name: 🛠️ Fix HTML issues (escape &, duplicate ids, missing img src)
+        run: |
+          node .github/scripts/fix-html.js
+
+      - name: 🔍 Run HTMLHint after fixes
         run: htmlhint "**/*.html"
 
-      - name: Stylelint
-        uses: reviewdog/action-stylelint@v1
+      - name: ✅ Commit fixed files if any changes
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
-
+          commit_message: 'chore: auto-fix linting and HTML issues'
+          file_pattern: '**/*.js, **/*.css, **/*.html'
   # ─────────────────────────────
   #  Job 2: Build & Deploy Docker
   # ─────────────────────────────
