@@ -8,50 +8,41 @@ let html = fs.readFileSync(filePath, 'utf8');
 fs.writeFileSync(filePath + '.backup', html);
 console.log('Created backup as ' + filePath + '.backup');
 
-// FIX 1: Escape the > character in the Jenkins command (very specific replacement)
+// FIX 1: Remove ALL duplicate src attributes
+html = html.replace(/(<img[^>]*?)(\s+src="[^"]*")+/g, (match, tagStart) => {
+  // Keep only the first src attribute
+  const firstSrc = match.match(/\s+src="[^"]*"/);
+  return tagStart + (firstSrc ? firstSrc[0] : '');
+});
+
+// FIX 2: Remove duplicate src attributes from non-img elements
+html = html.replace(/(<[a-z][^>]*?)(\s+src="[^"]*")+/g, (match, tagStart) => {
+  // Keep only the first src attribute
+  const firstSrc = match.match(/\s+src="[^"]*"/);
+  return tagStart + (firstSrc ? firstSrc[0] : '');
+});
+
+// FIX 3: Escape the > character in the Jenkins command
 html = html.replace(
   /(echo 'deb https:\/\/pkg\.jenkins\.io\/debian-stable binary\/) > (\/etc\/apt\/sources\.list\.d\/jenkins\.list')/g,
   '$1 &gt; $2'
 );
 
-// FIX 2: Fix the section closing structure
-const sectionStart = html.indexOf('<section id="about">');
-const bodyClose = html.indexOf('</body>');
-
-if (sectionStart !== -1 && bodyClose !== -1) {
-  // Check if there's already a closing section tag
-  const sectionClose = html.indexOf('</section>', sectionStart);
-  
-  if (sectionClose === -1 || sectionClose > bodyClose) {
-    // Remove any existing misplaced </section> before </body>
-    html = html.replace(/<\/section>\s*<\/body>/, '</body>');
-    
-    // Add proper closing tags right before </body>
-    const sectionContent = html.substring(sectionStart, bodyClose);
-    const openDivs = (sectionContent.match(/<div[^>]*>/g) || []).length;
-    const closedDivs = (sectionContent.match(/<\/div>/g) || []).length;
-    const missingDivCloses = openDivs - closedDivs;
-    
-    let closingTags = '';
-    for (let i = 0; i < missingDivCloses; i++) {
-      closingTags += '</div>';
-    }
-    closingTags += '</section>';
-    
-    html = html.slice(0, bodyClose) + closingTags + html.slice(bodyClose);
-    console.log('Fixed section and div closing structure');
-  }
-}
+// FIX 4: Clean up any remaining malformed tags
+html = html.replace(/<([a-z]+)([^>]*?)\/\s+([a-z-]+)=/g, '<$1$2 $3=');
 
 // Write the fixed file
 fs.writeFileSync(filePath, html);
-console.log('Applied fixes to ' + filePath);
+console.log('All duplicate src attributes and special character issues fixed');
 
 // Verification
+const remainingDuplicates = html.match(/<[^>]*?\s+src="[^"]*"\s+src="[^"]*"[^>]*>/g);
+if (remainingDuplicates) {
+  console.warn('Warning: Found some remaining duplicate src attributes:');
+  console.warn(remainingDuplicates);
+} else {
+  console.log('Verification: No duplicate src attributes found');
+}
+
 const jenkinsCheck = html.includes("echo 'deb https://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list'");
 console.log(jenkinsCheck ? '✓ Jenkins command fixed' : '✗ Jenkins command still needs fixing');
-
-const sectionCheck = html.indexOf('<section id="about">') !== -1 && 
-                    html.indexOf('</section>') !== -1 &&
-                    html.indexOf('</section>') < html.indexOf('</body>');
-console.log(sectionCheck ? '✓ Section properly closed' : '✗ Section closing still needs work');
