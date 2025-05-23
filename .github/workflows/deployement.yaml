@@ -188,6 +188,9 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install glob
 
+      - name: Fix duplicate src attributes in HTML
+        run: node fix-duplicate-src.js
+
 
       - name: 📦 Install dependencies
         run: |
