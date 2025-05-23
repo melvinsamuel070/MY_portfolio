@@ -1,53 +1,45 @@
 const fs = require('fs');
+const filePath = './index.html';
 
-const filePath = './index.html';  // Adjust path if needed
-
+// Read the file
 let html = fs.readFileSync(filePath, 'utf8');
 
-// This regex finds img tags with duplicate src attributes and removes the duplicates.
-// It keeps the first `src="..."` and removes any subsequent ones in the same tag.
+// Create backup
+fs.writeFileSync(filePath + '.backup', html);
+console.log('Created backup as ' + filePath + '.backup');
 
-html = html.replace(/(<img\b[^>]*?)\s+src="[^"]*"\s+src="[^"]*"/g, (match, p1) => {
-  // match example: <img class="x" src="a.png" src="b.png"
-  // Keep only the first src attribute found, which is before the second src.
-  // So we remove the second src attribute entirely.
-
-  // More robust approach:
-  // Extract first src, ignore second.
-  // Use a capturing group on the first src:
-
-  const firstSrcMatch = match.match(/src="[^"]*"/);
-  if (!firstSrcMatch) return match;  // no src found (unlikely)
+// FIX 1: Remove ALL duplicate attributes (not just src)
+html = html.replace(/(<[a-z][^>]*?)(\s+[a-z-]+="[^"]*")+/g, (match, tagStart) => {
+  const attributes = new Map();
+  const attrMatches = match.matchAll(/\s+([a-z-]+)="([^"]*)"/g);
   
-  // Remove all src attributes and put back only the first one
-  const cleaned = p1.replace(/\s+src="[^"]*"/g, '') + ' ' + firstSrcMatch[0];
-
-  return cleaned;
+  for (const attr of attrMatches) {
+    if (!attributes.has(attr[1])) {
+      attributes.set(attr[1], attr[0]);
+    }
+  }
+  
+  return tagStart + Array.from(attributes.values()).join('');
 });
 
-// Also, for more duplicates (more than two src attrs), remove all after the first one:
-html = html.replace(/(<img\b[^>]*?)((\s+src="[^"]*")+)/g, (match, p1, srcGroup) => {
-  const firstSrc = srcGroup.match(/src="[^"]*"/);
-  if (!firstSrc) return match;
-  // Remove all src attributes from p1 and add back the first one
-  const noSrc = p1.replace(/\s+src="[^"]*"/g, '');
-  return noSrc + ' ' + firstSrc[0];
-});
+// FIX 2: Escape the > character in the Jenkins command
+html = html.replace(
+  /(echo 'deb https:\/\/pkg\.jenkins\.io\/debian-stable binary\/) > (\/etc\/apt\/sources\.list\.d\/jenkins\.list')/g,
+  '$1 &gt; $2'
+);
 
-// *** START OF ADDED UPDATES ***
+// FIX 3: Clean up any remaining malformed tags
+html = html.replace(/<([a-z]+)([^>]*?)\/\s+([a-z-]+)=/g, '<$1$2 $3=');
 
-// Fix malformed <img> tags with misplaced slash before src like: <img ... / src="...">
-html = html.replace(/<img([^>]*?)\/\s+src=/g, '<img$1 src=');
-
-// Escape literal < and > characters inside tags (if any appear literally)
-html = html.replace(/<\s*\//g, '&lt;/').replace(/>\s*>/g, '&gt;>');
-
-// *** END OF ADDED UPDATES ***
-
+// Write the fixed file
 fs.writeFileSync(filePath, html);
-console.log('Duplicate src attributes removed from ' + filePath);
+console.log('All validation errors should now be fixed in ' + filePath);
 
-
-
-
-
+// Verification
+const remainingDuplicates = html.match(/<[^>]*?\s+([a-z-]+)="[^"]*"\s+\1="[^"]*"[^>]*>/g);
+if (remainingDuplicates) {
+  console.warn('Warning: Found some remaining duplicates:');
+  console.warn(remainingDuplicates);
+} else {
+  console.log('Verification: No duplicate attributes found');
+}
