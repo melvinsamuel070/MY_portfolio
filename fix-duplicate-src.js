@@ -8,11 +8,18 @@ let html = fs.readFileSync(filePath, 'utf8');
 fs.writeFileSync(filePath + '.backup', html);
 console.log('Created backup as ' + filePath + '.backup');
 
-// FIX 1: Remove all duplicate src attributes
-html = html.replace(/(<img[^>]*?)(\s+src="[^"]*")+/g, (match, tagStart) => {
-  // Keep only the first src attribute
-  const firstSrc = match.match(/\s+src="[^"]*"/);
-  return tagStart + (firstSrc ? firstSrc[0] : '');
+// FIX 1: Remove ALL duplicate attributes (not just src)
+html = html.replace(/(<[a-z][^>]*?)(\s+[a-z-]+="[^"]*")+/g, (match, tagStart) => {
+  const attributes = new Map();
+  const attrMatches = match.matchAll(/\s+([a-z-]+)="([^"]*)"/g);
+  
+  for (const attr of attrMatches) {
+    if (!attributes.has(attr[1])) {
+      attributes.set(attr[1], attr[0]);
+    }
+  }
+  
+  return tagStart + Array.from(attributes.values()).join('');
 });
 
 // FIX 2: Escape the > character in the Jenkins command
@@ -21,34 +28,18 @@ html = html.replace(
   '$1 &gt; $2'
 );
 
-// FIX 3: Properly close the about section and fix body closing
-const aboutSectionStart = html.indexOf('<section id="about">');
-const bodyClose = html.indexOf('</body>');
-
-if (aboutSectionStart !== -1 && bodyClose !== -1) {
-  // Check if section is already closed
-  const sectionClose = html.indexOf('</section>', aboutSectionStart);
-  
-  if (sectionClose === -1 || sectionClose > bodyClose) {
-    // Find all unclosed divs within the section
-    const sectionContent = html.substring(aboutSectionStart, bodyClose);
-    const openDivs = (sectionContent.match(/<div[^>]*>/g) || []).length;
-    const closedDivs = (sectionContent.match(/<\/div>/g) || []).length;
-    const missingDivCloses = openDivs - closedDivs;
-    
-    // Build proper closing structure
-    let closingTags = '';
-    for (let i = 0; i < missingDivCloses; i++) {
-      closingTags += '</div>';
-    }
-    closingTags += '</section>';
-    
-    // Insert before </body>
-    html = html.slice(0, bodyClose) + closingTags + html.slice(bodyClose);
-    console.log('Fixed section and div closing tags');
-  }
-}
+// FIX 3: Clean up any remaining malformed tags
+html = html.replace(/<([a-z]+)([^>]*?)\/\s+([a-z-]+)=/g, '<$1$2 $3=');
 
 // Write the fixed file
 fs.writeFileSync(filePath, html);
-console.log('All validation errors fixed in ' + filePath);
+console.log('All validation errors should now be fixed in ' + filePath);
+
+// Verification
+const remainingDuplicates = html.match(/<[^>]*?\s+([a-z-]+)="[^"]*"\s+\1="[^"]*"[^>]*>/g);
+if (remainingDuplicates) {
+  console.warn('Warning: Found some remaining duplicates:');
+  console.warn(remainingDuplicates);
+} else {
+  console.log('Verification: No duplicate attributes found');
+}
