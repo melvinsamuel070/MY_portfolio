@@ -5,42 +5,42 @@ document.getElementById('current-year').textContent = new Date().getFullYear();
 let projects = [
     {
         id: 1,
-        title: "AWS ECS Cluster Automation",
-        description: "Automated deployment of containerized applications using AWS ECS with CI/CD pipeline integration. Implemented blue-green deployments with AWS CodeDeploy, automated scaling policies based on CloudWatch metrics, and integrated with AWS Secrets Manager for secure credential management.",
-        technologies: ["AWS ECS", "Docker", "Terraform", "GitHub Actions", "AWS CodePipeline", "AWS CodeBuild"],
+        title: 'AWS ECS Cluster Automation',
+        description: 'Automated deployment of containerized applications using AWS ECS with CI/CD pipeline integration. Implemented blue-green deployments with AWS CodeDeploy, automated scaling policies based on CloudWatch metrics, and integrated with AWS Secrets Manager for secure credential management.',
+        technologies: ['AWS ECS', 'Docker', 'Terraform', 'GitHub Actions', 'AWS CodePipeline', 'AWS CodeBuild'],
         images: [
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=ECS+Cluster",
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=CI/CD+Pipeline",
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Deployment+Strategy"
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=ECS+Cluster',
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=CI/CD+Pipeline',
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Deployment+Strategy'
         ],
-        link: "#",
-        github: "#"
+        link: '#',
+        github: '#'
     },
     {
         id: 2,
-        title: "Serverless API with Lambda",
-        description: "Built a scalable serverless API using AWS Lambda, API Gateway, and DynamoDB with proper authentication. Implemented JWT authentication with Amazon Cognito, request validation, rate limiting, and caching at the API Gateway level. Used AWS X-Ray for distributed tracing and performance monitoring.",
-        technologies: ["AWS Lambda", "API Gateway", "DynamoDB", "Node.js", "Amazon Cognito", "AWS X-Ray"],
+        title: 'Serverless API with Lambda',
+        description: 'Built a scalable serverless API using AWS Lambda, API Gateway, and DynamoDB with proper authentication. Implemented JWT authentication with Amazon Cognito, request validation, rate limiting, and caching at the API Gateway level. Used AWS X-Ray for distributed tracing and performance monitoring.',
+        technologies: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'Node.js', 'Amazon Cognito', 'AWS X-Ray'],
         images: [
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Lambda+Architecture",
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=API+Design",
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Performance+Metrics"
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Lambda+Architecture',
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=API+Design',
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Performance+Metrics'
         ],
-        link: "#",
-        github: "#"
+        link: '#',
+        github: '#'
     },
     {
         id: 3,
-        title: "Terraform Multi-Account Setup",
-        description: "Implemented secure multi-account AWS environment with IAM roles, SCPs, and centralized logging using Terraform. Created a landing zone with AWS Organizations, implemented cross-account access with IAM roles, and centralized logging with CloudTrail and Config across all accounts.",
-        technologies: ["AWS Organizations", "IAM", "CloudTrail", "AWS Config", "Terraform", "SCPs"],
+        title: 'Terraform Multi-Account Setup',
+        description: 'Implemented secure multi-account AWS environment with IAM roles, SCPs, and centralized logging using Terraform. Created a landing zone with AWS Organizations, implemented cross-account access with IAM roles, and centralized logging with CloudTrail and Config across all accounts.',
+        technologies: ['AWS Organizations', 'IAM', 'CloudTrail', 'AWS Config', 'Terraform', 'SCPs'],
         images: [
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Account+Structure",
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Security+Controls",
-            "https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Terraform+Code"
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Account+Structure',
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Security+Controls',
+            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Terraform+Code'
         ],
-        link: "#",
-        github: "#"
+        link: '#',
+        github: '#'
     }
 ];
 
@@ -48,32 +48,32 @@ let projects = [
 let errors = [
     {
         id: 1,
-        title: "ECS Task Failing to Start",
-        date: "2023-07-15",
-        description: "Tasks in my ECS cluster were failing to start with the error: 'CannotPullContainerError: Error response from daemon: pull access denied'. The containers couldn't be pulled from ECR.",
-        solution: "Created an IAM role with proper permissions for the ECS task execution role. Added AmazonEC2ContainerRegistryReadOnly policy and verified the ECR repository permissions. Also checked the task definition to ensure the correct image URI was specified.",
+        title: 'ECS Task Failing to Start',
+        date: '2023-07-15',
+        description: 'Tasks in my ECS cluster were failing to start with the error: \'CannotPullContainerError: Error response from daemon: pull access denied\'. The containers couldn\'t be pulled from ECR.',
+        solution: 'Created an IAM role with proper permissions for the ECS task execution role. Added AmazonEC2ContainerRegistryReadOnly policy and verified the ECR repository permissions. Also checked the task definition to ensure the correct image URI was specified.',
         images: [
-            "https://via.placeholder.com/800x500/f44336/FFFFFF?text=ECS+Error"
+            'https://via.placeholder.com/800x500/f44336/FFFFFF?text=ECS+Error'
         ]
     },
     {
         id: 2,
-        title: "Terraform State Lock Issue",
-        date: "2023-09-22",
-        description: "Terraform operations were failing with the error: 'Error acquiring the state lock: ConditionalCheckFailedException'. The state was locked by another process that had terminated unexpectedly.",
-        solution: "Used the AWS console to manually remove the lock item from the DynamoDB table. Implemented proper error handling in CI/CD pipelines to ensure locks are always released. Added timeout configurations for state locking operations.",
+        title: 'Terraform State Lock Issue',
+        date: '2023-09-22',
+        description: 'Terraform operations were failing with the error: \'Error acquiring the state lock: ConditionalCheckFailedException\'. The state was locked by another process that had terminated unexpectedly.',
+        solution: 'Used the AWS console to manually remove the lock item from the DynamoDB table. Implemented proper error handling in CI/CD pipelines to ensure locks are always released. Added timeout configurations for state locking operations.',
         images: [
-            "https://via.placeholder.com/800x500/f44336/FFFFFF?text=Terraform+Lock"
+            'https://via.placeholder.com/800x500/f44336/FFFFFF?text=Terraform+Lock'
         ]
     },
     {
         id: 3,
-        title: "Lambda Cold Start Timeout",
-        date: "2023-11-05",
-        description: "Lambda functions were timing out during cold starts when connecting to RDS, despite working fine after initialization. The 3-second default timeout was too short for the VPC-connected Lambda.",
-        solution: "Increased the timeout to 30 seconds for VPC-connected Lambdas. Implemented provisioned concurrency to keep functions warm. Optimized the initialization code to reduce cold start time. Added proper error handling and retries for database connections.",
+        title: 'Lambda Cold Start Timeout',
+        date: '2023-11-05',
+        description: 'Lambda functions were timing out during cold starts when connecting to RDS, despite working fine after initialization. The 3-second default timeout was too short for the VPC-connected Lambda.',
+        solution: 'Increased the timeout to 30 seconds for VPC-connected Lambdas. Implemented provisioned concurrency to keep functions warm. Optimized the initialization code to reduce cold start time. Added proper error handling and retries for database connections.',
         images: [
-            "https://via.placeholder.com/800x500/f44336/FFFFFF?text=Lambda+Timeout"
+            'https://via.placeholder.com/800x500/f44336/FFFFFF?text=Lambda+Timeout'
         ]
     }
 ];
@@ -88,21 +88,21 @@ let errors = [
 let successGallery = [
     {
         id: 1,
-        title: "AWS ECS Deployment",
-        date: "2023-06-15",
-        image: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Project+Success"
+        title: 'AWS ECS Deployment',
+        date: '2023-06-15',
+        image: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Project+Success'
     },
     {
         id: 2,
-        title: "Automated Pipeline",
-        date: "2023-08-20",
-        image: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=CI/CD+Pipeline"
+        title: 'Automated Pipeline',
+        date: '2023-08-20',
+        image: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=CI/CD+Pipeline'
     },
     {
         id: 3,
-        title: "Terraform Deployment",
-        date: "2023-10-10",
-        image: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Infrastructure+Success"
+        title: 'Terraform Deployment',
+        date: '2023-10-10',
+        image: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Infrastructure+Success'
     }
 ];
 
@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let containerStorageAvailable = false;
     let originalResumeData = null;
     let isAdmin = false;
-    const ADMIN_PASSWORD = "melvin"; // In production, use a more secure method
+    const ADMIN_PASSWORD = 'melvin'; // In production, use a more secure method
 
     // Initialize the app
     function init() {
@@ -1258,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ADMIN CONTROL SYSTEM AND PASSWORD
 // Admin state management
 let isAdmin = false;
-const ADMIN_PASSWORD = "melvin"; // In production, use a more secure method
+const ADMIN_PASSWORD = 'melvin'; // In production, use a more secure method
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -1501,7 +1501,7 @@ document.getElementById('saveProjectBtn').addEventListener('click', function() {
     if (projectIndex !== -1) {
         projects[projectIndex].title = title;
         projects[projectIndex].description = description;
-        projects[projectIndex].link = link || "https://github.com/melvinsamuel070";
+        projects[projectIndex].link = link || 'https://github.com/melvinsamuel070';
         projects[projectIndex].technologies = technologies;
         
         // Images are already updated in the project object
@@ -1661,11 +1661,11 @@ document.getElementById('addProject').addEventListener('click', function() {
     // Create a new project object
     const newProject = {
         id: projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1,
-        title: "New Project",
+        title: 'New Project',
         description: [],
         technologies: [],
         images: [],
-        link: "https://github.com/melvinsamuel070"
+        link: 'https://github.com/melvinsamuel070'
     };
     
     // Add to projects array
@@ -2478,11 +2478,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function escapeHtml(unsafe) {
         if (!unsafe) return '';
         return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
     // Helper function to preserve line breaks in text
@@ -4124,7 +4124,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const MAX_IMAGE_WIDTH = 1200; // Max width for compressed images
     let isContainerized = false;
     let isAdmin = false;
-    const ADMIN_PASSWORD = "melvin";
+    const ADMIN_PASSWORD = 'melvin';
 
     // Initialize the app
     function init() {

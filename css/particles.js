@@ -1,32 +1,32 @@
 window.onload = function() {
   particlesJS('particles-js', {
-    "particles": {
-      "number": {
-        "value": 50
+    'particles': {
+      'number': {
+        'value': 50
       },
-      "color": {
-        "value": "#ffffff"
+      'color': {
+        'value': '#ffffff'
       },
-      "shape": {
-        "type": "circle"
+      'shape': {
+        'type': 'circle'
       },
-      "opacity": {
-        "value": 0.3
+      'opacity': {
+        'value': 0.3
       },
-      "size": {
-        "value": 3
+      'size': {
+        'value': 3
       },
-      "move": {
-        "enable": true,
-        "speed": 1
+      'move': {
+        'enable': true,
+        'speed': 1
       }
     },
-    "interactivity": {
-      "detect_on": "canvas",
-      "events": {
-        "onhover": {
-          "enable": true,
-          "mode": "repulse"
+    'interactivity': {
+      'detect_on': 'canvas',
+      'events': {
+        'onhover': {
+          'enable': true,
+          'mode': 'repulse'
         }
       }
     }
