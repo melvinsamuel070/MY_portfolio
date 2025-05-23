@@ -34,5 +34,15 @@ html = html.replace(/(<img\b[^>]*?)((\s+src="[^"]*")+)/g, (match, p1, srcGroup) 
   return noSrc + ' ' + firstSrc[0];
 });
 
+// *** START OF ADDED UPDATES ***
+
+// Fix malformed <img> tags with misplaced slash before src like: <img ... / src="...">
+html = html.replace(/<img([^>]*?)\/\s+src=/g, '<img$1 src=');
+
+// Escape literal < and > characters inside tags (if any appear literally)
+html = html.replace(/<\s*\//g, '&lt;/').replace(/>\s*>/g, '&gt;>');
+
+// *** END OF ADDED UPDATES ***
+
 fs.writeFileSync(filePath, html);
 console.log('Duplicate src attributes removed from ' + filePath);
