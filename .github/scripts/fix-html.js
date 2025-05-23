@@ -1,6 +1,6 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import glob from 'glob';
+const fs = require('fs').promises;
+const path = require('path');
+const glob = require('glob');
 
 async function fixHtmlFile(filePath) {
   let content = await fs.readFile(filePath, 'utf8');
