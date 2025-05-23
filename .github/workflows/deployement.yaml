@@ -56,113 +56,6 @@
 
 
 
-name: Deploy Portfolio
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set Docker image tag
-        id: vars
-        shell: bash
-        run: echo "TAG=green" >> $GITHUB_ENV
-
-      - name: Build Docker image
-        run: |
-          docker build -t melvinsamuel070/potfolio:${TAG} .
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Push Docker image to Docker Hub
-        run: |
-          docker push melvinsamuel070/potfolio:${TAG}
-       
-      - name: Save Docker image locally (optional)
-        run: |
-          docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar 
-
-      - name: Deploy to EC2 with Blue-Green strategy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            TAG=green
-
-            echo "Pulling latest Docker image..."
-            sudo docker pull melvinsamuel070/potfolio:${TAG}
-
-            CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
-            if [ "$CURRENT" == "${TAG}" ]; then
-              echo "Already running ${TAG}, no switch needed."
-              exit 0
-            fi
-
-            echo "Stopping existing container..."
-            sudo docker stop portfolio || true
-            sudo docker rm portfolio || true
-
-            echo "Starting new container..."
-            sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
-
-
-
-
-
-
-
-
-      - name: Upload image as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-image
-          path: portfolio_green.tar
-
-      - name: Download image from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: portfolio-image
-          path: .
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # name: Deploy Portfolio
 
 # on:
@@ -196,38 +89,204 @@ jobs:
 #       - name: Push Docker image to Docker Hub
 #         run: |
 #           docker push melvinsamuel070/potfolio:${TAG}
-
-#       - name: Save Docker image as tar file (optional)
+       
+#       - name: Save Docker image locally (optional)
 #         run: |
-#           docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar
+#           docker save melvinsamuel070/potfolio:${TAG} > portfolio_${TAG}.tar 
 
-#       - name: Deploy locally using blue-green via SSH
+#       - name: Deploy to EC2 with Blue-Green strategy
 #         uses: appleboy/ssh-action@master
 #         with:
-#           host: ${{ secrets.LOCAL_HOST }}
-#           username: ${{ secrets.LOCAL_USER }}
-#           key: ${{ secrets.LOCAL_KEY }}
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USERNAME }}
+#           key: ${{ secrets.EC2_KEY }}
 #           script: |
 #             TAG=green
-#             ALT_TAG=blue
 
-#             echo "Pulling new image..."
+#             echo "Pulling latest Docker image..."
 #             sudo docker pull melvinsamuel070/potfolio:${TAG}
 
-#             echo "Starting new container on port 1919 (e.g. green)..."
-#             sudo docker run -d --name portfolio-${TAG} -p 1919:80 melvinsamuel070/potfolio:${TAG}
+#             CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
+#             if [ "$CURRENT" == "${TAG}" ]; then
+#               echo "Already running ${TAG}, no switch needed."
+#               exit 0
+#             fi
 
-#             echo "Waiting for new container to be ready..."
-#             sleep 10
+#             echo "Stopping existing container..."
+#             sudo docker stop portfolio || true
+#             sudo docker rm portfolio || true
 
-#             echo "Switching Nginx to route traffic to portfolio-${TAG}..."
-#             sudo ln -sf /etc/nginx/sites-available/portfolio-${TAG}.conf /etc/nginx/sites-enabled/portfolio.conf
-#             sudo nginx -s reload
-
-#             echo "Removing old container if exists..."
-#             sudo docker rm -f portfolio-${ALT_TAG} || true
-
-#             echo "Blue-green deployment complete. Now live on ${TAG}."
+#             echo "Starting new container..."
+#             sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
 
 
 
+
+
+
+
+
+#       - name: Upload image as artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: portfolio-image
+#           path: portfolio_green.tar
+
+#       - name: Download image from artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: portfolio-image
+#           path: .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name: Deploy Portfolio
+
+on:
+  # Trigger workflow when code is pushed to the master branch
+  push:
+    branches:
+      - master
+
+jobs:
+  # ─────────────────────────────
+  # 🧹 Job 1: Static Code Analysis
+  # ─────────────────────────────
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
+        # This step pulls your code so it can be linted and built
+
+      - name: 🧼 Run ESLint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+        # Lints your JavaScript/TypeScript files using ESLint and shows issues directly on pull requests
+
+      - name:  HTMLHint
+        uses: Cyb3r-Jak3/htmlhint-action@v1
+        with:
+          files: '**/*.html'
+        # Lints HTML files to catch structural or semantic issues
+
+      - name: Stylelint
+        uses: reviewdog/action-stylelint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+        # Lints your CSS or SCSS files for best practices and style rules
+
+  # ─────────────────────────────
+  #  Job 2: Build & Deploy Docker
+  # ─────────────────────────────
+  build-and-deploy:
+    needs: static-analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout code
+        uses: actions/checkout@v4
+        # Pulls the latest source code for building the Docker image
+
+      - name: 🏷️ Set Docker image tag
+        id: vars
+        run: echo "TAG=green" >> $GITHUB_ENV
+        # Defines the tag (e.g., "green") for blue-green deployment
+
+      - name: 🏗️ Build Docker image
+        run: |
+          docker build -t melvinsamuel070/thefolio:${TAG} .
+        # Builds the Docker image with the specified tag
+
+      - name: 🔒 Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: melvinsamuel070/potfolio:${{ env.TAG }}
+          format: table
+          exit-code: 0
+        # Scans the Docker image for known vulnerabilities without failing the build
+
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # Authenticates with Docker Hub using your secrets
+
+      - name: 📤 Push Docker image to Docker Hub
+        run: docker push melvinsamuel070/thefolio:${TAG}
+        # Uploads the built Docker image to Docker Hub for deployment
+
+      # # deployement to ec2 instance 
+      # - name: 🚀 Deploy to EC2 with Blue-Green strategy
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ${{ secrets.EC2_USERNAME }}
+      #     key: ${{ secrets.EC2_KEY }}
+      #     script: |
+      #       TAG=green
+
+      #       echo "Pulling latest Docker image..."
+      #       sudo docker pull melvinsamuel070/potfolio:${TAG}
+              
+
+      #       CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
+      #       if [ "$CURRENT" == "${TAG}" ]; then
+      #         echo "Already running ${TAG}, no switch needed."
+      #         exit 0
+      #       fi
+      #       echo "Installing Docker..."
+      #       sudo  apt update -y
+      #       sudo  apt install docker.io -y
+      #       echo "Stopping existing container..."
+      #       sudo docker stop portfolio || true
+      #       sudo docker rm portfolio || true
+
+      #       echo "Starting new container..."
+      #       sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
+      #   # SSH into EC2, pull the image, stop the current container, and start the new one using a Blue-Green deployment approach
+
+      - name: 📦 Upload image as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: thefolio-image
+          path: thefolio_green.tar
+        # Uploads the saved image tarball as an artifact for later use or download
+
+  # ─────────────────────────────
+  # 🛡️ Job 3: Runtime Vulnerability Scan
+  # ─────────────────────────────
+  runtime-scan:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.11.0
+        with:
+          target: 'http://${{ secrets.EC2_HOST }}:3003'
+        # Performs a baseline security scan against the live deployed app using OWASP ZAP
