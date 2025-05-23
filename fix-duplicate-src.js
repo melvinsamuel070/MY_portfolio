@@ -1,45 +1,51 @@
 const fs = require('fs');
 const filePath = './index.html';
 
-// Read the file
 let html = fs.readFileSync(filePath, 'utf8');
 
-// Create backup
-fs.writeFileSync(filePath + '.backup', html);
-console.log('Created backup as ' + filePath + '.backup');
+const doCleanup = true; // set to false to bypass all cleanup
 
-// FIX 1: Remove ALL duplicate attributes (not just src)
-html = html.replace(/(<[a-z][^>]*?)(\s+[a-z-]+="[^"]*")+/g, (match, tagStart) => {
-  const attributes = new Map();
-  const attrMatches = match.matchAll(/\s+([a-z-]+)="([^"]*)"/g);
-  
-  for (const attr of attrMatches) {
-    if (!attributes.has(attr[1])) {
-      attributes.set(attr[1], attr[0]);
+if (doCleanup) {
+  // Phase 1: Remove ALL duplicate attributes (not just src)
+  html = html.replace(/(<[a-z][^>]*?)(\s+[a-z-]+="[^"]*")+/g, (match, tagStart) => {
+    // Extract all attributes
+    const attributes = {};
+    const attrMatches = match.matchAll(/\s+([a-z-]+)="([^"]*)"/g);
+    
+    for (const attr of attrMatches) {
+      // Keep first occurrence of each attribute
+      if (!attributes[attr[1]]) {
+        attributes[attr[1]] = attr[2];
+      }
     }
-  }
-  
-  return tagStart + Array.from(attributes.values()).join('');
-});
+    
+    // Rebuild the tag with unique attributes
+    let cleanedTag = tagStart;
+    for (const [name, value] of Object.entries(attributes)) {
+      cleanedTag += ` ${name}="${value}"`;
+    }
+    
+    return cleanedTag;
+  });
 
-// FIX 2: Escape the > character in the Jenkins command
-html = html.replace(
-  /(echo 'deb https:\/\/pkg\.jenkins\.io\/debian-stable binary\/) > (\/etc\/apt\/sources\.list\.d\/jenkins\.list')/g,
-  '$1 &gt; $2'
-);
+  // Phase 2: Fix malformed img tags with misplaced slashes
+  html = html.replace(/<img([^>]*?)\/\s+([a-z-]+)=/g, '<img$1 $2=');
 
-// FIX 3: Clean up any remaining malformed tags
-html = html.replace(/<([a-z]+)([^>]*?)\/\s+([a-z-]+)=/g, '<$1$2 $3=');
+  // Phase 3: Escape special characters in text content (but not in tags)
+  html = html.replace(/>([^<]+)</g, (match, content) => {
+    return '>' + content
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;') + '<';
+  });
 
-// Write the fixed file
-fs.writeFileSync(filePath, html);
-console.log('All validation errors should now be fixed in ' + filePath);
-
-// Verification
-const remainingDuplicates = html.match(/<[^>]*?\s+([a-z-]+)="[^"]*"\s+\1="[^"]*"[^>]*>/g);
-if (remainingDuplicates) {
-  console.warn('Warning: Found some remaining duplicates:');
-  console.warn(remainingDuplicates);
+  // Special case for code blocks (preserve > and <)
+  html = html.replace(/<code[^>]*>([\s\S]*?)<\/code>/g, (match, codeContent) => {
+    return match.replace(/&gt;/g, '>').replace(/&lt;/g, '<');
+  });
 } else {
-  console.log('Verification: No duplicate attributes found');
+  console.log('Cleanup bypassed.');
 }
+
+fs.writeFileSync(filePath, html);
+console.log(doCleanup ? 'HTML cleaned successfully.' : 'No changes made.');
