@@ -54,38 +54,4 @@ main().catch((err) => {
   process.exit(1);
 });
 
-
-
-// .github/scripts/fix-html.js
-const fs = require('fs');
-
-const filePath = './index.html'; // Adjust if your file is somewhere else
-
-let html = fs.readFileSync(filePath, 'utf8');
-
-// This function removes duplicate attributes in all HTML tags, preserving the first occurrence.
-html = html.replace(/<([a-zA-Z]+)(\s+[^>]+)>/g, (match, tagName, attrs) => {
-  // attrs = string like ' src="a.png" src="b.png" alt="img" src="c.png"'
-  // Goal: keep only first src, remove others
-
-  // Split attributes by spaces, but careful with quoted strings
-  // We'll parse attrs with regex to get all attr name=value pairs
-
-  const attrRegex = /([^\s=]+)(="[^"]*")?/g;
-  let seen = new Set();
-  let cleanedAttrs = [];
-  let m;
-  while ((m = attrRegex.exec(attrs)) !== null) {
-    const attrName = m[1];
-    const attrValue = m[2] || '';
-    if (!seen.has(attrName)) {
-      seen.add(attrName);
-      cleanedAttrs.push(`${attrName}${attrValue}`);
-    }
-  }
-
-  return `<${tagName} ${cleanedAttrs.join(' ')}>`;
-});
-
-fs.writeFileSync(filePath, html);
-console.log('Removed duplicate attributes in:', filePath);
+module.exports = fixHtmlFile;
