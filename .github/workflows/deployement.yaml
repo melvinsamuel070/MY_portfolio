@@ -169,36 +169,34 @@ on:
     branches:
       - master
 
-jobs:
-  # ─────────────────────────────
-  # 🧹 Job 1: Static Code Analysis
-  # ─────────────────────────────
   static-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: 🧾 Checkout code
         uses: actions/checkout@v4
-        # This step pulls your code so it can be linted and built
 
       - name: 🧼 Run ESLint
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
-        # Lints your JavaScript/TypeScript files using ESLint and shows issues directly on pull requests
 
-      - name:  HTMLHint
-        uses: Cyb3r-Jak3/htmlhint-action@v1
+      - name: 🔧 Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          files: '**/*.html'
-        # Lints HTML files to catch structural or semantic issues
+          node-version: 18
+
+      - name: 📦 Install HTMLHint
+        run: npm install -g htmlhint
+
+      - name: 🔍 Run HTMLHint
+        run: htmlhint "**/*.html"
 
       - name: Stylelint
         uses: reviewdog/action-stylelint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
-        # Lints your CSS or SCSS files for best practices and style rules
 
   # ─────────────────────────────
   #  Job 2: Build & Deploy Docker
