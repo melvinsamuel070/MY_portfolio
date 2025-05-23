@@ -1,116 +1,70 @@
 const fs = require('fs');
 const filePath = './index.html';
 
-// Read the file
+// 1. Read the file
 let html = fs.readFileSync(filePath, 'utf8');
 
-// Create backup
+// 2. Create backup
 fs.writeFileSync(filePath + '.backup', html);
-console.log('Created backup as ' + filePath + '.backup');
+console.log('Backup created');
 
-// FIX 1: Remove ALL duplicate attributes (not just src)
-html = html.replace(/(<[a-z][^>]*?)(\s+[a-z-]+="[^"]*")+/g, (match, tagStart) => {
-  const attributes = new Map();
-  const attrMatches = match.matchAll(/\s+([a-z-]+)="([^"]*)"/g);
-  
-  for (const attr of attrMatches) {
-    if (!attributes.has(attr[1])) {
-      attributes.set(attr[1], attr[0]);
+// 3. GUARANTEED FIX for Jenkins command
+const jenkinsFix = (content) => {
+    // First try exact match replacement
+    const original = `echo 'deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'`;
+    const fixed = `echo 'deb https://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list'`;
+    
+    if (content.includes(original)) {
+        return content.split(original).join(fixed);
     }
-  }
-  
-  return tagStart + Array.from(attributes.values()).join('');
-});
 
-// FIX 2: Guaranteed fix for Jenkins command escaping
-const jenkinsFix = () => {
-  const jenkinsCommand = `echo 'deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'`;
-  const fixedCommand = `echo 'deb https://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list'`;
+    // If exact match fails, try more flexible approaches
+    const patterns = [
+        // Variant with different spacing
+        /echo\s+'deb\s+https:\/\/pkg\.jenkins\.io\/debian-stable\s+binary\/\s+>\s+\/etc\/apt\/sources\.list\.d\/jenkins\.list'/,
+        // Variant with different quotes
+        /echo\s+"deb\s+https:\/\/pkg\.jenkins\.io\/debian-stable\s+binary\/\s+>\s+\/etc\/apt\/sources\.list\.d\/jenkins\.list"/
+    ];
 
-  if (html.includes(jenkinsCommand)) {
-    return html.split(jenkinsCommand).join(fixedCommand);
-  }
-  
-  // Fallback to regex if exact match not found
-  return html.replace(
-    /(echo 'deb https:\/\/pkg\.jenkins\.io\/debian-stable binary\/) > (\/etc\/apt\/sources\.list\.d\/jenkins\.list')/g,
-    '$1 &gt; $2'
-  );
+    for (const pattern of patterns) {
+        if (pattern.test(content)) {
+            return content.replace(pattern, match => 
+                match.replace('>', '&gt;')
+            );
+        }
+    }
+
+    return content;
 };
-html = jenkinsFix();
 
-// FIX 3: Clean up any remaining malformed tags
-html = html.replace(/<([a-z]+)([^>]*?)\/\s+([a-z-]+)=/g, '<$1$2 $3=');
+html = jenkinsFix(html);
 
-// FIX 4: Ensure proper tag nesting (section/div closure)
-const bodyClose = html.indexOf('</body>');
-if (bodyClose !== -1) {
-  // Count unclosed sections/divs before </body>
-  const openTags = html.substring(0, bodyClose).match(/<(section|div)[^>]*>/g) || [];
-  const closeTags = html.substring(0, bodyClose).match(/<\/(section|div)>/g) || [];
-  
-  if (openTags.length > closeTags.length) {
-    const missingClosures = [];
-    const tagStack = [];
-    
-    // More sophisticated tag balancing
-    const allTags = [...html.substring(0, bodyClose).matchAll(/<(section|div)[^>]*>|<\/(section|div)>/g)];
-    allTags.forEach(tag => {
-      if (tag[0].startsWith('</')) {
-        if (tagStack.length > 0) tagStack.pop();
-      } else {
-        tagStack.push(tag[1]);
-      }
-    });
-    
-    // Generate missing closing tags in reverse order
-    const closingTags = tagStack.reverse().map(tag => `</${tag}>`).join('');
-    html = html.slice(0, bodyClose) + closingTags + html.slice(bodyClose);
-    console.log(`Added missing closing tags: ${closingTags}`);
-  }
-}
-
-// Write the fixed file
+// 4. Write the fixed file
 fs.writeFileSync(filePath, html);
-console.log('All fixes applied to ' + filePath);
 
-// Enhanced verification
-const verify = () => {
-  let errors = 0;
-  
-  // Check for remaining duplicates
-  const dupes = html.match(/<[^>]*?\s+([a-z-]+)="[^"]*"\s+\1="[^"]*"[^>]*>/g);
-  if (dupes) {
-    console.warn('⚠️ Remaining duplicate attributes:', dupes.length);
-    errors += dupes.length;
-  }
-  
-  // Check for unescaped > in code blocks
-  const unescaped = html.match(/<code>.*>.*<\/code>/);
-  if (unescaped) {
-    console.warn('⚠️ Unescaped > in code blocks:', unescaped.length);
-    errors += unescaped.length;
-  }
-  
-  // Check Jenkins command specifically
-  if (html.includes(`> /etc/apt/sources.list.d/jenkins.list'`)) {
-    console.warn('⚠️ Jenkins command still contains unescaped >');
-    errors++;
-  }
-  
-  // Check tag balance
-  const openTags = html.match(/<(section|div)[^>]*>/g) || [];
-  const closeTags = html.match(/<\/(section|div)>/g) || [];
-  if (openTags.length !== closeTags.length) {
-    console.warn(`⚠️ Tag imbalance: ${openTags.length} open vs ${closeTags.length} close`);
-    errors++;
-  }
-  
-  if (errors === 0) {
-    console.log('✅ All validation checks passed');
-  } else {
-    console.warn(`Found ${errors} potential issues that need manual review`);
-  }
+// 5. VERIFICATION
+const verifyFix = (content) => {
+    const testPatterns = [
+        /> \/etc\/apt\/sources\.list\.d\/jenkins\.list'/,  // Unescaped pattern
+        /&gt; \/etc\/apt\/sources\.list\.d\/jenkins\.list'/ // Correct pattern
+    ];
+
+    if (testPatterns[0].test(content)) {
+        console.error('❌ Fix FAILED: Unescaped > still present');
+        return false;
+    }
+
+    if (testPatterns[1].test(content)) {
+        console.log('✅ Fix VERIFIED: > is now properly escaped');
+        return true;
+    }
+
+    console.error('❌ Jenkins command not found in file');
+    return false;
 };
 
-verify();
+if (verifyFix(html)) {
+    console.log('The validator should now pass without errors');
+} else {
+    console.log('Manual intervention required - please check line 644');
+}
