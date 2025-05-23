@@ -1,45 +1,37 @@
 const fs = require('fs');
-const cheerio = require('cheerio');
-
 const filePath = './index.html';
 
 let html = fs.readFileSync(filePath, 'utf8');
-const $ = cheerio.load(html);
 
-// For each <img> tag:
-$('img').each((i, el) => {
-  const attribs = el.attribs;
-  const srcs = [];
+const doRemoveDuplicates = false; // set to true to enable removal
 
-  // Collect all src attributes (yes, can be multiple due to malformed HTML)
-  // Because in cheerio/el.attribs, duplicate attributes get overwritten,
-  // we'll parse raw HTML string of the element instead:
+if (doRemoveDuplicates) {
+  // This regex finds img tags with duplicate src attributes and removes the duplicates.
+  // It keeps the first `src="..."` and removes any subsequent ones in the same tag.
 
-  const rawHtml = $.html(el);
-  // Match all src="..."
-  const srcMatches = [...rawHtml.matchAll(/src="[^"]*"/g)];
-  if (srcMatches.length <= 1) {
-    // No duplicates, nothing to do
-    return;
-  }
+  html = html.replace(/(<img\b[^>]*?)\s+src="[^"]*"\s+src="[^"]*"/g, (match, p1) => {
+    const firstSrcMatch = match.match(/src="[^"]*"/);
+    if (!firstSrcMatch) return match;  // no src found (unlikely)
+    const cleaned = p1.replace(/\s+src="[^"]*"/g, '') + ' ' + firstSrcMatch[0];
+    return cleaned;
+  });
 
-  // Keep only the first src attribute
-  // Build new attributes string without any src attributes
-  let newAttrs = rawHtml
-    .replace(/src="[^"]*"/g, '') // remove all src
-    .replace(/^<img\s*/, '<img '); // clean up in case spaces got messed
+  // Also, for more duplicates (more than two src attrs), remove all after the first one:
+  html = html.replace(/(<img\b[^>]*?)((\s+src="[^"]*")+)/g, (match, p1, srcGroup) => {
+    const firstSrc = srcGroup.match(/src="[^"]*"/);
+    if (!firstSrc) return match;
+    const noSrc = p1.replace(/\s+src="[^"]*"/g, '');
+    return noSrc + ' ' + firstSrc[0];
+  });
 
-  // Append first src attribute after <img
-  newAttrs = newAttrs.replace(
-    /^<img\s*/,
-    `<img ${srcMatches[0][0]} `
-  );
+  // Fix malformed <img> tags with misplaced slash before src like: <img ... / src="...">
+  html = html.replace(/<img([^>]*?)\/\s+src=/g, '<img$1 src=');
 
-  // Replace old element with fixed one
-  $(el).replaceWith(newAttrs);
-});
+  // Escape literal < and > characters inside tags (if any appear literally)
+  html = html.replace(/<\s*\//g, '&lt;/').replace(/>\s*>/g, '&gt;>');
+} else {
+  // bypass, do nothing
+}
 
-// Write back fixed HTML
-fs.writeFileSync(filePath, $.html());
-
-console.log('Duplicate src attributes removed using cheerio');
+fs.writeFileSync(filePath, html);
+console.log(doRemoveDuplicates ? 'Duplicates removed.' : 'Bypassed duplicate removal.');
