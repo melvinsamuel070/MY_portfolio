@@ -301,32 +301,28 @@ jobs:
          cmd_options: '-I -T 60'
          fail_action: 'warn'
          allow_issue_writing: false
-         upload_artifact: false  # Disable internal upload
+         artifact_name: ''  # ← EMPTY STRING forces no upload
+         upload_artifact: false  # ← Double protection
 
-      - name: 📦 Rename ZAP Reports
+      - name: 📦 Rename and Validate Reports
         if: always()
         run: |
-          [ -f report.json ] && mv report.json zap-report.json || echo "report.json not found"
-          [ -f report.md ] && mv report.md zap-report.md || echo "report.md not found"
-          [ -f report.html ] && mv report.html zap-report.html || echo "report.html not found"
-
-      - name: 🔍 Verify Files
-        if: always()
-        run: ls -la zap-report.* || echo "No report files found"
+         # Safely rename files with timestamp
+         timestamp=$(date +%Y%m%d-%H%M%S)
+         [ -f report.json ] && mv report.json zap-report-${timestamp}.json || echo "report.json not found"
+         [ -f report.md ] && mv report.md zap-report-${timestamp}.md || echo "report.md not found"
+         [ -f report.html ] && mv report.html zap-report-${timestamp}.html || echo "report.html not found"
+    
+         # Verify file sizes (ZAP sometimes creates empty files)
+         find . -name "zap-report-*" -size 0 -delete
 
       - name: 📤 Upload Scan Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-         name: zap-security-reports
+         name: zap-security-reports-${{ github.run_number }}
          path: |
-          zap-report.json
-          zap-report.md
-          zap-report.html
+          zap-report-*.json
+          zap-report-*.md
+          zap-report-*.html
          retention-days: 3
-
-
-
-
-
-          
