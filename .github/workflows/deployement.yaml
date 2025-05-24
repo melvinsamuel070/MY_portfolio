@@ -289,6 +289,11 @@ jobs:
           exit 1
 
 
+
+
+
+
+
       - name: 🛡️ Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.11.0
         with:
@@ -296,19 +301,18 @@ jobs:
          cmd_options: '-I -T 60'
          fail_action: 'warn'
          allow_issue_writing: false
+         upload_artifact: false  # Disable internal upload
 
-      - name: 📦 Rename and Upload ZAP Reports
+      - name: 📦 Rename ZAP Reports
         if: always()
         run: |
-         mv report.json zap-report.json
-         mv report.md zap-report.md
-         mv report.html zap-report.html
+          [ -f report.json ] && mv report.json zap-report.json || echo "report.json not found"
+          [ -f report.md ] && mv report.md zap-report.md || echo "report.md not found"
+          [ -f report.html ] && mv report.html zap-report.html || echo "report.html not found"
 
-      - name: 🔍 Debug - Verify files exist
+      - name: 🔍 Verify Files
         if: always()
-        run: |
-         ls -la
-         ls -la zap-report.*
+        run: ls -la zap-report.* || echo "No report files found"
 
       - name: 📤 Upload Scan Reports
         if: always()
@@ -319,6 +323,9 @@ jobs:
           zap-report.json
           zap-report.md
           zap-report.html
+         retention-days: 3
+
+
 
 
 
