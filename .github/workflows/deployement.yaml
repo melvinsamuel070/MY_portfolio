@@ -205,9 +205,9 @@ jobs:
       - name: 🔍 Run HTMLHint before fixes
         run: htmlhint "**/*.html" || true
 
-      - name: 🛠️ Fix HTML issues (escape &, duplicate ids, missing img src)
-        run: |
-          node .github/scripts/fix-html.js
+      # - name: 🛠️ Fix HTML issues (escape &, duplicate ids, missing img src)
+      #   run: |
+      #     node .github/scripts/fix-html.js
 
       - name: 🔍 Run HTMLHint after fixes
         run: htmlhint "**/*.html"
