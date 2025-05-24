@@ -291,26 +291,25 @@ jobs:
       - name: 🛡️ Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.11.0
         with:
-          target: 'http://${{ secrets.EC2_HOST }}:3003'
-          cmd_options: '-I -T 60'  # Ignore warnings and set timeout
-          fail_action: 'warn'      # Don't fail build on warnings
-          allow_issue_writing: false
-          # Removed artifact_name parameter completely
+         target: 'http://${{ secrets.EC2_HOST }}:3003'
+         cmd_options: '-I -T 60'  # Ignore warnings and set timeout
+         fail_action: 'warn'      # Don't fail build on warnings
+         allow_issue_writing: false
+         # Removed artifact_name parameter completely
 
-      # In ZAP rename step
       - name: 📦 Rename and Upload ZAP Reports
         if: always()
         run: |
-          mv report.json zap-report.json
-          mv report.md zap-report.md
-          mv report.html zap-report.html
-          
+         mv report.json zap-report.json
+         mv report.md zap-report.md
+         mv report.html zap-report.html
+
       - name: 📤 Upload Scan Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: zap-security-reports
-          path: |
-            zap-report.json
-            zap-report.md
-            zap-report.html
+         name: zap-security-reports
+         path: |
+          zap-report.json
+          zap-report.md
+          zap-report.html
