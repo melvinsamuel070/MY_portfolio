@@ -304,5 +304,4 @@ jobs:
       - name: Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.11.0
         with:
-          target: 'http://localhost:3003'
-          # or your app IP accessible from container
+         target: 'http://localhost:3003'
