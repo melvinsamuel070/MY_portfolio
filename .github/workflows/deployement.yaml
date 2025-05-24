@@ -298,12 +298,11 @@ jobs:
   # ─────────────────────────────
   # 🛡️ Job 3: Runtime Vulnerability Scan
   # ─────────────────────────────
-  runtime-scan:
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🔍 OWASP ZAP Baseline Scan
+      - name: Fix permissions for workspace (optional, if permission error persists)
+        run: sudo chmod -R a+w $GITHUB_WORKSPACE
+
+      - name: Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.11.0
         with:
-          target: 'http://${{ secrets.EC2_HOST }}:3003'
-        # Performs a baseline security scan against the live deployed app using OWASP ZAP
+          target: 'http://localhost:3003'
+          # or your app IP accessible from container
