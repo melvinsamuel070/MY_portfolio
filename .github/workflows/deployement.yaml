@@ -258,35 +258,35 @@ jobs:
         run: docker push melvinsamuel070/thefolio:${TAG}
         # Uploads the built Docker image to Docker Hub for deployment
 
-      # # deployement to ec2 instance 
-      # - name: 🚀 Deploy to EC2 with Blue-Green strategy
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.EC2_HOST }}
-      #     username: ${{ secrets.EC2_USERNAME }}
-      #     key: ${{ secrets.EC2_KEY }}
-      #     script: |
-      #       TAG=green
+      # deployement to ec2 instance 
+      - name: 🚀 Deploy to EC2 with Blue-Green strategy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            TAG=green
 
-      #       echo "Pulling latest Docker image..."
-      #       sudo docker pull melvinsamuel070/potfolio:${TAG}
+            echo "Pulling latest Docker image..."
+            sudo docker pull melvinsamuel070/potfolio:${TAG}
               
 
-      #       CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
-      #       if [ "$CURRENT" == "${TAG}" ]; then
-      #         echo "Already running ${TAG}, no switch needed."
-      #         exit 0
-      #       fi
-      #       echo "Installing Docker..."
-      #       sudo  apt update -y
-      #       sudo  apt install docker.io -y
-      #       echo "Stopping existing container..."
-      #       sudo docker stop portfolio || true
-      #       sudo docker rm portfolio || true
+            CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
+            if [ "$CURRENT" == "${TAG}" ]; then
+              echo "Already running ${TAG}, no switch needed."
+              exit 0
+            fi
+            echo "Installing Docker..."
+            sudo  apt update -y
+            sudo  apt install docker.io -y
+            echo "Stopping existing container..."
+            sudo docker stop portfolio || true
+            sudo docker rm portfolio || true
 
-      #       echo "Starting new container..."
-      #       sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
-      #   # SSH into EC2, pull the image, stop the current container, and start the new one using a Blue-Green deployment approach
+            echo "Starting new container..."
+            sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
+        # SSH into EC2, pull the image, stop the current container, and start the new one using a Blue-Green deployment approach
 
       - name: 📦 Upload image as artifact
         uses: actions/upload-artifact@v4
