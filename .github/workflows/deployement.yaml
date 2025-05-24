@@ -295,14 +295,21 @@ jobs:
           cmd_options: '-I -T 60'  # Ignore warnings and set timeout
           fail_action: 'warn'      # Don't fail build on warnings
           allow_issue_writing: false
-          artifact_name: 'zap-scan-results'  # Valid artifact name
+          # Removed artifact_name parameter completely
 
-      - name: 📦 Upload ZAP Scan Report
+      - name: 📦 Rename and Upload ZAP Reports
+        if: always()
+        run: |
+          mv report_json.json zap-report.json
+          mv report_md.md zap-report.md
+          mv report_html.html zap-report.html
+          
+      - name: 📤 Upload Scan Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: zap-scan-report
+          name: zap-security-reports
           path: |
-            report_json.json
-            report_md.md
-            report_html.html
+            zap-report.json
+            zap-report.md
+            zap-report.html
