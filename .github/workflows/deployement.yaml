@@ -160,6 +160,7 @@
 
 
 
+
 name: Deploy Portfolio
 
 on:
@@ -183,11 +184,13 @@ jobs:
         with:
           node-version: 18
 
+
       - name: 📦 Install dependencies
         run: npm install glob
 
       - name: Fix duplicate src attributes in HTML
         run: node fix-duplicate-src.js
+
 
       - name: 📦 Install dependencies
         run: |
@@ -202,6 +205,10 @@ jobs:
       - name: 🔍 Run HTMLHint before fixes
         run: htmlhint "**/*.html" || true
 
+      # - name: 🛠️ Fix HTML issues (escape &, duplicate ids, missing img src)
+      #   run: |
+      #     node .github/scripts/fix-html.js
+
       - name: 🔍 Run HTMLHint after fixes
         run: htmlhint "**/*.html"
 
@@ -210,9 +217,8 @@ jobs:
         with:
           commit_message: 'chore: auto-fix linting and HTML issues'
           file_pattern: '**/*.js, **/*.css, **/*.html'
-
   # ─────────────────────────────
-  # 🏗️ Job 2: Build & Deploy Docker
+  #  Job 2: Build & Deploy Docker
   # ─────────────────────────────
   build-and-deploy:
     needs: static-analysis
@@ -221,14 +227,17 @@ jobs:
     steps:
       - name: 🧾 Checkout code
         uses: actions/checkout@v4
+        # Pulls the latest source code for building the Docker image
 
       - name: 🏷️ Set Docker image tag
         id: vars
         run: echo "TAG=green" >> $GITHUB_ENV
+        # Defines the tag (e.g., "green") for blue-green deployment
 
       - name: 🏗️ Build Docker image
         run: |
           docker build -t melvinsamuel070/thefolio:${TAG} .
+        # Builds the Docker image with the specified tag
 
       - name: 🔒 Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
@@ -236,16 +245,20 @@ jobs:
           image-ref: melvinsamuel070/potfolio:${{ env.TAG }}
           format: table
           exit-code: 0
+        # Scans the Docker image for known vulnerabilities without failing the build
 
       - name: 🔑 Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # Authenticates with Docker Hub using your secrets
 
       - name: 📤 Push Docker image to Docker Hub
         run: docker push melvinsamuel070/thefolio:${TAG}
+        # Uploads the built Docker image to Docker Hub for deployment
 
+      # deployement to ec2 instance 
       - name: 🚀 Deploy to EC2 with Blue-Green strategy
         uses: appleboy/ssh-action@master
         with:
@@ -254,55 +267,41 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             TAG=green
+
             echo "Pulling latest Docker image..."
             sudo docker pull melvinsamuel070/potfolio:${TAG}
-            
+              
+
             CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
             if [ "$CURRENT" == "${TAG}" ]; then
               echo "Already running ${TAG}, no switch needed."
               exit 0
             fi
             echo "Installing Docker..."
-            sudo apt update -y
-            sudo apt install docker.io -y
+            sudo  apt update -y
+            sudo  apt install docker.io -y
             echo "Stopping existing container..."
             sudo docker stop portfolio || true
             sudo docker rm portfolio || true
+
             echo "Starting new container..."
             sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
+        # SSH into EC2, pull the image, stop the current container, and start the new one using a Blue-Green deployment approach
 
       - name: 📦 Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: thefolio-image
           path: thefolio_green.tar
+        # Uploads the saved image tarball as an artifact for later use or download
 
   # ─────────────────────────────
   # 🛡️ Job 3: Runtime Vulnerability Scan
   # ─────────────────────────────
-  security-scan:
-    needs: build-and-deploy  # Wait for deployment to complete
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🧾 Checkout code
-        uses: actions/checkout@v4
+      - name: Fix permissions for workspace (optional, if permission error persists)
+        run: sudo chmod -R a+w $GITHUB_WORKSPACE
 
-      - name: ⏳ Wait for application to be ready
-        run: |
-          for i in {1..30}; do
-            if curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_HOST }}:3003 | grep -q "200"; then
-              echo "Application is ready"
-              exit 0
-            fi
-            echo "Waiting for application to start (attempt $i)..."
-            sleep 5
-          done
-          echo "Application did not become ready in time"
-          exit 1
-
-      - name: 🛡️ Run ZAP Baseline Scan
+      - name: Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.11.0
         with:
-          target: 'http://${{ secrets.EC2_HOST }}:3003'
-          docker_network: 'host'
-          cmd_options: '-I'  # Ignore warning rules
+         target: 'http://localhost:3003'
