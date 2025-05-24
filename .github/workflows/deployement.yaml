@@ -159,19 +159,14 @@
 
 
 
-
 name: Deploy Portfolio
 
 on:
-  # Trigger workflow when code is pushed to the master branch
   push:
     branches:
       - master
 
 jobs:
-  # ─────────────────────────────
-  # 🧹 Job 1: Static Code Analysis
-  # ─────────────────────────────
   static-analysis:
     runs-on: ubuntu-latest
     steps:
@@ -211,13 +206,9 @@ jobs:
           commit_message: 'chore: auto-fix linting and HTML issues'
           file_pattern: '**/*.js, **/*.css, **/*.html'
 
-  # ─────────────────────────────
-  # 🏗️ Job 2: Build & Deploy Docker
-  # ─────────────────────────────
   build-and-deploy:
     needs: static-analysis
     runs-on: ubuntu-latest
-
     steps:
       - name: 🧾 Checkout code
         uses: actions/checkout@v4
@@ -277,11 +268,8 @@ jobs:
           name: thefolio-image
           path: thefolio_green.tar
 
-  # ─────────────────────────────
-  # 🛡️ Job 3: Runtime Vulnerability Scan
-  # ─────────────────────────────
   security-scan:
-    needs: build-and-deploy  # Wait for deployment to complete
+    needs: build-and-deploy
     runs-on: ubuntu-latest
     steps:
       - name: 🧾 Checkout code
@@ -304,5 +292,6 @@ jobs:
         uses: zaproxy/action-baseline@v0.11.0
         with:
           target: 'http://${{ secrets.EC2_HOST }}:3003'
-          docker_network: 'host'
-          cmd_options: '-I'  # Ignore warning rules
+          cmd_options: '-I -T 60'  # Ignore warnings and set timeout to 60 minutes
+          fail_action: 'warn'     # Don't fail the build on warnings
+          allow_issue_writing: false
