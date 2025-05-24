@@ -297,12 +297,13 @@ jobs:
           allow_issue_writing: false
           # Removed artifact_name parameter completely
 
+      # In ZAP rename step
       - name: 📦 Rename and Upload ZAP Reports
         if: always()
         run: |
-          mv report_json.json zap-report.json
-          mv report_md.md zap-report.md
-          mv report_html.html zap-report.html
+          mv report.json zap-report.json
+          mv report.md zap-report.md
+          mv report.html zap-report.html
           
       - name: 📤 Upload Scan Reports
         if: always()
