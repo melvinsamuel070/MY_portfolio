@@ -4425,3 +4425,43 @@ button, .btn, .nav-link {
 /* Viewport meta tag should be in HTML */
 /* Add this to your HTML head: */
 /* <meta name="viewport" content="width=device-width, initial-scale=1.0"> */
+
+
+
+
+
+
+
+
+/* Add this to your CSS */
+@media (max-width: 768px) {
+  nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--primary);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+  }
+  
+  .nav-link {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  /* Hide text on small screens, show only icons */
+  .nav-link span {
+    display: none;
+  }
+  
+  .nav-link i {
+    font-size: 20px;
+    display: block;
+  }
+}
+
+
+

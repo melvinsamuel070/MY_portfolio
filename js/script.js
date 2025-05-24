@@ -581,19 +581,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('resumeUpload');
     const resumeContent = document.getElementById('resumeContent');
     const adminControls = document.getElementById('adminControls');
-    const adminToggle = document.getElementById('adminToggle');
 
     // State variables
     let isContainerized = false;
     let containerStorageAvailable = false;
     let originalResumeData = null;
-    let isAdmin = false;
-    const ADMIN_PASSWORD = 'melvin'; // In production, use a more secure method
 
     // Initialize the app
     function init() {
         console.log('Initializing resume application...');
-        checkAdminStatus();
         checkContainerEnvironment();
         setupEventListeners();
         loadResumeData();
@@ -602,15 +598,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show admin controls if in admin mode or containerized environment
         if (isAdmin || isContainerized || document.body.classList.contains('admin-mode')) {
             showAdminControls();
-        }
-    }
-
-    // Check admin status from localStorage
-    function checkAdminStatus() {
-        const adminSession = localStorage.getItem('adminSession');
-        if (adminSession === ADMIN_PASSWORD) {
-            isAdmin = true;
-            activateAdminFeatures();
         }
     }
 
@@ -658,88 +645,6 @@ document.addEventListener('DOMContentLoaded', function() {
             adminControls.style.display = 'block';
         }
         if (editBtn) editBtn.style.display = 'inline-block';
-    }
-
-    // Admin toggle functionality
-    if (adminToggle) {
-        adminToggle.addEventListener('click', function() {
-            if (!isAdmin) {
-                const password = prompt('Enter admin password:');
-                if (password === ADMIN_PASSWORD) {
-                    localStorage.setItem('adminSession', ADMIN_PASSWORD);
-                    isAdmin = true;
-                    activateAdminFeatures();
-                    showMessage('Admin mode activated', 'success');
-                } else {
-                    showMessage('Invalid password', 'error');
-                }
-            } else {
-                isAdmin = false;
-                localStorage.removeItem('adminSession');
-                deactivateAdminFeatures();
-                showMessage('Admin mode deactivated', 'success');
-            }
-        });
-    }
-
-    function activateAdminFeatures() {
-        // Show admin controls
-        showAdminControls();
-        
-        // Enable all admin features
-        if (adminToggle) adminToggle.classList.add('active');
-        
-        // Show all admin buttons
-        document.querySelectorAll('.edit-btn, .delete-btn').forEach(btn => {
-            btn.style.display = 'inline-block';
-        });
-        
-        // Enable content editing if already in edit mode
-        if (resumeContent && resumeContent.classList.contains('edit-mode')) {
-            enableContentEditing();
-        }
-    }
-
-    function deactivateAdminFeatures() {
-        // Hide admin controls
-        if (adminControls) adminControls.style.display = 'none';
-        if (adminToggle) adminToggle.classList.remove('active');
-        
-        // Hide all admin buttons
-        document.querySelectorAll('.edit-btn, .delete-btn').forEach(btn => {
-            btn.style.display = 'none';
-        });
-        
-        // Disable content editing
-        disableContentEditing();
-        disableEditMode();
-    }
-
-    function enableContentEditing() {
-        if (!isAdmin) return;
-        
-        // Make all section titles editable
-        document.querySelectorAll('.section-title').forEach(title => {
-            title.setAttribute('contenteditable', 'true');
-            title.style.borderBottom = '1px dashed #ccc';
-        });
-        
-        // Make about text editable
-        document.querySelectorAll('.about-text p').forEach(para => {
-            para.setAttribute('contenteditable', 'true');
-            para.style.borderLeft = '2px solid var(--primary)';
-            para.style.paddingLeft = '10px';
-        });
-    }
-
-    function disableContentEditing() {
-        // Remove editable attributes
-        document.querySelectorAll('[contenteditable="true"]').forEach(element => {
-            element.removeAttribute('contenteditable');
-            element.style.borderBottom = 'none';
-            element.style.borderLeft = 'none';
-            element.style.paddingLeft = '0';
-        });
     }
 
     // Load resume data from storage
@@ -1231,9 +1136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the application
     init();
 });
-
-
-
 
 
 
@@ -6082,3 +5984,42 @@ document.addEventListener('DOMContentLoaded', function() {
         BookStore.updateAdminFeatures();
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function toggleMobileAdminMenu() {
+  const menu = document.getElementById('mobileAdminMenu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+// Update your existing functions to work with mobile
+function editProfile() {
+  // Your existing edit profile logic
+  toggleMobileAdminMenu(); // Close menu after selection
+}
+
+function addProject() {
+  // Your existing add project logic
+  toggleMobileAdminMenu();
+}
+
+function editContent() {
+  // Your existing edit content logic
+  toggleMobileAdminMenu();
+}
