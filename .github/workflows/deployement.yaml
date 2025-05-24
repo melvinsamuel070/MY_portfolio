@@ -158,6 +158,7 @@
 
 
 
+
 name: Deploy Portfolio
 
 on:
@@ -177,13 +178,13 @@ jobs:
         with:
           node-version: 18
 
-      - name: 📦 Install glob dependency
+      - name: 📦 Install dependencies
         run: npm install glob
 
       - name: Fix duplicate src attributes in HTML
         run: node fix-duplicate-src.js
 
-      - name: 📦 Install linters globally
+      - name: 📦 Install dependencies
         run: |
           npm install -g eslint stylelint htmlhint glob
 
@@ -212,27 +213,18 @@ jobs:
       - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🏷️ Set Docker image tag (toggle blue/green)
+      - name: 🏷️ Set Docker image tag
         id: vars
-        run: |
-          # Toggle tag between blue and green
-          CURRENT_TAG=$(ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
-            "sudo docker ps --filter 'name=portfolio' --format '{{.Image}}' | grep -oE 'blue|green' || echo 'green'")
-          if [ "$CURRENT_TAG" = "green" ]; then
-            echo "TAG=blue" >> $GITHUB_ENV
-          else
-            echo "TAG=green" >> $GITHUB_ENV
-          fi
-          echo "Using TAG=${TAG}"
+        run: echo "TAG=green" >> $GITHUB_ENV
 
       - name: 🏗️ Build Docker image
         run: |
-          docker build -t melvinsamuel070/thefolio:${{ env.TAG }} .
+          docker build -t melvinsamuel070/thefolio:${TAG} .
 
       - name: 🔒 Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: melvinsamuel070/thefolio:${{ env.TAG }}
+          image-ref: melvinsamuel070/potfolio:${{ env.TAG }}
           format: table
           exit-code: 0
 
@@ -243,10 +235,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: 📤 Push Docker image to Docker Hub
-        run: docker push melvinsamuel070/thefolio:${{ env.TAG }}
-
-      - name: 🐳 Save Docker image as tar
-        run: docker save -o thefolio_${{ env.TAG }}.tar melvinsamuel070/thefolio:${{ env.TAG }}
+        run: docker push melvinsamuel070/thefolio:${TAG}
 
       - name: 🚀 Deploy to EC2 with Blue-Green strategy
         uses: appleboy/ssh-action@master
@@ -255,39 +244,29 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            TAG=${{ env.TAG }}
-            echo "Checking if Docker is installed..."
-            if ! command -v docker > /dev/null; then
-              echo "Docker not found, installing..."
-              sudo apt update -y
-              sudo apt install docker.io -y
-            else
-              echo "Docker is already installed."
-            fi
-            
+            TAG=green
             echo "Pulling latest Docker image..."
-            sudo docker pull melvinsamuel070/thefolio:${TAG}
+            sudo docker pull melvinsamuel070/potfolio:${TAG}
             
-            CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green' || echo "")
-            echo "Current running tag: $CURRENT"
-            
-            if [ "$CURRENT" = "$TAG" ]; then
+            CURRENT=$(sudo docker ps --filter "name=portfolio" --format "{{.Image}}" | grep -oE 'blue|green')
+            if [ "$CURRENT" == "${TAG}" ]; then
               echo "Already running ${TAG}, no switch needed."
               exit 0
             fi
-            
+            echo "Installing Docker..."
+            sudo apt update -y
+            sudo apt install docker.io -y
             echo "Stopping existing container..."
             sudo docker stop portfolio || true
             sudo docker rm portfolio || true
-            
-            echo "Starting new container with tag ${TAG}..."
-            sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/thefolio:${TAG}
+            echo "Starting new container..."
+            sudo docker run -d -p 3003:80 --name portfolio melvinsamuel070/potfolio:${TAG}
 
       - name: 📦 Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: thefolio-image
-          path: thefolio_${{ env.TAG }}.tar
+          path: thefolio_green.tar
 
   security-scan:
     needs: build-and-deploy
@@ -316,6 +295,7 @@ jobs:
           cmd_options: '-I -T 60'  # Ignore warnings and set timeout
           fail_action: 'warn'      # Don't fail build on warnings
           allow_issue_writing: false
+          # Removed artifact_name parameter completely
 
       - name: 📦 Rename and Upload ZAP Reports
         if: always()
@@ -323,7 +303,7 @@ jobs:
           mv report_json.json zap-report.json
           mv report_md.md zap-report.md
           mv report_html.html zap-report.html
-
+          
       - name: 📤 Upload Scan Reports
         if: always()
         uses: actions/upload-artifact@v4
