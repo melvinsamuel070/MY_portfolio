@@ -4216,14 +4216,14 @@ body {
 
 
 
-
 nav {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  background-color: #111;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  background-color: #111; /* Or your desired bg */
   padding: 10px;
-  gap: 8px;
+  gap: 10px;
+  white-space: nowrap;
 }
 
 nav a {
@@ -4231,30 +4231,27 @@ nav a {
   padding: 8px 12px;
   text-decoration: none;
   font-size: 0.95rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 nav a i {
-  margin-right: 5px;
+  margin-right: 4px;
 }
 
-@media (max-width: 768px) {
+nav::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for aesthetics */
+}
+
+.nav-ad-line {
+  display: none; /* Hide ad-line on small screens (optional) */
+}
+
+@media (min-width: 769px) {
   nav {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  nav a {
-    width: 100%;
-    text-align: center;
     justify-content: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #444;
-  }
-
-  .nav-ad-line {
-    display: none;
+    flex-wrap: wrap;
+    overflow-x: visible;
   }
 }
-
