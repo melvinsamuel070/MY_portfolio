@@ -6003,23 +6003,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-function toggleMobileAdminMenu() {
-  const menu = document.getElementById('mobileAdminMenu');
-  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-}
-
-// Update your existing functions to work with mobile
-function editProfile() {
-  // Your existing edit profile logic
-  toggleMobileAdminMenu(); // Close menu after selection
-}
-
-function addProject() {
-  // Your existing add project logic
-  toggleMobileAdminMenu();
-}
-
-function editContent() {
-  // Your existing edit content logic
-  toggleMobileAdminMenu();
-}
