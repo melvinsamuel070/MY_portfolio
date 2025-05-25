@@ -4231,7 +4231,7 @@ body {
   }
   
   .container {
-    padding: 15px;
+    padding: 1px;
   }
   
   .projects-grid {
@@ -4239,11 +4239,11 @@ body {
   }
   
   .project-card {
-    margin-bottom: 20px;
+    margin-bottom: 2px;
   }
   
   .modal-content {
-    width: 80%;
+    width: 8%;
   }
 }
   
@@ -4315,7 +4315,7 @@ body {
 
 
 /* Project Cards */
-@media (max-width: 768px) {
+@media (max-width: 78px) {
   .project-card {
     flex-direction: column;
   }
@@ -4394,7 +4394,7 @@ button, .btn, .nav-link {
 }
 
 /* Prevent zoom on input focus */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 78px) {
   input, select, textarea {
     font-size: 11px;
   }
