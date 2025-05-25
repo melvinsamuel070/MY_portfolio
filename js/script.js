@@ -6001,31 +6001,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
-
-
-
 // Mobile menu toggle functionality
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.main-navigation').classList.toggle('mobile-nav-open');
+        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+            document.getElementById('main-nav').classList.toggle('nav-visible');
         });
         
-        // Close nav when clicking a link (mobile)
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                if (window.innerWidth <= 768) {
-                    document.querySelector('.main-navigation').classList.remove('mobile-nav-open');
-                }
+        // Close nav when clicking a link (mobile only)
+        if (window.innerWidth <= 767) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.getElementById('main-nav').classList.remove('nav-visible');
+                });
             });
-        });
-        
-        // Responsive adjustments
-        function handleResize() {
-            if (window.innerWidth > 768) {
-                document.querySelector('.main-navigation').classList.remove('mobile-nav-open');
-            }
         }
-        
-        window.addEventListener('resize', handleResize);
-        handleResize();
