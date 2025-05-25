@@ -4217,36 +4217,44 @@ body {
 
 
 
-
-/* Generic nav wrapper */
 nav {
   display: flex;
-  flex-wrap: wrap;       /* Allow wrapping */
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 10px;
-  gap: 8px; /* optional: spacing between items */
+  background-color: #111;
+  padding: 10px;
+  gap: 8px;
 }
 
-/* Nav items */
 nav a {
-  white-space: nowrap;   /* Prevent text wrapping inside a link */
-  padding: 8px 10px;
-  font-size: 1rem;
+  color: white;
+  padding: 8px 12px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
 }
 
-/* Mobile nav tweaks */
+nav a i {
+  margin-right: 5px;
+}
+
 @media (max-width: 768px) {
   nav {
-    flex-direction: row; /* You can also use column if you want vertical layout */
-    justify-content: center;
-    padding: 0 5px;
+    flex-direction: column;
+    align-items: center;
   }
 
   nav a {
-    font-size: 0.9rem;
-    padding: 6px;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
+  }
+
+  .nav-ad-line {
+    display: none;
   }
 }
+
