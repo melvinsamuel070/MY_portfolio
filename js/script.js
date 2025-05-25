@@ -6006,16 +6006,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
 // Mobile menu toggle functionality
-        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-            document.querySelector('nav').classList.toggle('mobile-nav-visible');
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.main-navigation').classList.toggle('mobile-nav-open');
         });
         
-        // Close nav when clicking a link
+        // Close nav when clicking a link (mobile)
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function() {
-                document.querySelector('nav').classList.remove('mobile-nav-visible');
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.main-navigation').classList.remove('mobile-nav-open');
+                }
             });
         });
+        
+        // Responsive adjustments
+        function handleResize() {
+            if (window.innerWidth > 768) {
+                document.querySelector('.main-navigation').classList.remove('mobile-nav-open');
+            }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize();
