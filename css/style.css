@@ -4234,16 +4234,21 @@ body {
     padding: 15px;
   }
   
-  nav {
-    flex-direction: column;
-    align-items: center;
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .nav-link {
-    padding: 8px 12px;
-    margin: 5px 0;
+  .project-card {
+    margin-bottom: 20px;
+  }
+  
+  .modal-content {
+    width: 80%;
   }
 }
+  
+ 
+  
 
 @media screen and (max-width: 768px) {
   /* Large smartphone styles */
@@ -4308,33 +4313,6 @@ body {
   }
 }
 
-/* Specific Component Adjustments */
-
-/* Navigation */
-@media (max-width: 768px) {
-  nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--primary);
-    z-index: 100;
-    padding: 10px;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-  }
-  
-  .nav-links {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-  }
-  
-  .nav-link {
-    padding: 8px;
-    margin: 0;
-    font-size: 0.9rem;
-  }
-}
 
 /* Project Cards */
 @media (max-width: 768px) {
