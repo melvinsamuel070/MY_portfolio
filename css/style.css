@@ -4219,80 +4219,94 @@ body {
 
 
 
-/* Mobile-first responsive navigation */
-@media (max-width: 767px) {
-    /* Mobile menu toggle button */
-    .mobile-menu-toggle {
-        display: block;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1001;
-        background: #2c3e50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Navigation styles as a left sidebar */
-    nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 200px;
-        background: #2c3e50;
-        z-index: 1000;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        padding: 20px 0;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-        overflow-y: auto;
-    }
-
-    nav.nav-visible {
-        transform: translateX(0);
-    }
-
-    .nav-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 0 10px;
-    }
-
-    .nav-link {
-        display: flex;
-        align-items: center;
-        color: white;
-        text-decoration: none;
-        padding: 10px 15px;
-        font-size: 0.9rem;
-        border-radius: 5px;
-        transition: background 0.2s;
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .nav-link i {
-        margin-right: 8px;
-        font-size: 1.2rem;
-    }
-
-    .nav-ad-line {
-        display: none;
-    }
-
-    /* Make room for sidebar */
-    .container {
-        margin-left: 200px;
-        padding-bottom: 20px;
-    }
-}
+ /* Mobile-specific overrides */
+        @media (max-width: 768px) {
+            /* Header adjustments */
+            .profile-container {
+                padding: 20px 15px;
+                text-align: center;
+            }
+            
+            .profile-image-wrapper {
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 15px;
+            }
+            
+            .welcome-message {
+                font-size: 1.5rem;
+                line-height: 1.3;
+            }
+            
+            .tagline, .devops-title {
+                font-size: 0.9rem;
+            }
+            
+            /* Button adjustments */
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                margin: 5px 0;
+                flex: 1 1 100%;
+            }
+            
+            /* Navigation - mobile bottom bar */
+            nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+                background: #2c3e50;
+                z-index: 1000;
+                padding: 5px 0;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+                overflow-x: auto;
+            }
+            
+            .nav-link {
+                flex: 1;
+                min-width: 60px;
+                padding: 8px 5px;
+                font-size: 0.7rem;
+                text-align: center;
+                flex-direction: column;
+            }
+            
+            .nav-link i {
+                font-size: 1.2rem;
+                margin-bottom: 3px;
+            }
+            
+            .nav-ad-line {
+                display: none;
+            }
+            
+            /* Content spacing */
+            .container {
+                padding-bottom: 70px; /* Space for bottom nav */
+            }
+            
+            /* Hide some less important nav items */
+            .nav-link[data-section="book-store"],
+            .nav-link[data-section="happy-ending"],
+            .nav-link[data-section="my-errors"] {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Further adjustments for very small screens */
+            .welcome-message {
+                font-size: 1.3rem;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .nav-link i {
+                font-size: 1.4rem;
+                margin-bottom: 0;
+            }
+        }
