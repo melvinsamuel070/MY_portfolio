@@ -45,7 +45,7 @@
 /* profilbody adjustments */
 body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 0.9; /*  zoom in and zoom out bacground */
+    line-height: 0.1; /*  zoom in and zoom out bacground */
     background: var(--secondary);
     color: var(--text);
     position: relative;
@@ -2847,7 +2847,7 @@ footer {
 
 .project-name {
     font-weight: 600;
-    font-size: 14px;
+    font-size: 18px;
     margin: 0 8px;
 }
 
