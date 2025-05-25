@@ -6001,15 +6001,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
- // Mobile menu toggle functionality
-        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-            document.querySelector('nav').classList.toggle('mobile-nav-visible');
-        });
-        
-        // Close nav when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelector('nav').classList.remove('mobile-nav-visible');
-            });
-        });
