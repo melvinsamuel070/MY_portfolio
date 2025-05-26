@@ -4016,6 +4016,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // project section
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -4025,8 +4040,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB max image size
     const MAX_IMAGE_WIDTH = 1200; // Max width for compressed images
     let isContainerized = false;
-    let isAdmin = false;
-    const ADMIN_PASSWORD = 'melvin';
 
     // Initialize the app
     function init() {
@@ -4034,107 +4047,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadProjects();
         setupEventListeners();
         setupDragAndDrop();
-        checkAdminStatus(); // Check admin status on init
-    }
-
-    // Enhanced admin status check for containerized environments
-    function checkAdminStatus() {
-        // First try localStorage
-        const localStorageAdmin = localStorage.getItem('adminSession');
-        if (localStorageAdmin === ADMIN_PASSWORD) {
-            setAdmin(true);
-            return;
-        }
-
-        // If containerized, check container storage
-        if (isContainerized && window.containerStorage && typeof window.containerStorage.getAdminStatus === 'function') {
-            window.containerStorage.getAdminStatus()
-                .then(containerAdmin => {
-                    if (containerAdmin === ADMIN_PASSWORD) {
-                        setAdmin(true);
-                        // Sync to localStorage
-                        localStorage.setItem('adminSession', ADMIN_PASSWORD);
-                    } else {
-                        setAdmin(false); // Explicitly set to false if not admin
-                    }
-                })
-                .catch(err => {
-                    console.error('Error checking container admin status:', err);
-                    setAdmin(false); // Default to false on error
-                });
-        } else {
-            setAdmin(false); // Default to false if not containerized
-        }
-    }
-
-    function setAdmin(status) {
-        isAdmin = status;
-        if (status) {
-            activateAdminFeatures();
-            // Sync admin status to container storage if available
-            if (isContainerized && window.containerStorage && typeof window.containerStorage.setAdminStatus === 'function') {
-                window.containerStorage.setAdminStatus(ADMIN_PASSWORD)
-                    .catch(err => console.error('Error syncing admin status:', err));
-            }
-        } else {
-            deactivateAdminFeatures();
-            localStorage.removeItem('adminSession');
-            if (isContainerized && window.containerStorage && typeof window.containerStorage.clearAdminStatus === 'function') {
-                window.containerStorage.clearAdminStatus()
-                    .catch(err => console.error('Error clearing container admin status:', err));
-            }
-        }
-    }
-
-    // Activate admin features for projects
-    function activateAdminFeatures() {
-        // Show all edit and delete buttons
-        document.querySelectorAll('.edit-project, .delete-project, #editInModalBtn').forEach(btn => {
-            btn.style.display = 'inline-block';
-        });
-        
-        // Show the "New Project" button
-        document.getElementById('editProjectBtn').style.display = 'inline-block';
-        
-        // Enable all admin controls in the editor
-        const editorControls = document.querySelectorAll('#projectEditorModal input, #projectEditorModal textarea, #projectEditorModal button:not(.close-modal)');
-        editorControls.forEach(control => {
-            control.disabled = false;
-        });
-        
-        // Enable project details modal controls if needed
-        const projectModalControls = document.querySelectorAll('#projectModal .admin-control');
-        projectModalControls.forEach(control => {
-            control.style.display = 'block';
-        });
-    }
-
-    // Deactivate admin features for projects
-    function deactivateAdminFeatures() {
-        // Hide all edit and delete buttons
-        document.querySelectorAll('.edit-project, .delete-project, #editInModalBtn').forEach(btn => {
-            btn.style.display = 'none';
-        });
-        
-        // Hide the "New Project" button
-        document.getElementById('editProjectBtn').style.display = 'none';
-        
-        // Close any open editor modal
-        document.getElementById('projectEditorModal').style.display = 'none';
-        document.getElementById('projectModal').style.display = 'none';
-        currentProjectId = null;
-        
-        // Disable all admin controls in the editor
-        const editorControls = document.querySelectorAll('#projectEditorModal input, #projectEditorModal textarea, #projectEditorModal button:not(.close-modal)');
-        editorControls.forEach(control => {
-            control.disabled = true;
-        });
-        
-        // Hide project details modal controls
-        const projectModalControls = document.querySelectorAll('#projectModal .admin-control');
-        projectModalControls.forEach(control => {
-            control.style.display = 'none';
-        });
     }
 
     // Check if we're in a containerized environment
@@ -4394,6 +4306,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Add to gallery display
                         addImageToGallery(imageData);
+                        
+                        // Save the project immediately after adding image
+                        if (currentProjectId) {
+                            saveProject();
+                        }
                     };
                     reader.readAsDataURL(compressedFile);
                 } catch (error) {
@@ -4497,6 +4414,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     firstGalleryItem.querySelector('.set-featured-btn').click();
                 }
             }
+            
+            // Save the project immediately after deleting image
+            if (currentProjectId) {
+                saveProject();
+            }
         });
         
         document.querySelector(`.set-featured-btn[data-id="${imageData.id}"]`).addEventListener('click', (e) => {
@@ -4510,7 +4432,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Set this image as featured
-            e.target.closest('.gallery-item').classlass.add('featured');
+            e.target.closest('.gallery-item').classList.add('featured');
+            
+            // Save the project immediately after setting featured image
+            if (currentProjectId) {
+                saveProject();
+            }
         });
     }
 
@@ -4554,7 +4481,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 techElement.remove();
+                
+                // Save the project immediately after deleting technology
+                if (currentProjectId) {
+                    saveProject();
+                }
             });
+            
+            // Save the project immediately after adding technology
+            if (currentProjectId) {
+                saveProject();
+            }
         }
     }
 
@@ -4794,11 +4731,6 @@ document.addEventListener('DOMContentLoaded', function() {
             viewButton.innerHTML = '<i class="fas fa-eye"></i> View Details';
             viewButton.addEventListener('click', () => viewProjectDetails(project.id));
             
-
-
-
-            
-
             const editButton = document.createElement('button');
             editButton.className = 'btn btn-outline edit-project';
             editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
@@ -4811,10 +4743,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 editProject(project.id);
             });
             
-
-
-
-
             const deleteButton = document.createElement('button');
             deleteButton.className = 'btn btn-outline-danger delete-project';
             deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
@@ -4922,6 +4850,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Add zoom-out styles to the modal
+        const modalContent = document.querySelector('#projectModal .modal-content');
+        modalContent.style.maxWidth = '90vw';
+        modalContent.style.width = '90vw';
+        modalContent.style.maxHeight = '90vh';
+        
+        const galleryMainImage = document.getElementById('galleryMainImage');
+        galleryMainImage.style.maxHeight = '70vh';
+        galleryMainImage.style.objectFit = 'contain';
+        
         // Show modal
         document.getElementById('projectModal').style.display = 'block';
         
@@ -4986,6 +4924,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 imageElement.remove();
+                
+                // Save the project immediately after deleting image
+                saveProject();
             });
             
             imageElement.querySelector('.set-featured-btn').addEventListener('click', (e) => {
@@ -4997,6 +4938,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.remove('featured');
                 });
                 e.target.closest('.gallery-item').classList.add('featured');
+                
+                // Save the project immediately after setting featured image
+                saveProject();
             });
         });
         
@@ -5022,6 +4966,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 techElement.remove();
+                
+                // Save the project immediately after deleting technology
+                saveProject();
             });
         });
         
@@ -5152,6 +5099,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make addManualProject available globally if needed
     window.addManualProject = addManualProject;
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6001,3 +5970,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
+ // Mobile menu toggle functionality
+        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('mobile-nav-visible');
+        });
+        
+        // Close nav when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelector('nav').classList.remove('mobile-nav-visible');
+            });
+        });

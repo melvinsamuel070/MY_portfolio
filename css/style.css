@@ -2847,7 +2847,7 @@ footer {
 
 .project-name {
     font-weight: 600;
-    font-size: 18px;
+    font-size: 14px;
     margin: 0 8px;
 }
 
@@ -4216,42 +4216,82 @@ body {
 
 
 
+
+
+
+
+
+
+
+/* Base nav styles */
 nav {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  background-color: #111; /* Or your desired bg */
+  flex-wrap: nowrap;               /* Prevent wrapping */
+  overflow-x: auto;                /* Enable horizontal scroll */
+  background-color: #111;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
   padding: 10px;
   gap: 10px;
-  white-space: nowrap;
+  white-space: nowrap;            /* Prevent nav links from wrapping */
 }
 
+/* Nav links */
 nav a {
   color: white;
   padding: 8px 12px;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1rem;
   display: inline-flex;
   align-items: center;
-  flex-shrink: 0;
+  flex-shrink: 0;                 /* Prevent shrinking in scroll */
+  white-space: nowrap;
 }
 
+/* Icon spacing */
 nav a i {
   margin-right: 4px;
 }
 
+/* Hide scrollbar on WebKit browsers */
 nav::-webkit-scrollbar {
-  display: none; /* Hide scrollbar for aesthetics */
+  display: none;
 }
 
+/* Optional: Hide the ad line on small screens */
 .nav-ad-line {
-  display: none; /* Hide ad-line on small screens (optional) */
+  display: none;
 }
 
+/* Desktop styles */
 @media (min-width: 769px) {
   nav {
     justify-content: center;
     flex-wrap: wrap;
-    overflow-x: visible;
+    overflow-x: visible;          /* No scroll needed on wide screens */
+  }
+
+  nav a {
+    font-size: 1rem;
+  }
+
+  .nav-ad-line {
+    display: block;              /* Show ad line again on desktop */
   }
 }
+
+/* Optional: smaller adjustments for very narrow screens */
+@media (max-width: 480px) {
+  nav a {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+}
+
+
+
+
+
+
+
