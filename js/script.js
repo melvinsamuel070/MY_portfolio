@@ -4031,6 +4031,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
+
+
+
+
+
 // project section
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -4047,6 +4053,45 @@ document.addEventListener('DOMContentLoaded', function() {
         loadProjects();
         setupEventListeners();
         setupDragAndDrop();
+        
+        // Add mobile-specific styles for the editor modal
+        addMobileStyles();
+    }
+
+    // Add mobile-specific styles
+    function addMobileStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            @media (max-width: 768px) {
+                #projectEditorModal .modal-content {
+                    width: 95vw;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                }
+                #editorUploadContainer {
+                    height: 150px;
+                }
+                #editorImageGallery {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                .project-editor-footer {
+                    position: sticky;
+                    bottom: 0;
+                    background: white;
+                    padding: 10px;
+                    border-top: 1px solid #eee;
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 10px;
+                }
+                .project-editor-footer .btn {
+                    flex: 1;
+                    padding: 8px;
+                    white-space: nowrap;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     // Check if we're in a containerized environment
@@ -5099,10 +5144,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make addManualProject available globally if needed
     window.addManualProject = addManualProject;
 });
-
-
-
-
 
 
 
