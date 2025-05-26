@@ -913,6 +913,10 @@ footer {
 
 
 
+
+
+
+
 /* ================= NAVIGATION ================= */
 nav {
   display: flex;
@@ -1318,6 +1322,23 @@ nav::-webkit-scrollbar {
     background: var(--primary);
     color: white;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4088,7 +4088,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     width: 95vw;
                     max-height: 90vh;
                     overflow-y: auto;
-                    padding-bottom: 70px; /* Add space for footer */
                 }
                 #editorUploadContainer {
                     height: 150px;
@@ -4097,32 +4096,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     grid-template-columns: repeat(2, 1fr);
                 }
                 .project-editor-footer {
-                    position: fixed;
+                    position: sticky;
                     bottom: 0;
-                    left: 0;
-                    right: 0;
                     background: white;
                     padding: 10px;
                     border-top: 1px solid #eee;
                     display: flex;
                     justify-content: space-between;
                     gap: 10px;
-                    z-index: 1000;
                 }
                 .project-editor-footer .btn {
                     flex: 1;
                     padding: 8px;
                     white-space: nowrap;
-                    font-size: 14px;
-                }
-                #projectEditorModal {
-                    overflow-y: auto;
                 }
             }
         `;
         document.head.appendChild(style);
     }
-
 
     // Check if we're in a containerized environment
     function checkContainerEnvironment() {
