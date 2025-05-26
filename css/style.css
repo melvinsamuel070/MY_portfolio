@@ -4355,7 +4355,7 @@ nav {
   max-width: 100%;
   margin: 0 auto;
   padding: 10px;
-  gap: 10px;
+  gap: 0px;                        /* Close the gap */
   white-space: nowrap;            /* Prevent nav links from wrapping */
 }
 
@@ -4395,8 +4395,8 @@ nav::-webkit-scrollbar {
   }
 
   nav a {
-  font-size: 1rem; /* Or try 1.5rem for even larger */
-}
+    font-size: 1rem; /* Or try 1.5rem for even larger */
+  }
 
   .nav-ad-line {
     display: block;              /* Show ad line again on desktop */
