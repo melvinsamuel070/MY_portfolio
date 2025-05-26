@@ -4376,7 +4376,7 @@ nav::-webkit-scrollbar {
   }
 
   nav a {
-  font-size: 1.26rem; /* Or try 1.5rem for even larger */
+  font-size: 1rem; /* Or try 1.5rem for even larger */
 }
 
   .nav-ad-line {
@@ -4388,7 +4388,7 @@ nav::-webkit-scrollbar {
 @media (max-width: 480px) {
   nav a {
     font-size: 0.9rem;
-    padding: 6px 10px;
+    padding: 4px 10px;
   }
 }
 
