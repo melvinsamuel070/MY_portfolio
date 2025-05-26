@@ -2135,7 +2135,6 @@ document.getElementById('successUpload').addEventListener('change', function(e) 
 
 // ERRO SECTION
 
-
 // Enhanced Error Documentation System with Container Support
 document.addEventListener('DOMContentLoaded', function() {
     // Global errors array
@@ -2433,6 +2432,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show modal
         editorModal.style.display = 'block';
         errorTitleInput.focus();
+        
+        // Mobile optimization: Ensure modal is properly sized and positioned
+        editorModal.style.top = '0';
+        editorModal.style.left = '0';
+        editorModal.style.transform = 'none';
+        editorModal.style.width = '100%';
+        editorModal.style.height = '100%';
+        editorModal.style.overflow = 'auto';
     }
 
     // Save error
@@ -2581,6 +2588,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.style.overflow = '';
             }
         });
+
+        // Mobile optimization: Make image fit screen
+        const img = modal.querySelector('img');
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '80vh';
+        img.style.objectFit = 'contain';
     }
 
     // Show message
@@ -2647,33 +2660,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Image upload handling
+        // Image upload handling - mobile optimized
         errorImageUpload.addEventListener('change', function(e) {
             if (e.target.files) {
                 handleImageUpload(e.target.files);
             }
         });
 
-        // Drag and drop for images
-        errorUploadContainer.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('drag-over');
-        });
+        // Drag and drop for images (desktop only)
+        if (!isMobile()) {
+            errorUploadContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
 
-        errorUploadContainer.addEventListener('dragleave', function() {
-            this.classList.remove('drag-over');
-        });
+            errorUploadContainer.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
 
-        errorUploadContainer.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
-            if (e.dataTransfer.files) {
-                handleImageUpload(e.dataTransfer.files);
-            }
-        });
+            errorUploadContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                if (e.dataTransfer.files) {
+                    handleImageUpload(e.dataTransfer.files);
+                }
+            });
+        }
 
-        // Click to upload
+        // Click to upload - mobile optimized
         errorUploadContainer.addEventListener('click', function() {
+            // On mobile, we'll use a simpler approach
+            if (isMobile()) {
+                errorImageUpload.setAttribute('capture', 'camera');
+                errorImageUpload.setAttribute('accept', 'image/*');
+            }
             errorImageUpload.click();
         });
 
@@ -2689,7 +2709,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('adminStateChanged', updateAdminControls);
     }
 
-    // Handle image upload
+    // Check if device is mobile
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    // Handle image upload - mobile optimized
     function handleImageUpload(files) {
         if (files.length > 10) {
             showMessage('Maximum 10 images can be uploaded at once', 'warning');
@@ -2725,10 +2750,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial admin controls setup
     updateAdminControls();
 });
-
-
-
-
 
 
 

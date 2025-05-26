@@ -264,7 +264,7 @@ nav {
     font-weight: 700;
     font-size: 1.1rem;  /* ⬆ Increased font size */
     text-transform: uppercase;
-    letter-spacing: 1.3px;  /* Increased nav letter spacing */
+    letter-spacing: 1.2px;  /* Increased nav letter spacing */
     transition: all 0.3s ease;
     border-radius: 4px;
     position: relative;
@@ -2158,7 +2158,7 @@ nav::-webkit-scrollbar {
     border-radius: 4px;
     border: 1px solid #444;
     background-color: #3a3a3a;
-    color: #fff;
+    color: #204417;
 }
 
 .image-upload-container {
@@ -2298,12 +2298,36 @@ nav::-webkit-scrollbar {
 
 .btn-secondary {
     background-color: #555;
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
 }
 
 .btn-secondary:hover {
     background-color: #666;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2454,12 +2478,12 @@ nav::-webkit-scrollbar {
 .error-title {
     margin: 0;
     font-size: 1.2rem;
-    color: #333;
+    color: #e7e7e7f6;
     flex-grow: 1;
 }
 
 .error-date {
-    color: #666;
+    color: #ffffff;
     font-size: 0.9rem;
 }
 
@@ -3061,6 +3085,21 @@ body {
     font-style: italic;
     text-align: center;
     padding: 20px;
+}
+.section-title {
+    text-transform: uppercase;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 3.5rem;
+    color: #33b812;
+}
+
+.section-subtitle {
+    text-transform: uppercase;
+    font-size: 1rem;
+    color: #04fa18;
+    max-width: 600px;
+    line-height: 2.10;
 }
 
 
@@ -4116,7 +4155,7 @@ body {
 
 .error-images h3 {
     margin-top: 0;
-    color: #495057;
+    color: #ffffff;
     font-size: 1.1rem;
     margin-bottom: 12px;
 }
@@ -4337,8 +4376,8 @@ nav::-webkit-scrollbar {
   }
 
   nav a {
-    font-size: 1rem;
-  }
+  font-size: 1.26rem; /* Or try 1.5rem for even larger */
+}
 
   .nav-ad-line {
     display: block;              /* Show ad line again on desktop */
