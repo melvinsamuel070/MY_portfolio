@@ -1,110 +1,375 @@
 // Current year in footer
 document.getElementById('current-year').textContent = new Date().getFullYear();
 
-// AWS Projects Data
-let projects = [
-    {
-        id: 1,
-        title: 'AWS ECS Cluster Automation',
-        description: 'Automated deployment of containerized applications using AWS ECS with CI/CD pipeline integration. Implemented blue-green deployments with AWS CodeDeploy, automated scaling policies based on CloudWatch metrics, and integrated with AWS Secrets Manager for secure credential management.',
-        technologies: ['AWS ECS', 'Docker', 'Terraform', 'GitHub Actions', 'AWS CodePipeline', 'AWS CodeBuild'],
-        images: [
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=ECS+Cluster',
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=CI/CD+Pipeline',
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Deployment+Strategy'
-        ],
-        link: '#',
-        github: '#'
-    },
-    {
-        id: 2,
-        title: 'Serverless API with Lambda',
-        description: 'Built a scalable serverless API using AWS Lambda, API Gateway, and DynamoDB with proper authentication. Implemented JWT authentication with Amazon Cognito, request validation, rate limiting, and caching at the API Gateway level. Used AWS X-Ray for distributed tracing and performance monitoring.',
-        technologies: ['AWS Lambda', 'API Gateway', 'DynamoDB', 'Node.js', 'Amazon Cognito', 'AWS X-Ray'],
-        images: [
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Lambda+Architecture',
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=API+Design',
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Performance+Metrics'
-        ],
-        link: '#',
-        github: '#'
-    },
-    {
-        id: 3,
-        title: 'Terraform Multi-Account Setup',
-        description: 'Implemented secure multi-account AWS environment with IAM roles, SCPs, and centralized logging using Terraform. Created a landing zone with AWS Organizations, implemented cross-account access with IAM roles, and centralized logging with CloudTrail and Config across all accounts.',
-        technologies: ['AWS Organizations', 'IAM', 'CloudTrail', 'AWS Config', 'Terraform', 'SCPs'],
-        images: [
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Account+Structure',
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Security+Controls',
-            'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=Terraform+Code'
-        ],
-        link: '#',
-        github: '#'
+// AWS Projects Data - Now loaded from Firestore
+let projects = [];
+async function loadProjects() {
+    try {
+        const snapshot = await db.collection('projects').orderBy('createdAt', 'desc').get();
+        projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderProjects(); // You'll need to call this after loading
+    } catch (error) {
+        console.error("Error loading projects: ", error);
+        projects = []; // Fallback empty array
     }
-];
+}
 
-// Error documentation data
-let errors = [
-    {
-        id: 1,
-        title: 'ECS Task Failing to Start',
-        date: '2023-07-15',
-        description: 'Tasks in my ECS cluster were failing to start with the error: \'CannotPullContainerError: Error response from daemon: pull access denied\'. The containers couldn\'t be pulled from ECR.',
-        solution: 'Created an IAM role with proper permissions for the ECS task execution role. Added AmazonEC2ContainerRegistryReadOnly policy and verified the ECR repository permissions. Also checked the task definition to ensure the correct image URI was specified.',
-        images: [
-            'https://via.placeholder.com/800x500/f44336/FFFFFF?text=ECS+Error'
-        ]
-    },
-    {
-        id: 2,
-        title: 'Terraform State Lock Issue',
-        date: '2023-09-22',
-        description: 'Terraform operations were failing with the error: \'Error acquiring the state lock: ConditionalCheckFailedException\'. The state was locked by another process that had terminated unexpectedly.',
-        solution: 'Used the AWS console to manually remove the lock item from the DynamoDB table. Implemented proper error handling in CI/CD pipelines to ensure locks are always released. Added timeout configurations for state locking operations.',
-        images: [
-            'https://via.placeholder.com/800x500/f44336/FFFFFF?text=Terraform+Lock'
-        ]
-    },
-    {
-        id: 3,
-        title: 'Lambda Cold Start Timeout',
-        date: '2023-11-05',
-        description: 'Lambda functions were timing out during cold starts when connecting to RDS, despite working fine after initialization. The 3-second default timeout was too short for the VPC-connected Lambda.',
-        solution: 'Increased the timeout to 30 seconds for VPC-connected Lambdas. Implemented provisioned concurrency to keep functions warm. Optimized the initialization code to reduce cold start time. Added proper error handling and retries for database connections.',
-        images: [
-            'https://via.placeholder.com/800x500/f44336/FFFFFF?text=Lambda+Timeout'
-        ]
+// Error documentation data - Now loaded from Firestore
+let errors = [];
+async function loadErrors() {
+    try {
+        const snapshot = await db.collection('errors').orderBy('date', 'desc').get();
+        errors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderErrors(); // You'll need to call this after loading
+    } catch (error) {
+        console.error("Error loading errors: ", error);
+        errors = []; // Fallback empty array
     }
-];
+}
 
+// Initialize data loading when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadProjects();
+    loadErrors();
+});
 
+// Example starter data for Firestore (run this once to initialize your database)
+async function initializeFirestoreData() {
+    const starterProjects = [
+        {
+            title: 'AWS ECS Cluster Automation',
+            description: 'Automated deployment of containerized applications using AWS ECS with CI/CD pipeline integration...',
+            technologies: ['AWS ECS', 'Docker', 'Terraform', 'GitHub Actions'],
+            images: [
+                'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=ECS+Cluster',
+                'https://via.placeholder.com/800x500/232F3E/FFFFFF?text=CI/CD+Pipeline'
+            ],
+            link: '#',
+            github: '#',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        },
+        // ... other starter projects
+    ];
 
+    const starterErrors = [
+        {
+            title: 'ECS Task Failing to Start',
+            date: '2023-07-15',
+            description: 'Tasks in my ECS cluster were failing to start...',
+            solution: 'Created an IAM role with proper permissions...',
+            images: [
+                'https://via.placeholder.com/800x500/f44336/FFFFFF?text=ECS+Error'
+            ]
+        },
+        // ... other starter errors
+    ];
+
+    // Add to Firestore
+    for (const project of starterProjects) {
+        await db.collection('projects').add(project);
+    }
+
+    for (const error of starterErrors) {
+        await db.collection('errors').add(error);
+    }
+}
+
+// Uncomment and run this once to initialize your Firestore with starter data
+// initializeFirestoreData();
 
 
 /* ==================== HAPPY ENDING SECTION START ==================== */
-// HAPPY ENDING data
+// HAPPY ENDING data - Now using Firestore
 
-let successGallery = [
-    {
-        id: 1,
-        title: 'AWS ECS Deployment',
-        date: '2023-06-15',
-        image: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Project+Success'
-    },
-    {
-        id: 2,
-        title: 'Automated Pipeline',
-        date: '2023-08-20',
-        image: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=CI/CD+Pipeline'
-    },
-    {
-        id: 3,
-        title: 'Terraform Deployment',
-        date: '2023-10-10',
-        image: 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Infrastructure+Success'
+// Initialize success items array
+let successItems = [];
+
+// Load success items from Firestore
+async function loadSuccessItems() {
+    try {
+        successItems = await firebaseService.getDocuments('successItems');
+        renderSuccessItems();
+    } catch (error) {
+        console.error("Error loading success items:", error);
+        showToast('Error loading success items', 'error');
     }
-];
+}
+
+// Render success items to the DOM
+function renderSuccessItems() {
+    const successGallery = document.getElementById('successGallery');
+    successGallery.innerHTML = '';
+    
+    if (successItems.length === 0) {
+        successGallery.innerHTML = `
+            <div class="no-success-placeholder">
+                <i class="fas fa-trophy"></i>
+                <p>No success items yet. Add your first achievement!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    successItems.forEach(item => {
+        const successItem = document.createElement('div');
+        successItem.className = 'success-item';
+        successItem.setAttribute('data-id', item.id);
+        
+        successItem.innerHTML = `
+            <div class="success-actions">
+                <button class="success-action-btn edit-success" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="success-action-btn delete-success" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="success-image-container">
+                <img src="${item.imageUrl || 'https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=Project+Success'}" 
+                     class="success-image" alt="${item.title}">
+            </div>
+            <div class="success-info">
+                <h3 class="success-title">${item.title}</h3>
+                <p class="success-date">Completed: ${formatDate(item.date)}</p>
+            </div>
+        `;
+        
+        successGallery.appendChild(successItem);
+    });
+    
+    // Add event listeners
+    document.querySelectorAll('.edit-success').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const itemId = btn.closest('.success-item').getAttribute('data-id');
+            openSuccessEditor(itemId);
+        });
+    });
+    
+    document.querySelectorAll('.delete-success').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const itemId = btn.closest('.success-item').getAttribute('data-id');
+            deleteSuccessItem(itemId);
+        });
+    });
+}
+
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return 'Unknown date';
+    
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+        return dateString; // Return the original string if invalid
+    }
+    
+    return date.toLocaleDateString(undefined, options);
+}
+
+// Open success editor modal
+async function openSuccessEditor(itemId = null) {
+    const modal = document.getElementById('successEditorModal');
+    const titleInput = document.getElementById('successTitle');
+    const dateInput = document.getElementById('successDate');
+    const imagePreview = document.getElementById('successImagePreview');
+    const uploadContainer = document.getElementById('successUploadContainer');
+    
+    // Reset form
+    titleInput.value = '';
+    dateInput.value = '';
+    imagePreview.style.display = 'none';
+    imagePreview.src = '';
+    
+    // Set current date as default
+    dateInput.value = new Date().toISOString().split('T')[0];
+    
+    // If editing existing item, populate form
+    if (itemId) {
+        const item = successItems.find(i => i.id === itemId);
+        if (item) {
+            document.getElementById('successEditorTitle').textContent = 'Edit Success Item';
+            titleInput.value = item.title;
+            dateInput.value = item.date || new Date().toISOString().split('T')[0];
+            
+            if (item.imageUrl) {
+                imagePreview.src = item.imageUrl;
+                imagePreview.style.display = 'block';
+            }
+        }
+    } else {
+        document.getElementById('successEditorTitle').textContent = 'Add New Success Item';
+    }
+    
+    // Store the current item ID in the form
+    modal.setAttribute('data-current-item', itemId || '');
+    
+    // Setup image upload
+    uploadContainer.addEventListener('click', () => {
+        document.getElementById('successImageUpload').click();
+    });
+    
+    // Show the modal
+    modal.style.display = 'block';
+}
+
+// Handle success image upload
+document.getElementById('successImageUpload').addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+            const imagePreview = document.getElementById('successImagePreview');
+            imagePreview.src = event.target.result;
+            imagePreview.style.display = 'block';
+        };
+        
+        reader.readAsDataURL(file);
+    }
+});
+
+// Save success item
+document.getElementById('saveSuccessBtn').addEventListener('click', async function() {
+    const modal = document.getElementById('successEditorModal');
+    const itemId = modal.getAttribute('data-current-item');
+    const title = document.getElementById('successTitle').value.trim();
+    const date = document.getElementById('successDate').value;
+    const imageFile = document.getElementById('successImageUpload').files[0];
+    
+    if (!title) {
+        showToast('Please enter a title', 'error');
+        return;
+    }
+    
+    try {
+        let imageUrl = '';
+        
+        // Upload image if new file was selected
+        if (imageFile) {
+            const filePath = `successItems/${Date.now()}_${imageFile.name}`;
+            imageUrl = await firebaseService.uploadFile(imageFile, filePath);
+        } else if (itemId) {
+            // Keep existing image if editing and no new file was selected
+            const existingItem = successItems.find(i => i.id === itemId);
+            if (existingItem) {
+                imageUrl = existingItem.imageUrl || '';
+            }
+        }
+        
+        const successData = {
+            title,
+            date,
+            imageUrl,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        if (itemId) {
+            // Update existing item
+            await firebaseService.updateDocument('successItems', itemId, successData);
+            showToast('Success item updated!', 'success');
+        } else {
+            // Add new item
+            successData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            await firebaseService.addDocument('successItems', successData);
+            showToast('Success item added!', 'success');
+        }
+        
+        // Refresh the list
+        await loadSuccessItems();
+        modal.style.display = 'none';
+    } catch (error) {
+        console.error("Error saving success item:", error);
+        showToast('Error saving success item', 'error');
+    }
+});
+
+// Delete success item
+async function deleteSuccessItem(itemId) {
+    if (!confirm('Are you sure you want to delete this success item?')) return;
+    
+    try {
+        await firebaseService.deleteDocument('successItems', itemId);
+        showToast('Success item deleted', 'success');
+        await loadSuccessItems();
+    } catch (error) {
+        console.error("Error deleting success item:", error);
+        showToast('Error deleting success item', 'error');
+    }
+}
+
+// Cancel editing
+document.getElementById('cancelSuccessBtn').addEventListener('click', function() {
+    document.getElementById('successEditorModal').style.display = 'none';
+});
+
+// Add new success item button
+document.getElementById('addSuccessBtn').addEventListener('click', function() {
+    openSuccessEditor();
+});
+
+// Upload success image button
+document.getElementById('uploadSuccessBtn').addEventListener('click', function() {
+    document.getElementById('successUpload').click();
+});
+
+// Handle success image upload (multiple)
+document.getElementById('successUpload').addEventListener('change', async function(e) {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    try {
+        showToast('Uploading images...', 'info');
+        
+        // Upload each file and create a success item
+        for (let i = 0; i < e.target.files.length; i++) {
+            const file = e.target.files[i];
+            const filePath = `successItems/${Date.now()}_${file.name}`;
+            const imageUrl = await firebaseService.uploadFile(file, filePath);
+            
+            await firebaseService.addDocument('successItems', {
+                title: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
+                imageUrl,
+                date: new Date().toISOString().split('T')[0],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+        
+        showToast(`${e.target.files.length} success items added!`, 'success');
+        await loadSuccessItems();
+    } catch (error) {
+        console.error("Error uploading success images:", error);
+        showToast('Error uploading images', 'error');
+    }
+});
+
+// Initialize the success items when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadSuccessItems();
+});
+
+/* ==================== HAPPY ENDING SECTION END ==================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Navigation functionality
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -124,12 +389,24 @@ document.querySelectorAll('.nav-link').forEach(link => {
                 top: 0,
                 behavior: 'smooth'
             });
+            
+            // Log navigation to Firebase Analytics
+            firebase.analytics().logEvent('navigate_home');
         } else {
             const section = document.getElementById(sectionId);
             if (section) {
                 section.classList.add('active');
                 // Scroll to the section
                 section.scrollIntoView({ behavior: 'smooth' });
+                
+                // Log section view to Firebase Analytics
+                firebase.analytics().logEvent('view_section', {
+                    section_id: sectionId,
+                    section_name: this.querySelector('span').textContent
+                });
+                
+                // Load section data from Firestore if needed
+                loadSectionData(sectionId);
             }
         }
         
@@ -138,427 +415,74 @@ document.querySelectorAll('.nav-link').forEach(link => {
             navLink.classList.remove('active');
         });
         this.classList.add('active');
+        
+        // Save current section to Firestore (if user is authenticated)
+        saveCurrentSection(sectionId);
     });
 });
 
-// Gallery functionality
-let currentGalleryImages = [];
-let currentGalleryIndex = 0;
-
-function setupGallery(images) {
-    currentGalleryImages = images;
-    currentGalleryIndex = 0;
-    
-    const galleryMainImage = document.getElementById('galleryMainImage');
-    const galleryThumbnails = document.getElementById('galleryThumbnails');
-    
-    // Clear existing thumbnails
-    galleryThumbnails.innerHTML = '';
-    
-    if (images.length === 0) {
-        galleryMainImage.src = 'https://via.placeholder.com/800x500/333/666?text=No+Images';
-        return;
+// Load section-specific data from Firestore
+async function loadSectionData(sectionId) {
+    try {
+        const db = firebase.firestore();
+        
+        switch(sectionId) {
+            case 'projects':
+                // Load projects data
+                const projectsSnapshot = await db.collection('projects').get();
+                // Process projects data as needed
+                break;
+            case 'tech-tutorials':
+                // Load tutorials data
+                const tutorialsSnapshot = await db.collection('tutorials').get();
+                // Process tutorials data as needed
+                break;
+            // Add cases for other sections as needed
+        }
+    } catch (error) {
+        console.error("Error loading section data: ", error);
     }
-    
-    // Set main image
-    galleryMainImage.src = images[0];
-    
-    // Create thumbnails
-    images.forEach((img, index) => {
-        const thumbnail = document.createElement('img');
-        thumbnail.src = img;
-        thumbnail.classList.add('gallery-thumbnail');
-        if (index === 0) thumbnail.classList.add('active');
-        
-        thumbnail.addEventListener('click', () => {
-            currentGalleryIndex = index;
-            updateGallery();
-        });
-        
-        galleryThumbnails.appendChild(thumbnail);
-    });
-    
-    // Show/hide navigation buttons based on image count
-    document.getElementById('prevBtn').style.display = images.length > 1 ? 'block' : 'none';
-    document.getElementById('nextBtn').style.display = images.length > 1 ? 'block' : 'none';
-    
-    // Show/hide admin controls based on admin status
-    document.getElementById('galleryActions').style.display = isAdmin ? 'flex' : 'none';
 }
 
-function updateGallery() {
-    const galleryMainImage = document.getElementById('galleryMainImage');
-    const thumbnails = document.querySelectorAll('.gallery-thumbnail');
-    
-    galleryMainImage.src = currentGalleryImages[currentGalleryIndex];
-    
-    // Update active thumbnail
-    thumbnails.forEach((thumb, index) => {
-        if (index === currentGalleryIndex) {
-            thumb.classList.add('active');
-        } else {
-            thumb.classList.remove('active');
+// Save current section to user's preferences in Firestore
+async function saveCurrentSection(sectionId) {
+    try {
+        const auth = firebase.auth();
+        if (auth.currentUser) {
+            const db = firebase.firestore();
+            await db.collection('userPreferences').doc(auth.currentUser.uid).set({
+                lastVisitedSection: sectionId,
+                lastVisit: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
         }
-    });
+    } catch (error) {
+        console.error("Error saving current section: ", error);
+    }
 }
 
-// Gallery navigation
-document.getElementById('prevBtn').addEventListener('click', () => {
-    currentGalleryIndex = (currentGalleryIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
-    updateGallery();
-});
-
-document.getElementById('nextBtn').addEventListener('click', () => {
-    currentGalleryIndex = (currentGalleryIndex + 1) % currentGalleryImages.length;
-    updateGallery();
-});
-
-// Image upload in gallery (admin protected)
-document.getElementById('galleryUploadInput').addEventListener('change', function(e) {
-    if (!isAdmin) {
-        showToast('Admin access required', 'error');
-        return;
-    }
-    
-    if (e.target.files) {
-        handleImageUpload(e.target.files, true);
-    }
-});
-
-// Delete image in gallery (admin protected)
-document.getElementById('deleteImageBtn').addEventListener('click', function() {
-    if (!isAdmin) {
-        showToast('Admin access required', 'error');
-        return;
-    }
-    
-    if (currentGalleryImages.length > 0) {
-        if (confirm('Delete this image?')) {
-            currentGalleryImages.splice(currentGalleryIndex, 1);
-            setupGallery(currentGalleryImages);
-            showToast('Image deleted successfully!', 'success');
-        }
-    }
-});
-
-// Copy image in gallery
-document.getElementById('copyImageBtn').addEventListener('click', function() {
-    if (currentGalleryImages.length > 0) {
-        const currentImage = currentGalleryImages[currentGalleryIndex];
-        navigator.clipboard.writeText(currentImage)
-            .then(() => {
-                showToast('Image URL copied to clipboard!', 'success');
-            })
-            .catch(err => {
-                showToast('Failed to copy image URL', 'error');
-                console.error('Failed to copy: ', err);
-            });
-    }
-});
-
-// Open project modal
-function openProjectModal(projectId, editMode = false) {
-    const project = projects.find(p => p.id === projectId);
-    if (!project) return;
-    
-    document.getElementById('modalProjectTitle').textContent = project.title;
-    document.getElementById('modalProjectDescription').textContent = project.description;
-    document.getElementById('modalProjectLink').setAttribute('href', project.link);
-    
-    const techContainer = document.getElementById('modalProjectTech');
-    techContainer.innerHTML = project.technologies.map(tech => 
-        `<span class="tech-tag">${tech}</span>`
-    ).join('');
-    
-    // Setup gallery with admin controls visibility
-    setupGallery(project.images);
-    
-    // Show edit button if in admin mode
-    document.getElementById('editProjectBtn').style.display = isAdmin ? 'block' : 'none';
-    
-    document.getElementById('projectModal').style.display = 'block';
-}
-
-// Close modal
-document.querySelectorAll('.close-modal').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.getElementById('projectModal').style.display = 'none';
-        document.getElementById('projectEditorModal').style.display = 'none';
-    });
-});
-
-// Close modal when clicking outside
-window.addEventListener('click', function(e) {
-    if (e.target === document.getElementById('projectModal')) {
-        document.getElementById('projectModal').style.display = 'none';
-    }
-    if (e.target === document.getElementById('projectEditorModal')) {
-        document.getElementById('projectEditorModal').style.display = 'none';
-    }
-});
-
-// Edit project button (admin protected)
-document.getElementById('editProjectBtn').addEventListener('click', function() {
-    if (!isAdmin) {
-        showToast('Admin access required', 'error');
-        return;
-    }
-    
-    const projectId = document.getElementById('modalProjectTitle').getAttribute('data-id');
-    openProjectEditor(projectId);
-});
-
-// Open project editor (admin protected)
-function openProjectEditor(projectId) {
-    const project = projects.find(p => p.id === projectId);
-    if (!project) return;
-    
-    document.getElementById('projectEditorTitle').textContent = `Edit Project: ${project.title}`;
-    document.getElementById('editProjectTitle').value = project.title;
-    document.getElementById('editProjectDescription').value = project.description;
-    document.getElementById('editProjectLink').value = project.link;
-    
-    // Set current project ID
-    document.getElementById('editProjectTitle').setAttribute('data-id', project.id);
-    
-    // Setup technologies
-    const techContainer = document.getElementById('editorTechTags');
-    techContainer.innerHTML = project.technologies.map(tech => `
-        <span class="tech-tag" style="position: relative; padding-right: 20px;">
-            ${tech}
-            <span class="remove-tech" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); cursor: pointer;">
-                <i class="fas fa-times"></i>
-            </span>
-        </span>
-    `).join('');
-    
-    // Add remove handlers
-    document.querySelectorAll('.remove-tech').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (!isAdmin) {
-                showToast('Admin access required', 'error');
-                return;
-            }
-            
-            const tech = this.parentElement.textContent.trim();
-            const techContainer = document.getElementById('editorTechTags');
-            const tags = Array.from(techContainer.querySelectorAll('.tech-tag'))
-                .map(tag => tag.textContent.trim());
-            
-            const updatedTags = tags.filter(t => t !== tech);
-            techContainer.innerHTML = updatedTags.map(tech => `
-                <span class="tech-tag" style="position: relative; padding-right: 20px;">
-                    ${tech}
-                    <span class="remove-tech" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); cursor: pointer;">
-                        <i class="fas fa-times"></i>
-                    </span>
-                </span>
-            `).join('');
-            
-            // Re-add event listeners
-            document.querySelectorAll('.remove-tech').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (!isAdmin) {
-                        showToast('Admin access required', 'error');
-                        return;
-                    }
-                    
-                    const tech = this.parentElement.textContent.trim();
-                    const techContainer = document.getElementById('editorTechTags');
-                    const tags = Array.from(techContainer.querySelectorAll('.tech-tag'))
-                        .map(tag => tag.textContent.trim());
-                    
-                    const updatedTags = tags.filter(t => t !== tech);
-                    techContainer.innerHTML = updatedTags.map(tech => `
-                        <span class="tech-tag" style="position: relative; padding-right: 20px;">
-                            ${tech}
-                            <span class="remove-tech" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); cursor: pointer;">
-                                <i class="fas fa-times"></i>
-                            </span>
-                        </span>
-                    `).join('');
-                });
-            });
-        });
-    });
-    
-    // Setup image gallery in editor with admin controls
-    const editorGallery = document.getElementById('editorImageGallery');
-    editorGallery.innerHTML = project.images.map((img, index) => `
-        <div class="image-thumbnail">
-            <img src="${img}" style="width: 100%; height: 120px; object-fit: cover;">
-            <div class="image-thumbnail-actions">
-                <button class="image-thumbnail-btn view-image" data-index="${index}">
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button class="image-thumbnail-btn delete-image" data-index="${index}" style="display: ${isAdmin ? 'inline-block' : 'none'}">
-                    <i class="fas fa-trash"></i>
-                </button>
-                <button class="image-thumbnail-btn copy-image" data-index="${index}">
-                    <i class="fas fa-copy"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
-    
-    // Add event listeners for image actions
-    document.querySelectorAll('.view-image').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            viewImageInEditor(project.images[index]);
-        });
-    });
-    
-    document.querySelectorAll('.delete-image').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (!isAdmin) {
-                showToast('Admin access required', 'error');
-                return;
-            }
-            
-            const index = parseInt(this.getAttribute('data-index'));
-            if (confirm('Delete this image?')) {
-                project.images.splice(index, 1);
-                openProjectEditor(project.id); // Refresh editor
-                showToast('Image deleted successfully!', 'success');
-            }
-        });
-    });
-    
-    document.querySelectorAll('.copy-image').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            const imageUrl = project.images[index];
-            navigator.clipboard.writeText(imageUrl)
-                .then(() => {
-                    showToast('Image URL copied to clipboard!', 'success');
-                })
-                .catch(err => {
-                    showToast('Failed to copy image URL', 'error');
-                    console.error('Failed to copy: ', err);
-                });
-        });
-    });
-    
-    // Image upload in editor (admin protected)
-    document.getElementById('editorImageUpload').addEventListener('change', function(e) {
-        if (!isAdmin) {
-            showToast('Admin access required', 'error');
-            return;
-        }
-        
-        if (e.target.files) {
-            handleImageUpload(e.target.files, false, project);
-        }
-    });
-    
-    // Drag and drop for editor (admin protected)
-    const editorUploadContainer = document.getElementById('editorUploadContainer');
-    
-    editorUploadContainer.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        editorUploadContainer.style.borderColor = 'var(--accent)';
-    });
-    
-    editorUploadContainer.addEventListener('dragleave', () => {
-        editorUploadContainer.style.borderColor = 'var(--primary)';
-    });
-    
-    editorUploadContainer.addEventListener('drop', (e) => {
-        e.preventDefault();
-        editorUploadContainer.style.borderColor = 'var(--primary)';
-        
-        if (!isAdmin) {
-            showToast('Admin access required', 'error');
-            return;
-        }
-        
-        if (e.dataTransfer.files) {
-            handleImageUpload(e.dataTransfer.files, false, project);
-        }
-    });
-    
-    // Click to upload (admin protected)
-    editorUploadContainer.addEventListener('click', () => {
-        if (!isAdmin) {
-            showToast('Admin access required', 'error');
-            return;
-        }
-        
-        document.getElementById('editorImageUpload').click();
-    });
-    
-    // Show the editor modal
-    document.getElementById('projectModal').style.display = 'none';
-    document.getElementById('projectEditorModal').style.display = 'block';
-}
-
-// View image in editor (full screen)
-function viewImageInEditor(src) {
-    const viewer = document.createElement('div');
-    viewer.style.position = 'fixed';
-    viewer.style.top = '0';
-    viewer.style.left = '0';
-    viewer.style.width = '100%';
-    viewer.style.height = '100%';
-    viewer.style.backgroundColor = 'rgba(0,0,0,0.9)';
-    viewer.style.display = 'flex';
-    viewer.style.alignItems = 'center';
-    viewer.style.justifyContent = 'center';
-    viewer.style.zIndex = '2000';
-    viewer.style.cursor = 'pointer';
-    
-    const img = document.createElement('img');
-    img.src = src;
-    img.style.maxWidth = '90%';
-    img.style.maxHeight = '90%';
-    img.style.objectFit = 'contain';
-    
-    viewer.appendChild(img);
-    document.body.appendChild(viewer);
-    
-    viewer.addEventListener('click', () => {
-        document.body.removeChild(viewer);
-    });
-}
-
-// Handle image uploads (admin protected)
-function handleImageUpload(files, forGallery = false, project = null) {
-    if (!isAdmin) {
-        showToast('Admin access required', 'error');
-        return;
-    }
-    
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    let uploadedCount = 0;
-    
-    Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/') && validImageTypes.includes(file.type)) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                if (forGallery) {
-                    // For gallery in view mode
-                    currentGalleryImages.push(event.target.result);
-                    setupGallery(currentGalleryImages);
-                } else if (project) {
-                    // For editor mode
-                    project.images.push(event.target.result);
-                    openProjectEditor(project.id); // Refresh editor
+// Initialize last visited section on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const auth = firebase.auth();
+        if (auth.currentUser) {
+            const db = firebase.firestore();
+            const prefDoc = await db.collection('userPreferences').doc(auth.currentUser.uid).get();
+            if (prefDoc.exists) {
+                const lastSection = prefDoc.data().lastVisitedSection;
+                if (lastSection && lastSection !== 'home') {
+                    const navLink = document.querySelector(`.nav-link[data-section="${lastSection}"]`);
+                    if (navLink) navLink.click();
                 }
-                uploadedCount++;
-                
-                if (uploadedCount === files.length) {
-                    showToast(`${uploadedCount} image(s) uploaded successfully!`, 'success');
-                }
-            };
-            reader.readAsDataURL(file);
-        } else {
-            showToast('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
+            }
         }
-    });
-}
+    } catch (error) {
+        console.error("Error initializing last section: ", error);
+    }
+});
 
-/* ==================== HAPPY ENDING SECTION END ==================== */
+
+
+
 
 
 
@@ -1150,59 +1074,73 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
-
-
-
-
-
 // ADMIN CONTROL SYSTEM AND PASSWORD
 // Admin state management
 let isAdmin = false;
-const ADMIN_PASSWORD = 'melvin'; // In production, use a more secure method
+const ADMIN_PASSWORD = 'melvin'; // In production, use Firebase Authentication
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    checkAdminStatus();
+document.addEventListener('DOMContentLoaded', async function() {
+    await checkAdminStatus();
     setupNavigation();
-    renderProjects();
-    renderErrors();
-    renderSuccessGallery();
+    await renderProjects();
+    await renderErrors();
+    await renderSuccessGallery();
     setupResumeFunctionality();
     setupTechTutorials();
     setupEventListeners();
 });
 
-// Check admin status from localStorage
-function checkAdminStatus() {
-    const adminSession = localStorage.getItem('adminSession');
-    if (adminSession === ADMIN_PASSWORD) {
-        isAdmin = true;
-        activateAdminFeatures();
+// Check admin status from Firebase Auth (placeholder - implement proper auth later)
+async function checkAdminStatus() {
+    try {
+        // In a real implementation, you would check Firebase Auth here
+        const adminSession = localStorage.getItem('adminSession');
+        if (adminSession === ADMIN_PASSWORD) {
+            isAdmin = true;
+            activateAdminFeatures();
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        return false;
     }
 }
+
 // Toggle Admin Panel
-// Admin toggle functionality
-document.getElementById('adminToggle').addEventListener('click', function() {
+document.getElementById('adminToggle').addEventListener('click', async function() {
     if (!isAdmin) {
         const password = prompt('Enter admin password:');
         if (password === ADMIN_PASSWORD) {
-            localStorage.setItem('adminSession', ADMIN_PASSWORD);
-            isAdmin = true;
-            activateAdminFeatures();
-            showMessage('Admin mode activated', 'success');
+            try {
+                // In production, use Firebase Auth sign-in here
+                localStorage.setItem('adminSession', ADMIN_PASSWORD);
+                isAdmin = true;
+                activateAdminFeatures();
+                showMessage('Admin mode activated', 'success');
+            } catch (error) {
+                showMessage('Authentication failed', 'error');
+                console.error("Auth error:", error);
+            }
         } else {
             showMessage('Invalid password', 'error');
         }
     } else {
-        isAdmin = false;
-        localStorage.removeItem('adminSession');
-        deactivateAdminFeatures();
-        showMessage('Admin mode deactivated', 'success');
+        try {
+            // In production, use Firebase Auth sign-out here
+            localStorage.removeItem('adminSession');
+            isAdmin = false;
+            deactivateAdminFeatures();
+            showMessage('Admin mode deactivated', 'success');
+        } catch (error) {
+            showMessage('Logout failed', 'error');
+            console.error("Logout error:", error);
+        }
     }
 });
 
+// Activate admin features
 function activateAdminFeatures() {
     // Show admin panel
     document.getElementById('adminPanel').style.display = 'block';
@@ -1228,6 +1166,7 @@ function activateAdminFeatures() {
     enableContentEditing();
 }
 
+// Deactivate admin features
 function deactivateAdminFeatures() {
     // Hide admin panel
     document.getElementById('adminPanel').style.display = 'none';
@@ -1253,6 +1192,7 @@ function deactivateAdminFeatures() {
     disableContentEditing();
 }
 
+// Enable content editing
 function enableContentEditing() {
     if (!isAdmin) return;
     
@@ -1270,6 +1210,7 @@ function enableContentEditing() {
     });
 }
 
+// Disable content editing
 function disableContentEditing() {
     // Remove editable attributes
     document.querySelectorAll('[contenteditable="true"]').forEach(element => {
@@ -1290,13 +1231,13 @@ document.getElementById('editProfile').addEventListener('click', function() {
     alert('Profile editor will open here');
 });
 
-document.getElementById('addProject').addEventListener('click', function() {
+document.getElementById('addProject').addEventListener('click', async function() {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
     }
     // Open project editor in create mode
-    openProjectEditor(null, true);
+    await openProjectEditor(null, true);
 });
 
 document.getElementById('editContent').addEventListener('click', function() {
@@ -1312,11 +1253,6 @@ document.getElementById('editContent').addEventListener('click', function() {
         enableContentEditing();
         showMessage('Content editing enabled', 'info');
     }
-});
-
-// Initialize admin status on page load
-document.addEventListener('DOMContentLoaded', function() {
-    checkAdminStatus();
 });
 
 // Add technology in editor
@@ -1378,13 +1314,13 @@ document.getElementById('addTechBtn').addEventListener('click', function() {
 });
 
 // Save project in editor
-document.getElementById('saveProjectBtn').addEventListener('click', function() {
+document.getElementById('saveProjectBtn').addEventListener('click', async function() {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
     }
 
-    const projectId = parseInt(document.getElementById('editProjectTitle').getAttribute('data-id'));
+    const projectId = document.getElementById('editProjectTitle').getAttribute('data-id');
     const title = document.getElementById('editProjectTitle').value.trim();
     const description = document.getElementById('editProjectDescription').value.trim();
     const link = document.getElementById('editProjectLink').value.trim();
@@ -1399,41 +1335,54 @@ document.getElementById('saveProjectBtn').addEventListener('click', function() {
         return;
     }
     
-    const projectIndex = projects.findIndex(p => p.id === projectId);
-    if (projectIndex !== -1) {
-        projects[projectIndex].title = title;
-        projects[projectIndex].description = description;
-        projects[projectIndex].link = link || 'https://github.com/melvinsamuel070';
-        projects[projectIndex].technologies = technologies;
+    try {
+        const projectData = {
+            title,
+            description,
+            link: link || 'https://github.com/melvinsamuel070',
+            technologies,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (projectId) {
+            // Update existing project
+            await firebaseService.updateProject(projectId, projectData);
+            showMessage('Project updated successfully!', 'success');
+        } else {
+            // Add new project
+            await firebaseService.addProject(projectData);
+            showMessage('Project created successfully!', 'success');
+        }
         
-        // Images are already updated in the project object
-        
-        // Update the projects grid
-        renderProjects();
-        
-        // Close the editor
+        // Close the editor and refresh projects
         document.getElementById('projectEditorModal').style.display = 'none';
-        
-        // Show success message
-        showMessage('Project updated successfully!', 'success');
+        await renderProjects();
+    } catch (error) {
+        console.error("Error saving project:", error);
+        showMessage('Error saving project', 'error');
     }
 });
 
 // Delete project in editor
-document.getElementById('deleteProjectBtn').addEventListener('click', function() {
+document.getElementById('deleteProjectBtn').addEventListener('click', async function() {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
     }
 
-    const projectId = parseInt(document.getElementById('editProjectTitle').getAttribute('data-id'));
+    const projectId = document.getElementById('editProjectTitle').getAttribute('data-id');
     
     if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-        projects = projects.filter(p => p.id !== projectId);
-        renderProjects();
-        document.getElementById('projectEditorModal').style.display = 'none';
-        document.getElementById('projectModal').style.display = 'none';
-        showMessage('Project deleted successfully!', 'success');
+        try {
+            await firebaseService.deleteProject(projectId);
+            document.getElementById('projectEditorModal').style.display = 'none';
+            document.getElementById('projectModal').style.display = 'none';
+            await renderProjects();
+            showMessage('Project deleted successfully!', 'success');
+        } catch (error) {
+            console.error("Error deleting project:", error);
+            showMessage('Error deleting project', 'error');
+        }
     }
 });
 
@@ -1554,32 +1503,17 @@ function setupZoomFunctionality() {
 }
 
 // Add project
-document.getElementById('addProject').addEventListener('click', function() {
+document.getElementById('addProject').addEventListener('click', async function() {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
     }
 
-    // Create a new project object
-    const newProject = {
-        id: projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1,
-        title: 'New Project',
-        description: [],
-        technologies: [],
-        images: [],
-        link: 'https://github.com/melvinsamuel070'
-    };
-    
-    // Add to projects array
-    projects.push(newProject);
-    
-    // Open editor for the new project
-    openProjectEditor(newProject.id);
+    // Open editor for a new project
+    await openProjectEditor(null);
     
     // Close admin panel
     document.getElementById('adminPanel').style.display = 'none';
-    
-    showMessage('New project created!', 'success');
 });
 
 // Edit profile
@@ -1645,48 +1579,55 @@ function setupProjectSliders() {
 }
 
 // Render projects
-function renderProjects() {
-    const projectsGrid = document.querySelector('.projects-grid');
-    projectsGrid.innerHTML = projects.map(project => `
-        <div class="project-card" data-id="${project.id}">
-            <div class="project-image-container">
-                <div class="project-image-slide">
-                    ${project.images.map(img => `
-                        <img src="${img}" alt="${project.title}" class="project-image">
-                    `).join('')}
+async function renderProjects() {
+    try {
+        const projects = await firebaseService.getProjects();
+        const projectsGrid = document.querySelector('.projects-grid');
+        
+        projectsGrid.innerHTML = projects.map(project => `
+            <div class="project-card" data-id="${project.id}">
+                <div class="project-image-container">
+                    <div class="project-image-slide">
+                        ${project.images ? project.images.map(img => `
+                            <img src="${img}" alt="${project.title}" class="project-image">
+                        `).join('') : ''}
+                    </div>
+                    <div class="project-slide-nav">
+                        ${project.images ? project.images.map((_, i) => `
+                            <div class="slide-dot ${i === 0 ? 'active' : ''}"></div>
+                        `).join('') : ''}
+                    </div>
                 </div>
-                <div class="project-slide-nav">
-                    ${project.images.map((_, i) => `
-                        <div class="slide-dot ${i === 0 ? 'active' : ''}"></div>
-                    `).join('')}
+                <div class="project-info">
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-description">${project.description.substring(0, 100)}${project.description.length > 100 ? '...' : ''}</p>
+                    <div class="project-tech">
+                        ${project.technologies ? project.technologies.slice(0, 3).map(tech => `<span class="tech-tag">${tech}</span>`).join('') : ''}
+                        ${project.technologies && project.technologies.length > 3 ? `<span class="tech-tag">+${project.technologies.length - 3} more</span>` : ''}
+                    </div>
+                    <div class="project-actions">
+                        <button class="btn btn-primary view-project" data-id="${project.id}">
+                            ${isAdmin ? '<i class="fas fa-edit"></i> Edit Project' : '<i class="fas fa-eye"></i> View Details'}
+                        </button>
+                        ${isAdmin ? `
+                        <button class="btn btn-outline edit-project" data-id="${project.id}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger delete-project" data-id="${project.id}" style="margin-left: auto;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
-            <div class="project-info">
-                <h3 class="project-title">${project.title}</h3>
-                <p class="project-description">${project.description.substring(0, 100)}${project.description.length > 100 ? '...' : ''}</p>
-                <div class="project-tech">
-                    ${project.technologies.slice(0, 3).map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                    ${project.technologies.length > 3 ? `<span class="tech-tag">+${project.technologies.length - 3} more</span>` : ''}
-                </div>
-                <div class="project-actions">
-                    <button class="btn btn-primary view-project" data-id="${project.id}">
-                        ${isAdmin ? '<i class="fas fa-edit"></i> Edit Project' : '<i class="fas fa-eye"></i> View Details'}
-                    </button>
-                    ${isAdmin ? `
-                    <button class="btn btn-outline edit-project" data-id="${project.id}">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-danger delete-project" data-id="${project.id}" style="margin-left: auto;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    ` : ''}
-                </div>
-            </div>
-        </div>
-    `).join('');
-    
-    setupProjectInteractions();
-    setupProjectSliders();
+        `).join('');
+        
+        setupProjectInteractions();
+        setupProjectSliders();
+    } catch (error) {
+        console.error("Error rendering projects:", error);
+        showMessage('Error loading projects', 'error');
+    }
 }
 
 // Setup project interactions
@@ -1694,7 +1635,7 @@ function setupProjectInteractions() {
     // View project
     document.querySelectorAll('.view-project').forEach(btn => {
         btn.addEventListener('click', function() {
-            const projectId = parseInt(this.getAttribute('data-id'));
+            const projectId = this.getAttribute('data-id');
             openProjectModal(projectId);
         });
     });
@@ -1702,47 +1643,31 @@ function setupProjectInteractions() {
     // Edit project
     if (isAdmin) {
         document.querySelectorAll('.edit-project').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const projectId = parseInt(this.getAttribute('data-id'));
-                openProjectEditor(projectId);
+            btn.addEventListener('click', async function() {
+                const projectId = this.getAttribute('data-id');
+                await openProjectEditor(projectId);
             });
         });
         
         // Delete project
         document.querySelectorAll('.delete-project').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const projectId = parseInt(this.getAttribute('data-id'));
+            btn.addEventListener('click', async function() {
+                const projectId = this.getAttribute('data-id');
                 if (confirm('Delete this project permanently?')) {
-                    projects = projects.filter(p => p.id !== projectId);
-                    renderProjects();
-                    showMessage('Project deleted successfully!', 'success');
+                    try {
+                        await firebaseService.deleteProject(projectId);
+                        await renderProjects();
+                        showMessage('Project deleted successfully!', 'success');
+                    } catch (error) {
+                        console.error("Error deleting project:", error);
+                        showMessage('Error deleting project', 'error');
+                    }
                 }
             });
         });
     }
 }
 
-
-
-
-
-
-
-// empire diagram  (updated to include images)
-function renderErrors() {
-}
-
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    setupZoomFunctionality();
-    renderProjects();
-    renderSuccessGallery();
-    renderErrors();
-    setupWorkshopInteractions();
-    setupEmpireCommunication();
-    setupProjectInteractions();
-    setupProjectSliders();    
-});
 // Workshop interactions
 function setupWorkshopInteractions() {
     // Animate the empire structure on scroll
@@ -1848,143 +1773,160 @@ function showMessage(text, type = 'success') {
 }
 
 // Render success gallery
-function renderSuccessGallery() {
-    const gallery = document.getElementById('successGallery');
-    gallery.innerHTML = successGallery.map(item => `
-        <div class="success-item" data-id="${item.id}">
-            <div class="success-actions" style="display: ${isAdmin ? 'block' : 'none'}">
-                <button class="success-action-btn edit-success" title="Edit">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="success-action-btn delete-success" title="Delete">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="success-image-container">
-                <img src="${item.image}" class="success-image">
-            </div>
-            <div class="success-info">
-                <h3 class="success-title">${item.title}</h3>
-                <p class="success-date">Completed: ${new Date(item.date).toLocaleDateString()}</p>
-            </div>
-        </div>
-    `).join('');
-    
-    // Add event listeners for edit and delete buttons
-    if (isAdmin) {
-        document.querySelectorAll('.edit-success').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const successId = parseInt(this.closest('.success-item').getAttribute('data-id'));
-                openSuccessEditor(successId);
-            });
-        });
+async function renderSuccessGallery() {
+    try {
+        const successItems = await firebaseService.getSuccessItems();
+        const gallery = document.getElementById('successGallery');
         
-        document.querySelectorAll('.delete-success').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const successId = parseInt(this.closest('.success-item').getAttribute('data-id'));
-                if (confirm('Delete this success item?')) {
-                    successGallery = successGallery.filter(item => item.id !== successId);
-                    renderSuccessGallery();
-                    showMessage('Success item deleted!', 'success');
-                }
+        gallery.innerHTML = successItems.map(item => `
+            <div class="success-item" data-id="${item.id}">
+                <div class="success-actions" style="display: ${isAdmin ? 'block' : 'none'}">
+                    <button class="success-action-btn edit-success" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="success-action-btn delete-success" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="success-image-container">
+                    <img src="${item.image}" class="success-image">
+                </div>
+                <div class="success-info">
+                    <h3 class="success-title">${item.title}</h3>
+                    <p class="success-date">Completed: ${new Date(item.date).toLocaleDateString()}</p>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add event listeners for edit and delete buttons
+        if (isAdmin) {
+            document.querySelectorAll('.edit-success').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const successId = this.closest('.success-item').getAttribute('data-id');
+                    openSuccessEditor(successId);
+                });
             });
-        });
+            
+            document.querySelectorAll('.delete-success').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const successId = this.closest('.success-item').getAttribute('data-id');
+                    if (confirm('Delete this success item?')) {
+                        try {
+                            await firebaseService.deleteSuccessItem(successId);
+                            await renderSuccessGallery();
+                            showMessage('Success item deleted!', 'success');
+                        } catch (error) {
+                            console.error("Error deleting success item:", error);
+                            showMessage('Error deleting success item', 'error');
+                        }
+                    }
+                });
+            });
+        }
+    } catch (error) {
+        console.error("Error rendering success gallery:", error);
+        showMessage('Error loading success items', 'error');
     }
 }
 
 // Open success editor
-function openSuccessEditor(successId = null) {
+async function openSuccessEditor(successId = null) {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
     }
 
-    if (successId) {
-        // Edit existing success
-        const success = successGallery.find(item => item.id === successId);
-        if (!success) return;
+    try {
+        if (successId) {
+            // Edit existing success
+            const success = await firebaseService.getSuccessItem(successId);
+            if (!success) return;
+            
+            document.getElementById('successEditorTitle').textContent = `Edit Success: ${success.title}`;
+            document.getElementById('successTitle').value = success.title;
+            document.getElementById('successDate').value = success.date;
+            document.getElementById('successImagePreview').src = success.image;
+            document.getElementById('successImagePreview').style.display = 'block';
+            
+            // Set current success ID
+            document.getElementById('successTitle').setAttribute('data-id', success.id);
+        } else {
+            // Add new success
+            document.getElementById('successEditorTitle').textContent = 'Add New Success';
+            document.getElementById('successTitle').value = '';
+            document.getElementById('successDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('successImagePreview').style.display = 'none';
+            
+            // Clear any existing ID
+            document.getElementById('successTitle').removeAttribute('data-id');
+        }
         
-        document.getElementById('successEditorTitle').textContent = `Edit Success: ${success.title}`;
-        document.getElementById('successTitle').value = success.title;
-        document.getElementById('successDate').value = success.date;
-        document.getElementById('successImagePreview').src = success.image;
-        document.getElementById('successImagePreview').style.display = 'block';
+        // Image upload for success
+        document.getElementById('successImageUpload').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                
+                if (file.type.startsWith('image/') && validImageTypes.includes(file.type)) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('successImagePreview').src = event.target.result;
+                        document.getElementById('successImagePreview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showMessage('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
+                }
+            }
+        });
         
-        // Set current success ID
-        document.getElementById('successTitle').setAttribute('data-id', success.id);
-    } else {
-        // Add new success
-        document.getElementById('successEditorTitle').textContent = 'Add New Success';
-        document.getElementById('successTitle').value = '';
-        document.getElementById('successDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('successImagePreview').style.display = 'none';
+        // Drag and drop for success image
+        const successUploadContainer = document.getElementById('successUploadContainer');
         
-        // Clear any existing ID
-        document.getElementById('successTitle').removeAttribute('data-id');
+        successUploadContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            successUploadContainer.style.borderColor = 'var(--accent)';
+        });
+        
+        successUploadContainer.addEventListener('dragleave', () => {
+            successUploadContainer.style.borderColor = 'var(--primary)';
+        });
+        
+        successUploadContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            successUploadContainer.style.borderColor = 'var(--primary)';
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                
+                if (file.type.startsWith('image/') && validImageTypes.includes(file.type)) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('successImagePreview').src = event.target.result;
+                        document.getElementById('successImagePreview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showMessage('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
+                }
+            }
+        });
+        
+        // Click to upload
+        successUploadContainer.addEventListener('click', () => {
+            document.getElementById('successImageUpload').click();
+        });
+        
+        // Show the editor modal
+        document.getElementById('successEditorModal').style.display = 'block';
+    } catch (error) {
+        console.error("Error opening success editor:", error);
+        showMessage('Error loading success item', 'error');
     }
-    
-    // Image upload for success
-    document.getElementById('successImageUpload').addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            
-            if (file.type.startsWith('image/') && validImageTypes.includes(file.type)) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('successImagePreview').src = event.target.result;
-                    document.getElementById('successImagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                showMessage('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
-            }
-        }
-    });
-    
-    // Drag and drop for success image
-    const successUploadContainer = document.getElementById('successUploadContainer');
-    
-    successUploadContainer.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        successUploadContainer.style.borderColor = 'var(--accent)';
-    });
-    
-    successUploadContainer.addEventListener('dragleave', () => {
-        successUploadContainer.style.borderColor = 'var(--primary)';
-    });
-    
-    successUploadContainer.addEventListener('drop', (e) => {
-        e.preventDefault();
-        successUploadContainer.style.borderColor = 'var(--primary)';
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            const file = e.dataTransfer.files[0];
-            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            
-            if (file.type.startsWith('image/') && validImageTypes.includes(file.type)) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('successImagePreview').src = event.target.result;
-                    document.getElementById('successImagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                showMessage('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
-            }
-        }
-    });
-    
-    // Click to upload
-    successUploadContainer.addEventListener('click', () => {
-        document.getElementById('successImageUpload').click();
-    });
-    
-    // Show the editor modal
-    document.getElementById('successEditorModal').style.display = 'block';
 }
 
 // Save success
-document.getElementById('saveSuccessBtn').addEventListener('click', function() {
+document.getElementById('saveSuccessBtn').addEventListener('click', async function() {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
@@ -2000,37 +1942,37 @@ document.getElementById('saveSuccessBtn').addEventListener('click', function() {
         return;
     }
     
-    if (successId) {
-        // Update existing success
-        const successIndex = successGallery.findIndex(item => item.id === parseInt(successId));
-        if (successIndex !== -1) {
-            successGallery[successIndex].title = title;
-            successGallery[successIndex].date = date;
-            successGallery[successIndex].image = image;
-        }
-    } else {
-        // Add new success
-        const newId = successGallery.length > 0 ? Math.max(...successGallery.map(item => item.id)) + 1 : 1;
-        successGallery.push({
-            id: newId,
+    try {
+        const successData = {
             title,
             date,
-            image
-        });
+            image,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (successId) {
+            // Update existing success
+            await firebaseService.updateSuccessItem(successId, successData);
+            showMessage('Success item updated!', 'success');
+        } else {
+            // Add new success
+            await firebaseService.addSuccessItem(successData);
+            showMessage('Success item added!', 'success');
+        }
+        
+        // Update the display
+        await renderSuccessGallery();
+        
+        // Close the editor
+        document.getElementById('successEditorModal').style.display = 'none';
+    } catch (error) {
+        console.error("Error saving success item:", error);
+        showMessage('Error saving success item', 'error');
     }
-    
-    // Update the display
-    renderSuccessGallery();
-    
-    // Close the editor
-    document.getElementById('successEditorModal').style.display = 'none';
-    
-    // Show success message
-    showMessage('Success item saved!', 'success');
 });
 
 // Delete success
-document.getElementById('deleteSuccessBtn').addEventListener('click', function() {
+document.getElementById('deleteSuccessBtn').addEventListener('click', async function() {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
@@ -2044,10 +1986,15 @@ document.getElementById('deleteSuccessBtn').addEventListener('click', function()
     }
     
     if (confirm('Are you sure you want to delete this success item? This action cannot be undone.')) {
-        successGallery = successGallery.filter(item => item.id !== parseInt(successId));
-        renderSuccessGallery();
-        document.getElementById('successEditorModal').style.display = 'none';
-        showMessage('Success item deleted!', 'success');
+        try {
+            await firebaseService.deleteSuccessItem(successId);
+            await renderSuccessGallery();
+            document.getElementById('successEditorModal').style.display = 'none';
+            showMessage('Success item deleted!', 'success');
+        } catch (error) {
+            console.error("Error deleting success item:", error);
+            showMessage('Error deleting success item', 'error');
+        }
     }
 });
 
@@ -2076,7 +2023,7 @@ document.getElementById('uploadSuccessBtn').addEventListener('click', function()
     document.getElementById('successUpload').click();
 });
 
-document.getElementById('successUpload').addEventListener('change', function(e) {
+document.getElementById('successUpload').addEventListener('change', async function(e) {
     if (!isAdmin) {
         showMessage('Admin access required', 'error');
         return;
@@ -2086,31 +2033,49 @@ document.getElementById('successUpload').addEventListener('change', function(e) 
         const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         let uploadedCount = 0;
         
-        Array.from(e.target.files).forEach(file => {
+        for (const file of Array.from(e.target.files)) {
             if (file.type.startsWith('image/') && validImageTypes.includes(file.type)) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const newId = successGallery.length > 0 ? Math.max(...successGallery.map(i => i.id)) + 1 : 1;
-                    successGallery.push({
-                        id: newId,
-                        title: `Success ${newId}`,
+                try {
+                    // Upload image to Firebase Storage
+                    const path = `success_images/${Date.now()}_${file.name}`;
+                    const downloadURL = await firebaseService.uploadFile(file, path);
+                    
+                    // Create success item in Firestore
+                    const successData = {
+                        title: `Success ${Date.now()}`,
                         date: new Date().toISOString().split('T')[0],
-                        image: event.target.result
-                    });
+                        image: downloadURL,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
                     
+                    await firebaseService.addSuccessItem(successData);
                     uploadedCount++;
-                    
-                    if (uploadedCount === e.target.files.length) {
-                        renderSuccessGallery();
-                        showMessage(`${uploadedCount} success image(s) added!`, 'success');
-                    }
-                };
-                reader.readAsDataURL(file);
+                } catch (error) {
+                    console.error("Error uploading success image:", error);
+                    showMessage('Error uploading image', 'error');
+                }
             } else {
                 showMessage('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
             }
-        });
+        }
+        
+        if (uploadedCount > 0) {
+            await renderSuccessGallery();
+            showMessage(`${uploadedCount} success image(s) added!`, 'success');
+        }
     }
+});
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    setupZoomFunctionality();
+    renderProjects();
+    renderSuccessGallery();
+    renderErrors();
+    setupWorkshopInteractions();
+    setupEmpireCommunication();
+    setupProjectInteractions();
+    setupProjectSliders();    
 });
 
 
@@ -2131,15 +2096,8 @@ document.getElementById('successUpload').addEventListener('change', function(e) 
 
 
 
-
-
-// ERRO SECTION
-
-// Enhanced Error Documentation System with Container Support
+// Enhanced Error Documentation System with Firebase Integration
 document.addEventListener('DOMContentLoaded', function() {
-    // Global errors array
-    let errors = [];
-
     // DOM Elements
     const errorsContainer = document.getElementById('errorsContainer');
     const editorModal = document.getElementById('errorEditorModal');
@@ -2156,121 +2114,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const errorUploadContainer = document.getElementById('errorUploadContainer');
     const closeModalBtn = document.querySelector('.close-modal');
 
-    // Container mode flag
-    let isContainerized = false;
+    // Current editing error ID
+    let currentErrorId = null;
+    // Array to store temporary uploaded images
+    let tempUploadedImages = [];
 
     // Initialize
-    checkContainerEnvironment();
     loadErrors();
     setupEventListeners();
 
-    // Check if we're in a containerized environment
-    function checkContainerEnvironment() {
-        isContainerized = document.body.classList.contains('containerized-environment') || 
-                        window.location.href.includes('container=true');
-    }
-
     // Function to manually add an error
-    function addManualError(errorData) {
-        // Validate and set default values
-        if (!errorData.id) errorData.id = Date.now().toString();
-        if (!errorData.date) errorData.date = new Date().toISOString().split('T')[0];
-        if (!errorData.images) errorData.images = [];
-        
-        // Basic validation for required fields
-        if (!errorData.title || !errorData.description || !errorData.solution) {
-            console.error('Error: Missing required fields (title, description, or solution)');
+    async function addManualError(errorData) {
+        try {
+            // Validate and set default values
+            if (!errorData.date) errorData.date = new Date().toISOString().split('T')[0];
+            if (!errorData.images) errorData.images = [];
+            
+            // Basic validation for required fields
+            if (!errorData.title || !errorData.description || !errorData.solution) {
+                console.error('Error: Missing required fields (title, description, or solution)');
+                return false;
+            }
+
+            // Add to Firestore
+            const docRef = await firebaseService.addDocument('errors', errorData);
+            
+            // Refresh the display
+            await loadErrors();
+            
+            return docRef.id;
+        } catch (error) {
+            console.error('Error adding manual error:', error);
+            showMessage('Failed to add error documentation', 'error');
             return false;
         }
-
-        // Add to errors array
-        errors.push(errorData);
-        
-        // Save to storage
-        saveErrorsToStorage();
-        
-        // Refresh the display
-        renderErrors();
-        
-        return errorData.id;
     }
 
-    // Load errors from storage (localStorage or container storage)
-    function loadErrors() {
-        if (isContainerized) {
-            // Try to load from container storage
-            if (window.containerStorage && typeof window.containerStorage.getErrors === 'function') {
-                window.containerStorage.getErrors()
-                    .then(containerErrors => {
-                        errors = containerErrors || [];
-                        renderErrors();
-                    })
-                    .catch(err => {
-                        console.error('Error loading from container storage:', err);
-                        errors = [];
-                        renderErrors();
-                    });
-            } else {
-                // Fallback to localStorage if container storage not available
-                loadFromLocalStorage();
-            }
-        } else {
-            loadFromLocalStorage();
+    // Load errors from Firestore
+    async function loadErrors() {
+        try {
+            const errors = await firebaseService.getDocuments('errors');
+            renderErrors(errors);
+        } catch (error) {
+            console.error('Error loading errors:', error);
+            showMessage('Failed to load error documentation', 'error');
+            renderErrors([]);
         }
     }
 
-    function loadFromLocalStorage() {
-        const savedErrors = localStorage.getItem('errorDocumentation');
-        if (savedErrors) {
-            try {
-                errors = JSON.parse(savedErrors) || [];
-                renderErrors();
-            } catch (e) {
-                console.error('Error parsing saved errors:', e);
-                errors = [];
-            }
-        }
-    }
-
-    // Save errors to appropriate storage
-    function saveErrorsToStorage() {
-        if (isContainerized && window.containerStorage && typeof window.containerStorage.saveErrors === 'function') {
-            // Save to container storage
-            window.containerStorage.saveErrors(errors)
-                .then(() => {
-                    // Also save to localStorage as backup
-                    try {
-                        localStorage.setItem('errorDocumentation', JSON.stringify(errors));
-                    } catch (e) {
-                        console.error('Error saving to localStorage:', e);
-                    }
-                })
-                .catch(err => {
-                    console.error('Error saving to container storage:', err);
-                    // Fallback to localStorage
-                    try {
-                        localStorage.setItem('errorDocumentation', JSON.stringify(errors));
-                    } catch (e) {
-                        console.error('Error saving to localStorage:', e);
-                        showMessage('Warning: Could not save data to storage. Some data may be lost.', 'warning');
-                    }
-                });
-        } else {
-            // Save to localStorage
-            try {
-                localStorage.setItem('errorDocumentation', JSON.stringify(errors));
-            } catch (e) {
-                console.error('Error saving errors to storage:', e);
-                showMessage('Warning: Could not save all data to local storage. Some data may be lost.', 'warning');
-            }
-        }
-    }
-
-    // Render all errors in the new format
-    function renderErrors() {
+    // Render all errors
+    function renderErrors(errors) {
         errorsContainer.innerHTML = '';
         
-        if (errors.length === 0) {
+        if (!errors || errors.length === 0) {
             errorsContainer.innerHTML = `
                 <div class="no-errors-placeholder">
                     <i class="fas fa-exclamation-circle"></i>
@@ -2393,7 +2289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Open editor (for new or existing error)
-    function openEditor(errorId = null) {
+    async function openEditor(errorId = null) {
         // Check admin status
         if (localStorage.getItem('adminSession') !== 'melvin') {
             showMessage('Admin access required', 'error');
@@ -2407,25 +2303,31 @@ document.addEventListener('DOMContentLoaded', function() {
         errorSolutionInput.value = '';
         errorImageGallery.innerHTML = '<div class="no-images-message">No images uploaded</div>';
         deleteErrorBtn.style.display = 'none';
-        errorTitleInput.removeAttribute('data-id');
+        currentErrorId = null;
+        tempUploadedImages = [];
 
         // If editing existing error
         if (errorId) {
-            const error = errors.find(e => e.id === errorId);
-            if (error) {
-                errorTitleInput.value = error.title;
-                errorDateInput.value = error.date;
-                errorDescInput.value = error.description;
-                errorSolutionInput.value = error.solution;
-                errorTitleInput.dataset.id = error.id;
-                deleteErrorBtn.style.display = 'block';
+            try {
+                const errorDoc = await firebaseService.getDocument('errors', errorId);
+                if (errorDoc) {
+                    errorTitleInput.value = errorDoc.title;
+                    errorDateInput.value = errorDoc.date;
+                    errorDescInput.value = errorDoc.description;
+                    errorSolutionInput.value = errorDoc.solution;
+                    currentErrorId = errorId;
+                    deleteErrorBtn.style.display = 'block';
 
-                if (error.images && error.images.length > 0) {
-                    errorImageGallery.innerHTML = '';
-                    error.images.forEach(img => {
-                        addImageToGallery(img);
-                    });
+                    if (errorDoc.images && errorDoc.images.length > 0) {
+                        errorImageGallery.innerHTML = '';
+                        errorDoc.images.forEach(img => {
+                            addImageToGallery(img);
+                        });
+                    }
                 }
+            } catch (error) {
+                console.error('Error loading error document:', error);
+                showMessage('Failed to load error for editing', 'error');
             }
         }
 
@@ -2443,8 +2345,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Save error
-    function saveError() {
-        const errorId = errorTitleInput.dataset.id || Date.now().toString();
+    async function saveError() {
         const title = errorTitleInput.value.trim();
         const date = errorDateInput.value;
         const description = errorDescInput.value.trim();
@@ -2483,36 +2384,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Create/update error object
         const errorData = {
-            id: errorId,
             title,
             date,
             description,
             solution,
-            images
+            images,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        // Check if updating existing error
-        const existingIndex = errors.findIndex(e => e.id === errorId);
-        if (existingIndex >= 0) {
-            errors[existingIndex] = errorData;
-        } else {
-            errors.push(errorData);
-        }
+        try {
+            // Check if updating existing error
+            if (currentErrorId) {
+                await firebaseService.updateDocument('errors', currentErrorId, errorData);
+                showMessage('Error documentation updated successfully!', 'success');
+            } else {
+                errorData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await firebaseService.addDocument('errors', errorData);
+                showMessage('Error documentation saved successfully!', 'success');
+            }
 
-        // Save to storage and refresh
-        saveErrorsToStorage();
-        renderErrors();
-        closeEditor();
-        showMessage('Error documentation saved successfully!', 'success');
+            // Close modal and refresh
+            closeEditor();
+            await loadErrors();
+        } catch (error) {
+            console.error('Error saving error documentation:', error);
+            showMessage('Failed to save error documentation', 'error');
+        }
     }
 
     // Delete error
-    function deleteError(errorId) {
-        errors = errors.filter(error => error.id !== errorId);
-        saveErrorsToStorage();
-        renderErrors();
-        closeEditor();
-        showMessage('Error documentation deleted', 'success');
+    async function deleteError(errorId) {
+        if (!confirm('Are you sure you want to delete this error documentation?')) {
+            return;
+        }
+
+        try {
+            await firebaseService.deleteDocument('errors', errorId);
+            showMessage('Error documentation deleted', 'success');
+            await loadErrors();
+        } catch (error) {
+            console.error('Error deleting error documentation:', error);
+            showMessage('Failed to delete error documentation', 'error');
+        }
     }
 
     // Close editor
@@ -2639,10 +2552,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Delete button
         deleteErrorBtn.addEventListener('click', function() {
-            if (errorTitleInput.dataset.id) {
-                if (confirm('Are you sure you want to delete this error documentation?')) {
-                    deleteError(errorTitleInput.dataset.id);
-                }
+            if (currentErrorId) {
+                deleteError(currentErrorId);
             }
         });
 
@@ -2761,7 +2672,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// Tech Tutorials Management System with Container Support
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Tech Tutorials Management System with Firebase Integration
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const addTutorialBtn = document.getElementById('addTutorialBtn');
@@ -2810,16 +2734,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let wordFile = null;
     let videoFile = null;
     let tutorials = [];
-    let isContainerized = false;
+    let isAdmin = true; // Set based on your authentication logic
 
     // Initialize the app
     function init() {
-        checkContainerEnvironment();
         loadTutorials();
         setupEventListeners();
         setupDragAndDrop();
         setupRichTextEditor();
-        updateAdminControls(); // Add this to handle admin state
+        updateAdminControls();
     }
 
     // Update UI based on admin state
@@ -2841,45 +2764,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Check if we're in a containerized environment
-    function checkContainerEnvironment() {
-        isContainerized = document.body.classList.contains('containerized-environment') || 
-                        window.location.href.includes('container=true');
-    }
-
-    // Load tutorials from storage (localStorage or container storage)
-    function loadTutorials() {
-        if (isContainerized) {
-            // Try to load from container storage
-            if (window.containerStorage && typeof window.containerStorage.getTutorials === 'function') {
-                window.containerStorage.getTutorials()
-                    .then(containerTutorials => {
-                        if (containerTutorials && containerTutorials.length > 0) {
-                            tutorials = containerTutorials;
-                        } else {
-                            // Load default tutorials if container storage is empty
-                            loadDefaultTutorials();
-                        }
-                        renderTutorials();
-                    })
-                    .catch(err => {
-                        console.error('Error loading from container storage:', err);
-                        loadFromLocalStorage();
-                    });
-            } else {
-                // Fallback to localStorage if container storage not available
-                loadFromLocalStorage();
+    // Load tutorials from Firebase
+    async function loadTutorials() {
+        try {
+            const querySnapshot = await db.collection('tutorials').orderBy('date', 'desc').get();
+            tutorials = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            
+            if (tutorials.length === 0) {
+                // Load default tutorials if none exist
+                await loadDefaultTutorials();
             }
-        } else {
-            loadFromLocalStorage();
+            
+            renderTutorials();
+        } catch (error) {
+            console.error('Error loading tutorials:', error);
+            showMessage('Error loading tutorials', 'error');
         }
     }
 
     // Load default tutorials (for first-time use)
-    function loadDefaultTutorials() {
-        tutorials = [
+    async function loadDefaultTutorials() {
+        const defaultTutorials = [
             {
-                id: 1,
                 title: 'Docker Installation & Setup Guide',
                 date: '2023-06-15',
                 sections: [
@@ -2900,10 +2809,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 wordUrl: null,
                 videoUrl: null,
                 manualContent: null,
-                images: []
+                images: [],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             },
             {
-                id: 2,
                 title: 'Jenkins Installation & Configuration',
                 date: '2023-07-20',
                 sections: [
@@ -2924,10 +2833,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 wordUrl: null,
                 videoUrl: null,
                 manualContent: null,
-                images: []
+                images: [],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             },
             {
-                id: 3,
                 title: 'Kubernetes Cluster Setup',
                 date: '2023-08-10',
                 sections: [
@@ -2948,87 +2857,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 wordUrl: null,
                 videoUrl: null,
                 manualContent: null,
-                images: []
-            }    
+                images: [],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }
         ];
-    }
 
-    function loadFromLocalStorage() {
-        const savedTutorials = localStorage.getItem('techTutorials');
-        if (savedTutorials) {
-            try {
-                tutorials = JSON.parse(savedTutorials);
-                if (!tutorials || !Array.isArray(tutorials)) {
-                    loadDefaultTutorials();
-                }
-            } catch (e) {
-                console.error('Error parsing saved tutorials:', e);
-                loadDefaultTutorials();
-            }
-        } else {
-            loadDefaultTutorials();
+        try {
+            // Add default tutorials to Firestore
+            const batch = db.batch();
+            defaultTutorials.forEach(tutorial => {
+                const docRef = db.collection('tutorials').doc();
+                batch.set(docRef, tutorial);
+            });
+            
+            await batch.commit();
+            await loadTutorials(); // Reload tutorials after adding defaults
+        } catch (error) {
+            console.error('Error adding default tutorials:', error);
         }
-        renderTutorials();
     }
 
-    // Save tutorials to appropriate storage
-    function saveTutorialsToStorage() {
-        if (isContainerized && window.containerStorage && typeof window.containerStorage.saveTutorials === 'function') {
-            // Save to container storage
-            window.containerStorage.saveTutorials(tutorials)
-                .then(() => {
-                    // Also save to localStorage as backup
-                    try {
-                        localStorage.setItem('techTutorials', JSON.stringify(tutorials));
-                    } catch (e) {
-                        console.error('Error saving to localStorage:', e);
+    // Upload file to Firebase Storage
+    async function uploadFile(file, path) {
+        try {
+            const storageRef = storage.ref(path);
+            const uploadTask = storageRef.put(file);
+            
+            return new Promise((resolve, reject) => {
+                uploadTask.on('state_changed', 
+                    null, 
+                    (error) => reject(error),
+                    async () => {
+                        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                        resolve(downloadURL);
                     }
-                })
-                .catch(err => {
-                    console.error('Error saving to container storage:', err);
-                    // Fallback to localStorage
-                    try {
-                        localStorage.setItem('techTutorials', JSON.stringify(tutorials));
-                    } catch (e) {
-                        console.error('Error saving to localStorage:', e);
-                        showMessage('Warning: Could not save data to storage. Some data may be lost.', 'warning');
-                    }
-                });
-        } else {
-            // Save to localStorage
-            try {
-                localStorage.setItem('techTutorials', JSON.stringify(tutorials));
-            } catch (e) {
-                console.error('Error saving tutorials to storage:', e);
-                showMessage('Warning: Could not save all data to local storage. Some data may be lost.', 'warning');
-            }
+                );
+            });
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            throw error;
         }
     }
 
-    // Function to manually add a tutorial
-    function addManualTutorial(tutorialData) {
-        // Validate and set default values
-        if (!tutorialData.id) tutorialData.id = Date.now().toString();
-        if (!tutorialData.date) tutorialData.date = new Date().toISOString().split('T')[0];
-        if (!tutorialData.sections) tutorialData.sections = [];
-        if (!tutorialData.images) tutorialData.images = [];
-        
-        // Basic validation for required fields
-        if (!tutorialData.title) {
-            console.error('Error: Missing required field (title)');
-            return false;
+    // Delete file from Firebase Storage
+    async function deleteFile(url) {
+        try {
+            if (!url) return;
+            
+            // Create a reference to the file to delete
+            const fileRef = storage.refFromURL(url);
+            
+            // Delete the file
+            await fileRef.delete();
+        } catch (error) {
+            console.error('Error deleting file:', error);
+            throw error;
         }
-
-        // Add to tutorials array
-        tutorials.push(tutorialData);
-        
-        // Save to storage
-        saveTutorialsToStorage();
-        
-        // Refresh the display
-        renderTutorials();
-        
-        return tutorialData.id;
     }
 
     // Render all tutorials
@@ -3045,10 +2929,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Sort tutorials by date (newest first)
-        const sortedTutorials = [...tutorials].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        sortedTutorials.forEach(tutorial => {
+        tutorials.forEach(tutorial => {
             tutorialsContainer.appendChild(createTutorialCard(tutorial));
         });
         
@@ -3253,7 +3134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showMessage('Admin access required', 'error');
                     return;
                 }
-                const tutorialId = parseInt(e.target.closest('.btn-edit-tutorial').dataset.id);
+                const tutorialId = e.target.closest('.btn-edit-tutorial').dataset.id;
                 openTutorialEditor(tutorialId);
             }
             
@@ -3263,7 +3144,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showMessage('Admin access required', 'error');
                     return;
                 }
-                const tutorialId = parseInt(e.target.closest('.btn-delete-tutorial').dataset.id);
+                const tutorialId = e.target.closest('.btn-delete-tutorial').dataset.id;
                 if (confirm('Are you sure you want to delete this tutorial?')) {
                     deleteTutorial(tutorialId);
                 }
@@ -3275,7 +3156,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showMessage('Admin access required', 'error');
                     return;
                 }
-                const tutorialId = parseInt(e.target.closest('.btn-copy-tutorial').dataset.id);
+                const tutorialId = e.target.closest('.btn-copy-tutorial').dataset.id;
                 copyTutorial(tutorialId);
             }
             
@@ -3803,7 +3684,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Save tutorial
-    function saveTutorial() {
+    async function saveTutorial() {
         if (!isAdmin) {
             showMessage('Admin access required', 'error');
             return;
@@ -3835,58 +3716,55 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // In a real app, you would upload files to a server here
-        // For this demo, we'll just store the file names
-        let pdfUrl = null;
-        if (pdfFile) {
-            pdfUrl = `/uploads/${pdfFile.name}`;
-        } else if (isEditing) {
-            const existingTutorial = tutorials.find(t => t.id === currentTutorialId);
-            if (existingTutorial && existingTutorial.pdfUrl) {
-                pdfUrl = existingTutorial.pdfUrl;
+        try {
+            // Upload files if they exist
+            let pdfUrl = null;
+            let wordUrl = null;
+            let videoUrl = null;
+            
+            // Get existing URLs if editing
+            let existingTutorial = null;
+            if (isEditing) {
+                existingTutorial = tutorials.find(t => t.id === currentTutorialId);
+                if (existingTutorial) {
+                    pdfUrl = existingTutorial.pdfUrl;
+                    wordUrl = existingTutorial.wordUrl;
+                    videoUrl = existingTutorial.videoUrl;
+                }
             }
-        }
-        
-        let wordUrl = null;
-        if (wordFile) {
-            wordUrl = `/uploads/${wordFile.name}`;
-        } else if (isEditing) {
-            const existingTutorial = tutorials.find(t => t.id === currentTutorialId);
-            if (existingTutorial && existingTutorial.wordUrl) {
-                wordUrl = existingTutorial.wordUrl;
+            
+            // Upload new files if they exist
+            if (pdfFile) {
+                // Delete old PDF if exists
+                if (existingTutorial && existingTutorial.pdfUrl) {
+                    await deleteFile(existingTutorial.pdfUrl);
+                }
+                
+                const path = `tutorials/${currentTutorialId || Date.now()}/pdf/${pdfFile.name}`;
+                pdfUrl = await uploadFile(pdfFile, path);
             }
-        }
-        
-        let videoUrl = null;
-        if (videoFile) {
-            videoUrl = `/uploads/${videoFile.name}`;
-        } else if (isEditing) {
-            const existingTutorial = tutorials.find(t => t.id === currentTutorialId);
-            if (existingTutorial && existingTutorial.videoUrl) {
-                videoUrl = existingTutorial.videoUrl;
+            
+            if (wordFile) {
+                // Delete old Word doc if exists
+                if (existingTutorial && existingTutorial.wordUrl) {
+                    await deleteFile(existingTutorial.wordUrl);
+                }
+                
+                const path = `tutorials/${currentTutorialId || Date.now()}/word/${wordFile.name}`;
+                wordUrl = await uploadFile(wordFile, path);
             }
-        }
-        
-        if (isEditing) {
-            // Update existing tutorial
-            const index = tutorials.findIndex(t => t.id === currentTutorialId);
-            if (index !== -1) {
-                tutorials[index] = {
-                    ...tutorials[index],
-                    title,
-                    date,
-                    sections: manualContent ? [] : sections,
-                    pdfUrl,
-                    wordUrl,
-                    videoUrl,
-                    manualContent: manualContent || null
-                };
+            
+            if (videoFile) {
+                // Delete old video if exists
+                if (existingTutorial && existingTutorial.videoUrl) {
+                    await deleteFile(existingTutorial.videoUrl);
+                }
+                
+                const path = `tutorials/${currentTutorialId || Date.now()}/video/${videoFile.name}`;
+                videoUrl = await uploadFile(videoFile, path);
             }
-        } else {
-            // Add new tutorial
-            const newId = tutorials.length > 0 ? Math.max(...tutorials.map(t => t.id)) + 1 : 1;
-            tutorials.push({
-                id: newId,
+            
+            const tutorialData = {
                 title,
                 date,
                 sections: manualContent ? [] : sections,
@@ -3894,15 +3772,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 wordUrl,
                 videoUrl,
                 manualContent: manualContent || null,
-                images: []
-            });
-            currentTutorialId = newId; // Set the new ID for scrolling
+                images: existingTutorial?.images || [],
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            if (!isEditing) {
+                tutorialData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            }
+            
+            if (isEditing) {
+                // Update existing tutorial
+                await db.collection('tutorials').doc(currentTutorialId).update(tutorialData);
+                showMessage('Tutorial updated successfully!', 'success');
+            } else {
+                // Add new tutorial
+                const docRef = await db.collection('tutorials').add(tutorialData);
+                currentTutorialId = docRef.id; // Set the new ID for scrolling
+                showMessage('Tutorial added successfully!', 'success');
+            }
+            
+            // Reload tutorials
+            await loadTutorials();
+            closeTutorialEditor();
+        } catch (error) {
+            console.error('Error saving tutorial:', error);
+            showMessage('Error saving tutorial', 'error');
         }
-        
-        saveTutorialsToStorage();
-        renderTutorials();
-        closeTutorialEditor();
-        showMessage('Tutorial saved successfully!', 'success');
     }
 
     // Save section
@@ -3937,38 +3832,68 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Delete tutorial
-    function deleteTutorial(tutorialId) {
+    async function deleteTutorial(tutorialId) {
         if (!isAdmin) {
             showMessage('Admin access required', 'error');
             return;
         }
         
-        tutorials = tutorials.filter(t => t.id !== tutorialId);
-        saveTutorialsToStorage();
-        renderTutorials();
-        showMessage('Tutorial deleted', 'success');
+        try {
+            // Get tutorial to delete any associated files
+            const tutorial = tutorials.find(t => t.id === tutorialId);
+            if (tutorial) {
+                // Delete associated files
+                if (tutorial.pdfUrl) await deleteFile(tutorial.pdfUrl);
+                if (tutorial.wordUrl) await deleteFile(tutorial.wordUrl);
+                if (tutorial.videoUrl) await deleteFile(tutorial.videoUrl);
+                
+                // Delete any images
+                if (tutorial.images && tutorial.images.length > 0) {
+                    for (const imageUrl of tutorial.images) {
+                        await deleteFile(imageUrl);
+                    }
+                }
+            }
+            
+            // Delete the document
+            await db.collection('tutorials').doc(tutorialId).delete();
+            
+            // Reload tutorials
+            await loadTutorials();
+            showMessage('Tutorial deleted', 'success');
+        } catch (error) {
+            console.error('Error deleting tutorial:', error);
+            showMessage('Error deleting tutorial', 'error');
+        }
     }
 
     // Copy tutorial
-    function copyTutorial(tutorialId) {
+    async function copyTutorial(tutorialId) {
         if (!isAdmin) {
             showMessage('Admin access required', 'error');
             return;
         }
         
-        const tutorial = tutorials.find(t => t.id === tutorialId);
-        if (tutorial) {
-            const newId = tutorials.length > 0 ? Math.max(...tutorials.map(t => t.id)) + 1 : 1;
-            const copiedTutorial = {
-                ...tutorial,
-                id: newId,
-                title: `${tutorial.title} (Copy)`,
-                date: new Date().toISOString().split('T')[0]
-            };
-            tutorials.push(copiedTutorial);
-            saveTutorialsToStorage();
-            renderTutorials();
-            showMessage('Tutorial copied', 'success');
+        try {
+            const tutorial = tutorials.find(t => t.id === tutorialId);
+            if (tutorial) {
+                // Create a copy without the ID
+                const { id, ...tutorialData } = tutorial;
+                tutorialData.title = `${tutorial.title} (Copy)`;
+                tutorialData.date = new Date().toISOString().split('T')[0];
+                tutorialData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                tutorialData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+                
+                // Add the copy to Firestore
+                const docRef = await db.collection('tutorials').add(tutorialData);
+                
+                // Reload tutorials
+                await loadTutorials();
+                showMessage('Tutorial copied', 'success');
+            }
+        } catch (error) {
+            console.error('Error copying tutorial:', error);
+            showMessage('Error copying tutorial', 'error');
         }
     }
 
@@ -3979,8 +3904,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.files.length > 0) {
             const file = e.target.files[0];
             if (file.type === 'application/pdf') {
-                // In a real app, you would upload the file to a server here
-                showMessage(`PDF "${file.name}" would be uploaded to the server in a real application`, 'info');
+                pdfFile = file;
+                showMessage(`PDF "${file.name}" will be uploaded when you save the tutorial`, 'info');
             } else {
                 showMessage('Please upload a PDF file', 'warning');
             }
@@ -4023,9 +3948,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize the application
     init();
-
-    // Make addManualTutorial available globally if needed
-    window.addManualTutorial = addManualTutorial;
 });
 
 
@@ -4054,28 +3976,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-
-
-
-// project section
+// project section - Updated with Firebase integration
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Projects data storage
+    // Projects data storage - now using Firestore
     let projects = [];
     let currentProjectId = null;
     const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB max image size
     const MAX_IMAGE_WIDTH = 1200; // Max width for compressed images
-    let isContainerized = false;
 
     // Initialize the app
     function init() {
-        checkContainerEnvironment();
         loadProjects();
         setupEventListeners();
         setupDragAndDrop();
-        
-        // Add mobile-specific styles for the editor modal
         addMobileStyles();
     }
 
@@ -4115,45 +4029,36 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
     }
 
-    // Check if we're in a containerized environment
-    function checkContainerEnvironment() {
-        isContainerized = document.body.classList.contains('containerized-environment') || 
-                        window.location.href.includes('container=true');
-    }
-
-    // Load projects from storage (localStorage or container storage)
-    function loadProjects() {
-        if (isContainerized) {
-            // Try to load from container storage
-            if (window.containerStorage && typeof window.containerStorage.getProjects === 'function') {
-                window.containerStorage.getProjects()
-                    .then(containerProjects => {
-                        if (containerProjects && containerProjects.length > 0) {
-                            projects = containerProjects;
-                        } else {
-                            // Load default projects if container storage is empty
-                            loadDefaultProjects();
-                        }
-                        renderProjectsGrid();
-                    })
-                    .catch(err => {
-                        console.error('Error loading from container storage:', err);
-                        loadFromLocalStorage();
-                    });
-            } else {
-                // Fallback to localStorage if container storage not available
-                loadFromLocalStorage();
+    // Load projects from Firestore
+    async function loadProjects() {
+        try {
+            showLoading(true);
+            const snapshot = await db.collection('projects').orderBy('createdAt', 'desc').get();
+            projects = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                // Convert Firestore Timestamps to ISO strings
+                createdAt: doc.data().createdAt?.toDate().toISOString(),
+                updatedAt: doc.data().updatedAt?.toDate().toISOString()
+            }));
+            
+            if (projects.length === 0) {
+                await loadDefaultProjects();
             }
-        } else {
-            loadFromLocalStorage();
+            
+            renderProjectsGrid();
+        } catch (error) {
+            console.error('Error loading projects:', error);
+            showToast('Error loading projects', 'error');
+        } finally {
+            showLoading(false);
         }
     }
 
     // Load default projects (for first-time use)
-    function loadDefaultProjects() {
-        projects = [
+    async function loadDefaultProjects() {
+        const defaultProjects = [
             {
-                id: 'proj-1',
                 title: 'Containerized Web Application',
                 description: 'A modern web application deployed using Docker containers with CI/CD pipeline',
                 link: 'https://github.com/melvinsamuel070',
@@ -4169,11 +4074,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ],
                 technologies: ['Docker', 'Kubernetes', 'Node.js', 'React', 'CI/CD'],
-                createdAt: '2023-05-15T10:00:00Z',
-                updatedAt: '2023-05-15T10:00:00Z'
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             },
             {
-                id: 'proj-2',
                 title: 'Microservices Platform',
                 description: 'A scalable microservices platform with service discovery and load balancing',
                 link: 'https://github.com/example/microservices-platform',
@@ -4185,74 +4089,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 ],
                 technologies: ['Kubernetes', 'Istio', 'gRPC', 'Go', 'Prometheus'],
-                createdAt: '2023-06-20T14:30:00Z',
-                updatedAt: '2023-06-20T14:30:00Z'
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
         ];
-        saveProjectsToStorage();
-    }
 
-    function loadFromLocalStorage() {
-        const savedProjects = localStorage.getItem('projects');
-        if (savedProjects) {
-            try {
-                projects = JSON.parse(savedProjects);
-                if (!projects || !Array.isArray(projects)) {
-                    loadDefaultProjects();
-                }
-            } catch (e) {
-                console.error('Error parsing saved projects:', e);
-                loadDefaultProjects();
-            }
-        } else {
-            loadDefaultProjects();
-        }
-        renderProjectsGrid();
-    }
-
-    // Save projects to appropriate storage
-    function saveProjectsToStorage() {
-        if (isContainerized && window.containerStorage && typeof window.containerStorage.saveProjects === 'function') {
-            // Save to container storage
-            window.containerStorage.saveProjects(projects)
-                .then(() => {
-                    // Also save to localStorage as backup
-                    try {
-                        localStorage.setItem('projects', JSON.stringify(projects));
-                    } catch (e) {
-                        console.error('Error saving to localStorage:', e);
-                    }
-                })
-                .catch(err => {
-                    console.error('Error saving to container storage:', err);
-                    // Fallback to localStorage
-                    try {
-                        localStorage.setItem('projects', JSON.stringify(projects));
-                    } catch (e) {
-                        console.error('Error saving to localStorage:', e);
-                        showToast('Warning: Could not save data to storage. Some data may be lost.', 'warning');
-                    }
-                });
-        } else {
-            // Save to localStorage
-            try {
-                localStorage.setItem('projects', JSON.stringify(projects));
-            } catch (e) {
-                console.error('Error saving projects to storage:', e);
-                showToast('Warning: Could not save all data to local storage. Some data may be lost.', 'warning');
-            }
-        }
+        // Add default projects to Firestore
+        const batch = db.batch();
+        defaultProjects.forEach(project => {
+            const docRef = db.collection('projects').doc();
+            batch.set(docRef, {
+                ...project,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        });
+        
+        await batch.commit();
     }
 
     // Function to manually add a project
-    function addManualProject(projectData) {
+    async function addManualProject(projectData) {
         if (!isAdmin) {
             showToast('Admin access required', 'error');
             return false;
         }
 
         // Validate and set default values
-        if (!projectData.id) projectData.id = 'proj-' + Date.now();
         if (!projectData.createdAt) projectData.createdAt = new Date().toISOString();
         if (!projectData.updatedAt) projectData.updatedAt = new Date().toISOString();
         if (!projectData.images) projectData.images = [];
@@ -4269,16 +4132,39 @@ document.addEventListener('DOMContentLoaded', function() {
             projectData.images[0].isFeatured = true;
         }
 
-        // Add to projects array
-        projects.unshift(projectData);
-        
-        // Save to storage
-        saveProjectsToStorage();
-        
-        // Refresh the display
-        renderProjectsGrid();
-        
-        return projectData.id;
+        try {
+            // Upload images to Firebase Storage first
+            const uploadedImages = await Promise.all(
+                projectData.images.map(async (img) => {
+                    if (img.file) {
+                        // Upload the file to Firebase Storage
+                        const filePath = `projects/${Date.now()}_${img.name}`;
+                        const fileRef = storage.ref(filePath);
+                        await fileRef.put(img.file);
+                        const downloadURL = await fileRef.getDownloadURL();
+                        return { ...img, src: downloadURL };
+                    }
+                    return img;
+                })
+            );
+
+            // Add to Firestore
+            const docRef = await db.collection('projects').add({
+                ...projectData,
+                images: uploadedImages,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Refresh the display
+            await loadProjects();
+            
+            return docRef.id;
+        } catch (error) {
+            console.error('Error adding project:', error);
+            showToast('Error adding project', 'error');
+            return false;
+        }
     }
 
     // Tab switching functionality
@@ -4372,11 +4258,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Add to gallery display
                         addImageToGallery(imageData);
-                        
-                        // Save the project immediately after adding image
-                        if (currentProjectId) {
-                            saveProject();
-                        }
                     };
                     reader.readAsDataURL(compressedFile);
                 } catch (error) {
@@ -4480,11 +4361,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     firstGalleryItem.querySelector('.set-featured-btn').click();
                 }
             }
-            
-            // Save the project immediately after deleting image
-            if (currentProjectId) {
-                saveProject();
-            }
         });
         
         document.querySelector(`.set-featured-btn[data-id="${imageData.id}"]`).addEventListener('click', (e) => {
@@ -4499,11 +4375,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Set this image as featured
             e.target.closest('.gallery-item').classList.add('featured');
-            
-            // Save the project immediately after setting featured image
-            if (currentProjectId) {
-                saveProject();
-            }
         });
     }
 
@@ -4547,17 +4418,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 techElement.remove();
-                
-                // Save the project immediately after deleting technology
-                if (currentProjectId) {
-                    saveProject();
-                }
             });
-            
-            // Save the project immediately after adding technology
-            if (currentProjectId) {
-                saveProject();
-            }
         }
     }
 
@@ -4616,16 +4477,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create project object
         const project = {
-            id: currentProjectId || 'proj-' + Date.now(),
             title: title,
             description: description,
             link: document.getElementById('editProjectLink').value.trim(),
-            images: images,
             technologies: technologies,
-            createdAt: currentProjectId 
-                ? projects.find(p => p.id === currentProjectId)?.createdAt || new Date().toISOString()
-                : new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         
         try {
@@ -4633,29 +4489,37 @@ document.addEventListener('DOMContentLoaded', function() {
             saveProjectBtn.disabled = true;
             saveProjectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             
-            // Update or add project
+            // First upload all images to Firebase Storage
+            const uploadedImages = await Promise.all(
+                images.map(async (img) => {
+                    if (img.file) {
+                        // Upload the file to Firebase Storage
+                        const filePath = `projects/${Date.now()}_${img.name}`;
+                        const fileRef = storage.ref(filePath);
+                        await fileRef.put(img.file);
+                        const downloadURL = await fileRef.getDownloadURL();
+                        return { ...img, src: downloadURL };
+                    }
+                    return img;
+                })
+            );
+
+            // Add images to project data
+            project.images = uploadedImages;
+
             if (currentProjectId) {
                 // Update existing project
-                const index = projects.findIndex(p => p.id === currentProjectId);
-                if (index !== -1) {
-                    projects[index] = project;
-                }
+                await db.collection('projects').doc(currentProjectId).update(project);
+                showToast('Project updated successfully!', 'success');
             } else {
                 // Add new project
-                projects.unshift(project);
+                project.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('projects').add(project);
+                showToast('Project added successfully!', 'success');
             }
             
-            // Save to storage
-            saveProjectsToStorage();
-            
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
             // Update the projects grid
-            renderProjectsGrid();
-            
-            // Show success message
-            showToast('Project saved successfully!', 'success');
+            await loadProjects();
             
             // Close the modal
             document.getElementById('projectEditorModal').style.display = 'none';
@@ -4678,18 +4542,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Delete project functionality
-    document.getElementById('deleteProjectBtn').addEventListener('click', () => {
+    document.getElementById('deleteProjectBtn').addEventListener('click', async () => {
         if (!isAdmin) {
             showToast('Admin access required', 'error');
             return;
         }
 
         if (currentProjectId && confirm('Are you sure you want to delete this project?')) {
-            projects = projects.filter(p => p.id !== currentProjectId);
-            saveProjectsToStorage();
-            renderProjectsGrid();
-            document.getElementById('projectEditorModal').style.display = 'none';
-            showToast('Project deleted successfully!', 'success');
+            try {
+                // First delete all associated images from storage
+                const project = projects.find(p => p.id === currentProjectId);
+                if (project && project.images) {
+                    await Promise.all(
+                        project.images.map(async (img) => {
+                            if (img.src.startsWith('https://firebasestorage.googleapis.com/')) {
+                                try {
+                                    const fileRef = storage.refFromURL(img.src);
+                                    await fileRef.delete();
+                                } catch (error) {
+                                    console.error('Error deleting image:', error);
+                                }
+                            }
+                        })
+                    );
+                }
+
+                // Then delete the project document
+                await db.collection('projects').doc(currentProjectId).delete();
+                
+                // Update UI
+                document.getElementById('projectEditorModal').style.display = 'none';
+                await loadProjects();
+                showToast('Project deleted successfully!', 'success');
+            } catch (error) {
+                console.error('Error deleting project:', error);
+                showToast('Error deleting project', 'error');
+            }
         }
     });
     
@@ -4813,17 +4701,40 @@ document.addEventListener('DOMContentLoaded', function() {
             deleteButton.className = 'btn btn-outline-danger delete-project';
             deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
             deleteButton.style.display = isAdmin ? 'inline-block' : 'none';
-            deleteButton.addEventListener('click', (e) => {
+            deleteButton.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 if (!isAdmin) {
                     showToast('Admin access required', 'error');
                     return;
                 }
                 if (confirm('Are you sure you want to delete this project?')) {
-                    projects = projects.filter(p => p.id !== project.id);
-                    saveProjectsToStorage();
-                    renderProjectsGrid();
-                    showToast('Project deleted successfully!', 'success');
+                    try {
+                        // First delete all associated images from storage
+                        if (project.images) {
+                            await Promise.all(
+                                project.images.map(async (img) => {
+                                    if (img.src.startsWith('https://firebasestorage.googleapis.com/')) {
+                                        try {
+                                            const fileRef = storage.refFromURL(img.src);
+                                            await fileRef.delete();
+                                        } catch (error) {
+                                            console.error('Error deleting image:', error);
+                                        }
+                                    }
+                                })
+                            );
+                        }
+
+                        // Then delete the project document
+                        await db.collection('projects').doc(project.id).delete();
+                        
+                        // Update UI
+                        await loadProjects();
+                        showToast('Project deleted successfully!', 'success');
+                    } catch (error) {
+                        console.error('Error deleting project:', error);
+                        showToast('Error deleting project', 'error');
+                    }
                 }
             });
             
@@ -4990,9 +4901,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 imageElement.remove();
-                
-                // Save the project immediately after deleting image
-                saveProject();
             });
             
             imageElement.querySelector('.set-featured-btn').addEventListener('click', (e) => {
@@ -5004,9 +4912,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.classList.remove('featured');
                 });
                 e.target.closest('.gallery-item').classList.add('featured');
-                
-                // Save the project immediately after setting featured image
-                saveProject();
             });
         });
         
@@ -5032,9 +4937,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 techElement.remove();
-                
-                // Save the project immediately after deleting technology
-                saveProject();
             });
         });
         
@@ -5094,6 +4996,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 300);
             }, 3000);
         }, 100);
+    }
+
+    // Loading indicator function
+    function showLoading(show) {
+        const loadingIndicator = document.getElementById('loadingIndicator') || 
+            (() => {
+                const indicator = document.createElement('div');
+                indicator.id = 'loadingIndicator';
+                indicator.className = 'loading-indicator';
+                indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                document.body.appendChild(indicator);
+                return indicator;
+            })();
+        
+        loadingIndicator.style.display = show ? 'flex' : 'none';
     }
 
     // Modal close functionality
@@ -5200,8 +5117,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-// Book Store Module with PDF display and animated advert - Fixed Version
+// Book Store Module with Firebase integration
 document.addEventListener('DOMContentLoaded', function() {
     const BookStore = (function() {
         // Configuration
@@ -5213,7 +5129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             bookshelfBackground: 'url("https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80")',
             illuminationColor: 'rgba(255, 215, 0, 0.15)',
-            maxFileSize: 25 * 1024 * 1024, // Increased to 25MB
+            maxFileSize: 25 * 1024 * 1024, // 25MB
             allowedFileTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
             bookCoverImage: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
             compressionEnabled: true,
@@ -5244,19 +5160,17 @@ document.addEventListener('DOMContentLoaded', function() {
             setupBookshelf();
             loadBooks();
             setupEventListeners();
-            updateAdminFeatures(); // Check admin status on init
+            updateAdminFeatures();
         }
 
         // Update admin features based on current admin status
         function updateAdminFeatures() {
             if (isAdmin) {
-                // Show upload form and admin controls
                 elements.bookUploadForm.style.display = 'block';
                 document.querySelectorAll('.delete-book').forEach(btn => {
                     btn.style.display = 'inline-block';
                 });
             } else {
-                // Hide upload form and admin controls
                 elements.bookUploadForm.style.display = 'none';
                 document.querySelectorAll('.delete-book').forEach(btn => {
                     btn.style.display = 'none';
@@ -5266,7 +5180,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Create animated advert with phone showing book cover
         function createAdvert() {
-            // Main advert container
             elements.advertContainer = document.createElement('div');
             elements.advertContainer.className = 'bookstore-advert';
             elements.advertContainer.style.cssText = `
@@ -5285,7 +5198,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 transition: all 0.3s ease;
             `;
             
-            // Phone element that will animate
             elements.phoneElement = document.createElement('div');
             elements.phoneElement.className = 'advert-phone';
             elements.phoneElement.style.cssText = `
@@ -5304,7 +5216,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 transition: all 0.5s ease;
             `;
             
-            // Phone screen showing book cover
             const phoneScreen = document.createElement('div');
             phoneScreen.className = 'phone-screen';
             phoneScreen.style.cssText = `
@@ -5317,7 +5228,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             elements.phoneElement.appendChild(phoneScreen);
             
-            // Advert content
             elements.advertContainer.innerHTML = `
                 <div class="advert-content">
                     <span class="close-ad">&times;</span>
@@ -5334,16 +5244,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             document.body.appendChild(elements.phoneElement);
             
-            // Start animation
             animateAdvert();
             
-            // Close button functionality
             elements.advertContainer.querySelector('.close-ad').addEventListener('click', function() {
                 elements.advertContainer.style.display = 'none';
                 elements.phoneElement.style.display = 'none';
             });
             
-            // Clicking the "Explore Now" button scrolls to the book store
             elements.advertContainer.querySelector('a').addEventListener('click', function(e) {
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
@@ -5351,7 +5258,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Make responsive for mobile
             function handleResize() {
                 if (window.innerWidth <= 768) {
                     elements.advertContainer.style.width = '250px';
@@ -5368,16 +5274,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Initial resize check
             handleResize();
-            
-            // Add resize listener
             window.addEventListener('resize', handleResize);
         }
 
         // Animate the advert with phone waving
         function animateAdvert() {
-            // Phone waving animation
             let angle = 15;
             let direction = 1;
             
@@ -5388,12 +5290,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 requestAnimationFrame(wavePhone);
             };
             
-            // Start waving after a delay
             setTimeout(() => {
                 wavePhone();
             }, 1000);
             
-            // Phone screen content change animation
             setInterval(() => {
                 const screen = elements.phoneElement.querySelector('.phone-screen');
                 screen.style.opacity = '0';
@@ -5420,7 +5320,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 overflow: hidden;
             `;
             
-            // Create illumination effect
             const light = document.createElement('div');
             light.className = 'bookshelf-light';
             light.style.cssText = `
@@ -5436,7 +5335,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             bookshelf.appendChild(light);
             
-            // Add animation for the light
             const style = document.createElement('style');
             style.textContent = `
                 @keyframes rotateLight {
@@ -5447,76 +5345,25 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(style);
         }
 
-        // Load books from localStorage
-        function loadBooks() {
-            const savedBooks = localStorage.getItem('bookstoreBooks');
-            if (savedBooks) {
-                try {
-                    books = JSON.parse(savedBooks);
-                    // Initialize bookFiles object
-                    books.forEach(book => {
-                        if (book.fileData) {
-                            bookFiles[book.id] = book.fileData;
-                            delete book.fileData; // Clean up
-                        }
-                    });
-                } catch (e) {
-                    console.error('Error parsing saved books:', e);
-                    books = getDefaultBooks();
-                }
-            } else {
-                books = getDefaultBooks();
+        // Load books from Firestore
+        async function loadBooks() {
+            try {
+                const snapshot = await db.collection('books').orderBy('uploadDate', 'desc').get();
+                books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateBooksDisplay();
+            } catch (error) {
+                console.error('Error loading books:', error);
+                showMessage('Error loading books', 'error');
             }
-            updateBooksDisplay();
-        }
-
-        // Get default books for first-time users
-        function getDefaultBooks() {
-            return [
-                {
-                    id: 'book-1',
-                    title: 'DevOps Handbook',
-                    description: 'A comprehensive guide to DevOps practices and principles for modern software development.',
-                    tags: ['devops', 'automation', 'ci/cd'],
-                    fileName: 'devops-handbook.pdf',
-                    fileType: 'application/pdf',
-                    fileSize: '2.4 MB',
-                    uploadDate: new Date().toISOString(),
-                    coverImage: config.bookCoverImage
-                },
-                {
-                    id: 'book-2',
-                    title: 'Cloud Architecture',
-                    description: 'Designing scalable and resilient cloud-native applications for AWS, Azure and GCP.',
-                    tags: ['cloud', 'architecture', 'aws', 'azure'],
-                    fileName: 'cloud-architecture.pdf',
-                    fileType: 'application/pdf',
-                    fileSize: '3.1 MB',
-                    uploadDate: new Date(Date.now() - 86400000).toISOString(),
-                    coverImage: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-                }
-            ];
-        }
-
-        // Save books to localStorage
-        function saveBooks() {
-            // Don't save file data in the main books array
-            const booksToSave = books.map(book => {
-                const { fileData, ...rest } = book;
-                return rest;
-            });
-            localStorage.setItem('bookstoreBooks', JSON.stringify(booksToSave));
         }
 
         // Setup event listeners
         function setupEventListeners() {
-            // File input change
             elements.bookFileInput.addEventListener('change', function() {
                 if (this.files.length > 0) {
                     const file = this.files[0];
                     elements.fileNameDisplay.textContent = `${file.name} (${formatFileSize(file.size)})`;
                     
-                    // Validate file
                     if (file.size > config.maxFileSize) {
                         showMessage(`File is too large (max ${formatFileSize(config.maxFileSize)})`, 'error');
                         this.value = '';
@@ -5531,7 +5378,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Form submission
             elements.bookUploadForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 if (!isAdmin) {
@@ -5541,13 +5387,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 await uploadBook();
             });
 
-            // Search functionality
             elements.bookSearch.addEventListener('input', function() {
                 updateBooksDisplay();
             });
         }
 
-        // Upload a new book
+        // Upload a new book to Firestore and Storage
         async function uploadBook() {
             if (!isAdmin) {
                 showMessage('Admin access required', 'error');
@@ -5559,7 +5404,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const tags = document.getElementById('book-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
             const file = elements.bookFileInput.files[0];
 
-            // Validate inputs
             if (!title || !description || !file) {
                 showMessage('Please fill all required fields', 'error');
                 return;
@@ -5573,27 +5417,39 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessage('Processing your file...', 'info');
 
             try {
-                // Process the file (compress if needed)
-                const processedFile = await processFile(file);
-
-                // Create book object
+                // Upload file to Firebase Storage
+                const storageRef = storage.ref(`books/${Date.now()}_${file.name}`);
+                const uploadTask = storageRef.put(file);
+                
+                // Wait for upload to complete
+                await new Promise((resolve, reject) => {
+                    uploadTask.on('state_changed',
+                        null,
+                        (error) => reject(error),
+                        () => resolve()
+                    );
+                });
+                
+                // Get download URL
+                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                
+                // Create book document in Firestore
                 const newBook = {
-                    id: 'book-' + Date.now(),
                     title,
                     description,
                     tags,
                     fileName: file.name,
                     fileType: file.type,
-                    fileSize: formatFileSize(processedFile.size),
-                    uploadDate: new Date().toISOString(),
+                    fileSize: formatFileSize(file.size),
+                    fileURL: downloadURL,
+                    uploadDate: firebase.firestore.FieldValue.serverTimestamp(),
                     coverImage: getRandomCoverImage()
                 };
-
-                // Store the file data separately
-                bookFiles[newBook.id] = processedFile;
-
-                books.unshift(newBook);
-                saveBooks();
+                
+                const docRef = await db.collection('books').add(newBook);
+                
+                // Add to local state with the new ID
+                books.unshift({ id: docRef.id, ...newBook });
                 updateBooksDisplay();
                 
                 // Reset form
@@ -5603,23 +5459,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('Book uploaded successfully!', 'success');
             } catch (error) {
                 console.error('Error uploading book:', error);
-                showMessage('Error processing file. Please try again.', 'error');
+                showMessage('Error uploading file. Please try again.', 'error');
             }
-        }
-
-        // Process file (compress if needed)
-        async function processFile(file) {
-            if (!config.compressionEnabled || file.size <= 5 * 1024 * 1024) {
-                return file; // No compression needed for small files
-            }
-
-            if (file.type === 'application/pdf') {
-                // For PDFs, we can't compress in the browser, just return as-is
-                return file;
-            }
-
-            // For Word docs, we could potentially compress, but for now just return as-is
-            return file;
         }
 
         // Get a random cover image for new books
@@ -5637,7 +5478,6 @@ document.addEventListener('DOMContentLoaded', function() {
         function updateBooksDisplay() {
             const searchTerm = elements.bookSearch.value.toLowerCase();
             
-            // Filter books based on search term
             const filteredBooks = books.filter(book => {
                 return (
                     book.title.toLowerCase().includes(searchTerm) ||
@@ -5646,10 +5486,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
             });
             
-            // Clear current display
             elements.booksGrid.innerHTML = '';
             
-            // Show message if no books found
             if (filteredBooks.length === 0) {
                 elements.booksGrid.innerHTML = `
                     <div class="no-books">
@@ -5660,7 +5498,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Add books to grid
             filteredBooks.forEach(book => {
                 const bookCard = document.createElement('div');
                 bookCard.className = 'book-card';
@@ -5696,7 +5533,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 elements.booksGrid.appendChild(bookCard);
                 
-                // Add event listeners
                 bookCard.querySelector('.view-book').addEventListener('click', () => viewBook(book.id));
                 bookCard.querySelector('.download-book').addEventListener('click', () => downloadBook(book.id));
                 bookCard.querySelector('.delete-book').addEventListener('click', (e) => {
@@ -5711,11 +5547,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const book = books.find(b => b.id === bookId);
             if (!book) return;
             
-            // Check if we have the file data
-            const file = bookFiles[bookId];
-            const fileUrl = file ? URL.createObjectURL(file) : null;
-            
-            // Create modal
             const modal = document.createElement('div');
             modal.className = 'book-modal';
             modal.style.cssText = `
@@ -5733,8 +5564,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 transition: opacity 0.3s ease;
             `;
             
-            // Determine if we can show a PDF preview
-            const canShowPdfPreview = book.fileType === 'application/pdf' && fileUrl;
+            const canShowPdfPreview = book.fileType === 'application/pdf' && book.fileURL;
             
             modal.innerHTML = `
                 <div class="book-modal-content" style="
@@ -5829,7 +5659,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         <div class="book-preview" style="margin-top: 30px; text-align: center;">
                             ${canShowPdfPreview ? `
-                            <iframe src="${fileUrl}" style="
+                            <iframe src="${book.fileURL}" style="
                                 width: 100%;
                                 height: 500px;
                                 border: 1px solid #ddd;
@@ -5854,25 +5684,18 @@ document.addEventListener('DOMContentLoaded', function() {
             
             document.body.appendChild(modal);
             
-            // Fade in
             setTimeout(() => {
                 modal.style.opacity = '1';
             }, 10);
             
-            // Add event listeners
             const closeModal = () => {
                 modal.style.opacity = '0';
                 setTimeout(() => {
-                    // Revoke the object URL to free memory
-                    if (fileUrl) {
-                        URL.revokeObjectURL(fileUrl);
-                    }
                     modal.remove();
                 }, 300);
             };
             
             modal.querySelector('.close-modal').addEventListener('click', closeModal);
-            
             modal.querySelector('.download-book').addEventListener('click', () => {
                 downloadBook(book.id);
             });
@@ -5882,7 +5705,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 deleteBook(book.id);
             });
             
-            // Close when clicking outside content
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     closeModal();
@@ -5893,26 +5715,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Download book
         function downloadBook(bookId) {
             const book = books.find(b => b.id === bookId);
-            if (!book) return;
-            
-            const file = bookFiles[bookId];
-            if (!file) {
+            if (!book || !book.fileURL) {
                 showMessage(`File not found for "${book.title}"`, 'error');
                 return;
             }
             
             try {
                 const a = document.createElement('a');
-                const url = URL.createObjectURL(file);
-                a.href = url;
+                a.href = book.fileURL;
                 a.download = book.fileName;
                 document.body.appendChild(a);
                 a.click();
                 
-                // Clean up
                 setTimeout(() => {
                     document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
                 }, 100);
                 
                 showMessage(`Downloading "${book.title}"...`, 'info');
@@ -5922,23 +5738,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Delete book
-        function deleteBook(bookId) {
+        // Delete book from Firestore and Storage
+        async function deleteBook(bookId) {
             if (!isAdmin) {
                 showMessage('Admin access required', 'error');
                 return;
             }
 
             if (confirm('Are you sure you want to delete this book?')) {
-                // Remove from books array
-                books = books.filter(book => book.id !== bookId);
-                
-                // Remove from bookFiles
-                delete bookFiles[bookId];
-                
-                saveBooks();
-                updateBooksDisplay();
-                showMessage('Book deleted successfully', 'success');
+                try {
+                    const book = books.find(b => b.id === bookId);
+                    if (!book) return;
+                    
+                    // Delete from Firestore
+                    await db.collection('books').doc(bookId).delete();
+                    
+                    // Delete from Storage if URL exists
+                    if (book.fileURL) {
+                        const fileRef = storage.refFromURL(book.fileURL);
+                        await fileRef.delete();
+                    }
+                    
+                    // Remove from local state
+                    books = books.filter(b => b.id !== bookId);
+                    updateBooksDisplay();
+                    
+                    showMessage('Book deleted successfully', 'success');
+                } catch (error) {
+                    console.error('Error deleting book:', error);
+                    showMessage('Error deleting book', 'error');
+                }
             }
         }
 
@@ -5963,13 +5792,11 @@ document.addEventListener('DOMContentLoaded', function() {
             messageEl.textContent = message;
             document.body.appendChild(messageEl);
             
-            // Animate in
             setTimeout(() => {
                 messageEl.style.opacity = '1';
                 messageEl.style.transform = 'translateX(-50%) translateY(-10px)';
             }, 10);
             
-            // Remove after delay
             setTimeout(() => {
                 messageEl.style.opacity = '0';
                 messageEl.style.transform = 'translateX(-50%) translateY(10px)';
@@ -5981,7 +5808,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Helper function to format file size
         function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
+            if (!bytes) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -5990,11 +5817,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Helper function to format date
         function formatDate(dateString) {
-            const date = new Date(dateString);
+            if (!dateString) return 'Unknown date';
+            const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
 
-        // Public API
         return {
             init: init,
             updateAdminFeatures: updateAdminFeatures
@@ -6006,41 +5833,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update book store admin features when admin status changes
     function activateAdminFeatures() {
-        // ... existing code ...
         BookStore.updateAdminFeatures();
     }
 
     function deactivateAdminFeatures() {
-        // ... existing code ...
         BookStore.updateAdminFeatures();
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- // Mobile menu toggle functionality
-        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
-            document.querySelector('nav').classList.toggle('mobile-nav-visible');
-        });
-        
-        // Close nav when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelector('nav').classList.remove('mobile-nav-visible');
-            });
-        });
